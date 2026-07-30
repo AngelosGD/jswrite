@@ -1,20 +1,45 @@
 "use client";
+import { useState } from "react";
 
-export default function nav() {
+export default function Nav() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <div>
-      <nav className="w-full border-b-2 border-gray-200 items-center flex p-5">
-        <p className="font-serif text-2xl text-gray-800 pl-5">JsWrite</p>
-        <p className="pl-15 font-serif">
-          cualquier <span className="font-bold">nota</span> en tu navegador,
-          solo <span className="font-bold">escribelo</span> o dictalo por voz
-        </p>
+    <nav className="w-full border-b-2 border-gray-200 p-5">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-5">
+          <p className="font-serif text-2xl text-gray-800 pl-5">JsWrite</p>
+          <p className="hidden md:block font-serif pt-1">
+            cualquier <span className="font-bold">nota</span> en tu navegador,
+            solo <span className="font-bold">escribelo</span> o dictalo por voz
+          </p>
+        </div>
 
-        <div className="items-end flex pl-[40%]">
-          <button className="border border-gray-400 p-2 w-25 mr-3 transition duration-280 ease hover:bg-black hover:text-white">Github</button>
+        <div className="hidden md:flex items-center gap-3">
+          <button className="border border-gray-400 p-2 w-25 transition duration-280 ease hover:bg-black hover:text-white">Github</button>
           <button className="bg-black border border-black text-white p-2 w-25 transition duration-280 ease hover:bg-white hover:text-black hover:border-black">Escritorio</button>
         </div>
-      </nav>
-    </div>
+
+        <button
+          className="md:hidden border border-gray-400 px-3 py-1 text-sm"
+          onClick={() => setOpen(!open)}
+        >
+          {open ? "✕" : "☰"}
+        </button>
+      </div>
+
+      {open && (
+        <div className="md:hidden flex flex-col items-center gap-3 mt-4 pb-2">
+          <p className="font-serif text-center">
+            cualquier <span className="font-bold">nota</span> en tu navegador,
+            solo <span className="font-bold">escribelo</span> o dictalo por voz
+          </p>
+          <div className="flex gap-3">
+            <button className="border border-gray-400 p-2 w-25 transition duration-280 ease hover:bg-black hover:text-white">Github</button>
+            <button className="bg-black border border-black text-white p-2 w-25 transition duration-280 ease hover:bg-white hover:text-black hover:border-black">Escritorio</button>
+          </div>
+        </div>
+      )}
+    </nav>
   );
 }

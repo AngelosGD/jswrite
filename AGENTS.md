@@ -9,12 +9,13 @@ npm workspaces monorepo: `apps/*`, `packages/*`. No root scripts beyond the triv
 - **`npm run lint`** — eslint (flat config, `eslint.config.mjs`)
 - App Router (`app/`). Tailwind v4 via `@tailwindcss/postcss` plugin — no `tailwind.config`, CSS-first theming via `@import "tailwindcss"` in `app/globals.css`
 - Next.js 16 has breaking API changes — read `node_modules/next/dist/docs/` and the repo-local `apps/web/AGENTS.md` before writing code.
+- No test suite or typecheck script in this app; `npm run lint` is the only check.
 
 ## apps/api — NestJS 11 + Express
 
 - **`npm run start:dev`** — `nest start --watch` (port **3001**, from `process.env.PORT ?? 3001`)
 - **`npm run build`** — `nest build` (output `./dist`, `deleteOutDir: true`)
-- **`npm run test`** — jest, `rootDir: src` (unit tests colocated as `*.spec.ts`)
+- **`npm run test`** — jest, `rootDir: src` (unit tests colocated as `*.spec.ts`); run a single test with `npm test -- <name>` (e.g. `npm test -- app.controller.spec`)
 - **`npm run test:e2e`** — jest with config `./test/jest-e2e.json` (`*.e2e-spec.ts`)
 - **`npm run lint`** — eslint **with `--fix`** (auto-modifies files; flat config via `typescript-eslint` + prettier plugin, `endOfLine: "auto"`). **Type-aware** (`recommendedTypeChecked` + `projectService`) — type errors fail lint. `no-explicit-any` is off; `no-floating-promises` / `no-unsafe-argument` are warnings
 - **`npm run format`** — prettier (`singleQuote`, `trailingComma: "all"`, config at `apps/api/.prettierrc`)

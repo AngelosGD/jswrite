@@ -13,7 +13,7 @@ export default function Nav() {
             cualquier <span className="font-bold">nota</span> en tu navegador,
             solo <span className="font-bold">escribelo</span> o dictalo por voz
           </p>
-        </div>
+        </div>  
 
         <div className="hidden md:flex items-center gap-3">
           <button className="border border-gray-400 p-2 w-25 transition duration-280 ease hover:bg-black hover:text-white">Github</button>

@@ -10,6 +10,7 @@ npm workspaces monorepo: `apps/*`, `packages/*`. No root scripts beyond the triv
 - App Router (`app/`). Tailwind v4 via `@tailwindcss/postcss` plugin — no `tailwind.config`, CSS-first theming via `@import "tailwindcss"` in `app/globals.css`
 - Next.js 16 has breaking API changes — read `node_modules/next/dist/docs/` and the repo-local `apps/web/AGENTS.md` before writing code.
 - No test suite or typecheck script in this app; `npm run lint` is the only check.
+- Notebooks persist client-side only: `lib/notebooks.ts` reads/writes `window.localStorage` — the API app is not wired in yet. Don't build features assuming server persistence.
 
 ## apps/api — NestJS 11 + Express
 

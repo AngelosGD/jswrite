@@ -1,5 +1,7 @@
 "use client";
 
+import NewNotebookModal from "./newNotebookModal";
+
 export default function HeroOptions() {
   return (
     <div className="items-center justify-center flex mt-[8%] flex-col gap-5">
@@ -170,6 +172,7 @@ export default function HeroOptions() {
           </p>
         </div>
       </div>
+      <NewNotebookModal />
     </div>
   );
 }

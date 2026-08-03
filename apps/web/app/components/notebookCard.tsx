@@ -3,29 +3,35 @@ import { motion } from "motion/react";
 import type { Notebook } from "@/lib/notebooks";
 
 const RINGS = Array.from({ length: 4 });
+const PAGES = [6, 12, 18];
 
 export default function NotebookCard({ notebook }: { notebook: Notebook }) {
   return (
     <motion.div
-      className="group relative aspect-[4/3] cursor-pointer [perspective:1200px]"
+      className="group relative mx-auto aspect-[4/3] w-full max-w-[260px] cursor-pointer [perspective:1200px]"
       initial="rest"
       animate="rest"
       whileHover="hover"
     >
+      {PAGES.map((offset, i) => (
+        <div
+          key={i}
+          className="absolute inset-0 rounded-md border border-neutral-200 bg-white shadow-sm"
+          style={{ transform: `translateX(${offset}px)` }}
+        />
+      ))}
+
       <motion.div
         className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
         variants={{
           rest: { opacity: 0 },
           hover: { opacity: 1 },
         }}
-        transition={{ duration: 0.2, delay: 0.12 }}
+        transition={{ duration: 0.2, delay: 0.1 }}
       >
-        <button
-          type="button"
-          className="rounded border border-black bg-black px-7 py-2 font-medium text-white shadow-md transition duration-200 ease hover:bg-white hover:text-black"
-        >
+        <span className="text-sm font-semibold tracking-wide text-black/80 underline decoration-black/40 underline-offset-4">
           Abrir
-        </button>
+        </span>
       </motion.div>
 
       <motion.div
@@ -34,10 +40,10 @@ export default function NotebookCard({ notebook }: { notebook: Notebook }) {
         variants={{
           rest: { rotateY: 0, scale: 1, opacity: 1, filter: "blur(0px)" },
           hover: {
-            rotateY: -18,
-            scale: 0.9,
-            opacity: 0.7,
-            filter: "blur(2px)",
+            rotateY: -12,
+            scale: 0.97,
+            opacity: 0.9,
+            filter: "blur(0.5px)",
           },
         }}
         transition={{ duration: 0.3, ease: "easeOut" }}

@@ -3,12 +3,12 @@ import { motion } from "motion/react";
 import type { Notebook } from "@/lib/notebooks";
 
 const RINGS = Array.from({ length: 4 });
-const PAGES = [6, 12, 18];
+const PAGES = [4, 8, 12, 16, 20, 24];
 
 export default function NotebookCard({ notebook }: { notebook: Notebook }) {
   return (
     <motion.div
-      className="group relative mx-auto aspect-[4/3] w-full max-w-[260px] cursor-pointer [perspective:1200px]"
+      className="group relative mx-auto aspect-[4/3] w-full max-w-[210px] cursor-pointer [perspective:1200px]"
       initial="rest"
       animate="rest"
       whileHover="hover"
@@ -24,12 +24,12 @@ export default function NotebookCard({ notebook }: { notebook: Notebook }) {
       <motion.div
         className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
         variants={{
-          rest: { opacity: 0 },
-          hover: { opacity: 1 },
+          rest: { opacity: 0, scale: 0.8 },
+          hover: { opacity: 1, scale: 1 },
         }}
-        transition={{ duration: 0.2, delay: 0.1 }}
+        transition={{ duration: 0.25, delay: 0.08, ease: "easeOut" }}
       >
-        <span className="text-sm font-semibold tracking-wide text-black/80 underline decoration-black/40 underline-offset-4">
+        <span className="rounded-full border border-black/60 bg-white/60 px-6 py-2 text-base font-bold tracking-wide text-black shadow-md backdrop-blur-sm">
           Abrir
         </span>
       </motion.div>
@@ -40,13 +40,13 @@ export default function NotebookCard({ notebook }: { notebook: Notebook }) {
         variants={{
           rest: { rotateY: 0, scale: 1, opacity: 1, filter: "blur(0px)" },
           hover: {
-            rotateY: -12,
-            scale: 0.97,
-            opacity: 0.9,
-            filter: "blur(0.5px)",
+            rotateY: -8,
+            scale: 0.98,
+            opacity: 0.92,
+            filter: "blur(0.4px)",
           },
         }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
       >
         <div className="absolute inset-y-3 left-0 z-10 flex w-6 -translate-x-1/2 flex-col justify-between">
           {RINGS.map((_, i) => (

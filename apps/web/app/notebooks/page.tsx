@@ -63,10 +63,10 @@ export default function NotebooksPage() {
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {notebooks.map((n) => (
-              <article
-                key={n.id}
-                className="relative aspect-[4/3] overflow-hidden rounded-lg shadow-sm"
-              >
+<article
+                  key={n.id}
+                  className="relative aspect-[4/3] overflow-hidden rounded-lg shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:shadow-lg"
+                >
                 <div
                   className="absolute inset-0"
                   style={{ backgroundColor: n.color }}

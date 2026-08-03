@@ -8,7 +8,8 @@ npm workspaces monorepo: `apps/*`, `packages/*`. No root scripts beyond the triv
 - **`npm run build`** — next build
 - **`npm run lint`** — eslint (flat config, `eslint.config.mjs`)
 - App Router (`app/`). Tailwind v4 via `@tailwindcss/postcss` plugin — no `tailwind.config`, CSS-first theming via `@import "tailwindcss"` in `app/globals.css`
-- Next.js 16 has breaking API changes — read `node_modules/next/dist/docs/` and the repo-local `apps/web/AGENTS.md` before writing code.
+- Imports use the `@/*` path alias → `./` (web root), e.g. `@/lib/notebooks`. Use it, not relative paths.
+- Next.js 16 has breaking API changes — read `node_modules/next/dist/docs/` and the repo-local `apps/web/AGENTS.md` (and `apps/web/CLAUDE.md`, a one-line pointer to it) before writing code.
 - No test suite or typecheck script in this app; the only full verification is `npm run build` (Next.js type-checks during build) or `npm run lint`.
 - Notebooks persist client-side only: `lib/notebooks.ts` reads/writes `window.localStorage` — the API app is not wired in yet. Don't build features assuming server persistence.
 

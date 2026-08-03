@@ -1,5 +1,6 @@
 "use client";
 import { useNotebooks } from "@/lib/notebooks";
+import NotebookCard from "@/app/components/notebookCard";
 
 export default function NotebooksPage() {
   const notebooks = useNotebooks();
@@ -44,7 +45,7 @@ export default function NotebooksPage() {
               className="group flex items-center gap-2.5 rounded-md px-2 py-2 text-left transition duration-100 ease hover:bg-gray-100"
             >
               <span
-                className="size-2.5 shrink-0 rounded-full"
+                className="size-2.5 shrink rounded-full"
                 style={{ backgroundColor: n.color }}
               />
               <span className="truncate text-sm font-medium text-gray-700 group-hover:text-gray-900">
@@ -63,29 +64,7 @@ export default function NotebooksPage() {
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {notebooks.map((n) => (
-<article
-                  key={n.id}
-                  className="relative aspect-[4/3] overflow-hidden rounded-lg shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:shadow-lg"
-                >
-                <div
-                  className="absolute inset-0"
-                  style={{ backgroundColor: n.color }}
-                />
-                <div className="absolute inset-y-0 left-0 w-4 bg-black/15" />
-                <div className="absolute top-3 -left-1.5 flex flex-col gap-2.5">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="size-2 rounded-full bg-white/80 shadow-sm ring-1 ring-black/30"
-                    />
-                  ))}
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center p-4">
-                  <span className="max-w-[90%] truncate text-center font-serif text-xl font-semibold text-white drop-shadow-sm">
-                    {n.name}
-                  </span>
-                </div>
-              </article>
+              <NotebookCard key={n.id} notebook={n} />
             ))}
           </div>
         )}

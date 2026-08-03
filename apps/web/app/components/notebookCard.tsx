@@ -3,7 +3,8 @@ import { motion } from "motion/react";
 import type { Notebook } from "@/lib/notebooks";
 
 const RINGS = Array.from({ length: 4 });
-const PAGES = [4, 8, 12, 16, 20, 24];
+const PAGE_LINES =
+  "repeating-linear-gradient(90deg, #fff 0 1px, #d6d3d1 1px 2px, #fafaf9 2px 4px)";
 
 export default function NotebookCard({ notebook }: { notebook: Notebook }) {
   return (
@@ -13,13 +14,22 @@ export default function NotebookCard({ notebook }: { notebook: Notebook }) {
       animate="rest"
       whileHover="hover"
     >
-      {PAGES.map((offset, i) => (
+      <div
+        className="absolute inset-0 rounded-md border border-stone-300 bg-white shadow-md"
+        style={{ transform: "translate(16px, 9px)" }}
+      >
         <div
-          key={i}
-          className="absolute inset-0 rounded-md border border-neutral-200 bg-white shadow-sm"
-          style={{ transform: `translateX(${offset}px)` }}
+          className="absolute inset-y-0 right-0 w-4 rounded-r-md shadow-inner"
+          style={{ backgroundImage: PAGE_LINES }}
         />
-      ))}
+        <div
+          className="absolute right-0 bottom-0 left-0 h-2.5 rounded-b-md"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, #fff 0 1px, #d6d3d1 1px 2px, #fafaf9 2px 4px)",
+          }}
+        />
+      </div>
 
       <motion.div
         className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"

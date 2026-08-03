@@ -9,7 +9,7 @@ npm workspaces monorepo: `apps/*`, `packages/*`. No root scripts beyond the triv
 - **`npm run lint`** — eslint (flat config, `eslint.config.mjs`)
 - App Router (`app/`). Tailwind v4 via `@tailwindcss/postcss` plugin — no `tailwind.config`, CSS-first theming via `@import "tailwindcss"` in `app/globals.css`
 - Next.js 16 has breaking API changes — read `node_modules/next/dist/docs/` and the repo-local `apps/web/AGENTS.md` before writing code.
-- No test suite or typecheck script in this app; `npm run lint` is the only check.
+- No test suite or typecheck script in this app; the only full verification is `npm run build` (Next.js type-checks during build) or `npm run lint`.
 - Notebooks persist client-side only: `lib/notebooks.ts` reads/writes `window.localStorage` — the API app is not wired in yet. Don't build features assuming server persistence.
 
 ## apps/api — NestJS 11 + Express
@@ -29,4 +29,5 @@ Placeholder with no source code yet.
 ## General
 
 - No CI workflows, no typecheck script, no root prettier config. Per-app `.gitignore` files are the real ignores (`.next/`, `dist/`, etc.).
+- Dependencies belong in the workspace that uses them (npm workspaces hoists into root `node_modules`). Root `package.json` currently holds a stray `motion` dep — add new deps in `apps/*`, not at root.
 - Each workspace is self-contained — run commands from its own directory.

@@ -1,8 +1,10 @@
 "use client";
 
 import NewNotebookModal from "./newNotebookModal";
+import { useState } from "react";
 
 export default function HeroOptions() {
+  const [showNotebookModal, setShowNotebookModal] = useState(false);
   return (
     <div className="items-center justify-center flex mt-[8%] flex-col gap-5">
       <div className="flex flex-col md:flex-row gap-10 items-start justify-center">
@@ -18,7 +20,10 @@ export default function HeroOptions() {
           </p>
 
           <div className="flex flex-col gap-4 mt-5">
-            <button className="group flex items-center gap-2 transition duration-300 ease pr-20 pl-20 border h-12 border-black/20 rounded active:scale-95">
+            <button
+              onClick={() => setShowNotebookModal(true)}
+              className="group flex items-center gap-2 transition duration-300 ease pr-20 pl-20 border h-12 border-black/20 rounded active:scale-95"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -53,6 +58,10 @@ export default function HeroOptions() {
                 </svg>
               </span>
             </button>
+            <NewNotebookModal
+              isOpen={showNotebookModal}
+              onClose={() => setShowNotebookModal(false)}
+            />
 
             <button className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/20 rounded active:scale-95">
               <svg

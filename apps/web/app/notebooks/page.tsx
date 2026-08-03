@@ -55,14 +55,30 @@ export default function NotebooksPage() {
         </nav>
       </aside>
 
-      <main className="flex-1 p-6">
+      <main className="flex-1 overflow-y-auto p-6">
         <h1 className="font-serif text-2xl text-gray-800">Mis notebooks</h1>
+
         {notebooks.length === 0 ? (
-          <p className="text-gray-400 mt-4">Sin notebooks aún</p>
+          <p className="mt-4 text-gray-400">Sin notebooks aún</p>
         ) : (
-          <p className="text-gray-400 mt-4">
-            {notebooks.length} notebook(s) guardado(s)
-          </p>
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {notebooks.map((n) => (
+              <article
+                key={n.id}
+                className="relative aspect-[4/3] overflow-hidden rounded-lg shadow-sm"
+              >
+                <div
+                  className="absolute inset-0"
+                  style={{ backgroundColor: n.color }}
+                />
+                <div className="absolute inset-0 flex items-center justify-center p-4">
+                  <span className="max-w-[90%] truncate text-center font-serif text-xl font-semibold text-white drop-shadow-sm">
+                    {n.name}
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
         )}
       </main>
     </div>

@@ -71,6 +71,15 @@ export default function NotebooksPage() {
                   className="absolute inset-0"
                   style={{ backgroundColor: n.color }}
                 />
+                <div className="absolute inset-y-0 left-0 w-4 bg-black/15" />
+                <div className="absolute top-3 -left-1.5 flex flex-col gap-2.5">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="size-2 rounded-full bg-white/80 shadow-sm ring-1 ring-black/30"
+                    />
+                  ))}
+                </div>
                 <div className="absolute inset-0 flex items-center justify-center p-4">
                   <span className="max-w-[90%] truncate text-center font-serif text-xl font-semibold text-white drop-shadow-sm">
                     {n.name}

@@ -6,23 +6,53 @@ export default function NotebooksPage() {
 
   return (
     <div className="flex h-screen">
-      <aside className="w-64 border-r-2 border-gray-200 p-4 bg-gray-800/5">
-        <input
-          placeholder="Busqueda por nombre"
-          className="text-sm text-gray-500 border border-gray-400 p-2 w-full font-serif rounded"
-        ></input>
-        <br />
-        <hr className="mt-2 opacity-50"></hr>
-        {notebooks.length === 0 && <p>Sin notebooks aun</p>}
+      <aside className="flex w-64 shrink-0 flex-col border-r border-gray-200 p-4">
+        <p className="px-2 font-serif text-sm font-semibold text-gray-700">
+          Notebooks
+        </p>
 
-        {notebooks.map((n) => (
-          <button
-            key={n.id}
-            className="flex items-center gap-2 text-gray-500 font-serif h-15 border border-black/30 mt-3 p-2 rounded w-full bg-white"
+        <div className="relative mt-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-gray-400"
           >
-            <span>{n.name}</span>
-          </button>
-        ))}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+            />
+          </svg>
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="w-full rounded-md border border-gray-200 bg-white py-2 pr-3 pl-8 text-sm text-gray-700 placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
+          />
+        </div>
+
+        <nav className="mt-4 flex flex-1 flex-col gap-1 overflow-y-auto pr-1">
+          {notebooks.length === 0 && (
+            <p className="px-2 text-sm text-gray-400">Sin notebooks aún</p>
+          )}
+
+          {notebooks.map((n) => (
+            <button
+              key={n.id}
+              className="group flex items-center gap-2.5 rounded-md px-2 py-2 text-left transition duration-100 ease hover:bg-gray-100"
+            >
+              <span
+                className="size-2.5 shrink-0 rounded-full"
+                style={{ backgroundColor: n.color }}
+              />
+              <span className="truncate text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                {n.name}
+              </span>
+            </button>
+          ))}
+        </nav>
       </aside>
 
       <main className="flex-1 p-6">

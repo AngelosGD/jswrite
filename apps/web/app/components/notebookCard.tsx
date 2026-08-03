@@ -9,7 +9,7 @@ const PAGE_LINES =
 export default function NotebookCard({ notebook }: { notebook: Notebook }) {
   return (
     <motion.div
-      className="group relative mx-auto aspect-[4/3] w-full max-w-[210px] cursor-pointer [perspective:1200px]"
+      className="group relative mx-auto aspect-[4/3] w-full max-w-[170px] cursor-pointer [perspective:1200px]"
       initial="rest"
       animate="rest"
       whileHover="hover"
@@ -39,7 +39,7 @@ export default function NotebookCard({ notebook }: { notebook: Notebook }) {
         }}
         transition={{ duration: 0.25, delay: 0.08, ease: "easeOut" }}
       >
-        <span className="rounded-full border border-black/60 bg-white/60 px-6 py-2 text-base font-bold tracking-wide text-black shadow-md backdrop-blur-sm">
+        <span className="rounded-full border border-black/60 bg-black text-white px-6 py-2 text-base font-bold tracking-wide  shadow-md backdrop-blur-sm">
           Abrir
         </span>
       </motion.div>

@@ -87,7 +87,7 @@ export default function NotebooksPage() {
         {notebooks.length === 0 ? (
           <p className="mt-4 text-gray-400">Sin notebooks aún</p>
         ) : (
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid gap-5 sm:grid-cols-3 lg:grid-cols-5">
             {notebooks.map((n) => (
               <NotebookCard key={n.id} notebook={n} />
             ))}

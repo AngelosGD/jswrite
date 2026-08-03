@@ -69,7 +69,7 @@ export default function NotebookCard({ notebook }: { notebook: Notebook }) {
 
         <div className="absolute inset-0 flex items-center justify-center p-4">
           <span
-            className="rounded-sm px-4 py-1.5 text-center font-serif text-xl font-semibold text-white shadow-sm"
+            className="max-w-[85%] truncate rounded-sm px-3 py-1 text-center font-serif text-sm font-semibold text-white shadow-sm"
             style={{ backgroundColor: notebook.color }}
           >
             {notebook.name}

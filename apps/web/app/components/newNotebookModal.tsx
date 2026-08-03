@@ -1,6 +1,18 @@
 "use client";
 import { motion, AnimatePresence } from "motion/react";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  COLORS,
+  createNotebook,
+  loadNotebooks,
+  saveNotebooks,
+} from "@/lib/notebooks";
+import { userAgent } from "next/server";
+import { ReactFormState } from "react-dom/client";
+
+// ? funcion para abrir o cerrar el modal del notebook
 export default function NewNotebookModal({
   isOpen,
   onClose,
@@ -8,6 +20,19 @@ export default function NewNotebookModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [color, setColor] = useState(COLORS[0]);
+
+  const handleCreateNotebook = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveNotebooks([...loadNotebooks(), createNotebook(name, color)]);
+    setName("");
+    setColor(COLORS[0]);
+    onClose();
+    router.push("/notebooks");
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -31,6 +56,9 @@ export default function NewNotebookModal({
 
             <label className="mt-4 block text-sm text-gray-600">Nombre</label>
             <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoFocus
               type="text"
               placeholder="Sin título"
               className="mt-1 w-full rounded border border-gray-400 p-2 transition duration-100 ease focus:outline-none focus:ring-1 focus:ring-gray-400"
@@ -38,18 +66,27 @@ export default function NewNotebookModal({
 
             <p className="mt-4 text-sm text-gray-600">Color</p>
             <div className="mt-2 flex gap-2">
-              <button className="size-8 rounded border border-black/10 bg-[#ef4444]" />
-              <button className="size-8 rounded border border-black/10 bg-[#f97316]" />
-              <button className="size-8 rounded border border-black/10 bg-[#eab308]" />
-              <button className="size-8 rounded border border-black/10 bg-[#22c55e]" />
-              <button className="size-8 rounded border border-black/10 bg-[#3b82f6]" />
-              <button className="size-8 rounded border border-black/10 bg-[#8b5cf6]" />
-              <button className="size-8 rounded border border-black/10 bg-[#ec4899]" />
-              <button className="size-8 rounded border border-black/10 bg-[#64748b]" />
+              {COLORS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setColor(c)}
+                  style={{ backgroundColor: c }}
+                  className={`size-8 rounded-full transition ${
+                    color === c
+                      ? "ring-2 ring-black ring-offset-2"
+                      : "border border-black/10"
+                  }`}
+                />
+              ))}
             </div>
 
-            <div className="mt-6 flex justify-end gap-2">
+            <form
+              onSubmit={handleCreateNotebook}
+              className="mt-6 flex justify-end gap-2"
+            >
               <button
+                type="button"
                 onClick={onClose}
                 className="border border-gray-400 p-2 transition duration-280 ease hover:bg-black hover:text-white active:scale-95"
               >
@@ -58,7 +95,7 @@ export default function NewNotebookModal({
               <button className="border border-black bg-black p-2 text-white transition duration-280 ease hover:bg-white hover:text-black active:scale-95">
                 Crear
               </button>
-            </div>
+            </form>
           </motion.div>
         </motion.div>
       )}

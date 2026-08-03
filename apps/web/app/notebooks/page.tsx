@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useNotebooks } from "@/lib/notebooks";
 
 export default function NotebooksPage() {
@@ -6,8 +6,23 @@ export default function NotebooksPage() {
 
   return (
     <div className="flex h-screen">
-      <aside className="w-64 border-r border-gray-200 p-4">
-        <p className="text-sm text-gray-400">Buscador (Paso 4)</p>
+      <aside className="w-64 border-r-2 border-gray-200 p-4 bg-gray-800/5">
+        <input
+          placeholder="Busqueda por nombre"
+          className="text-sm text-gray-500 border border-gray-400 p-2 w-full font-serif rounded"
+        ></input>
+        <br />
+        <hr className="mt-2 opacity-50"></hr>
+        {notebooks.length === 0 && <p>Sin notebooks aun</p>}
+
+        {notebooks.map((n) => (
+          <button
+            key={n.id}
+            className="flex items-center gap-2 text-gray-500 font-serif h-15 border border-black/30 mt-3 p-2 rounded w-full bg-white"
+          >
+            <span>{n.name}</span>
+          </button>
+        ))}
       </aside>
 
       <main className="flex-1 p-6">

@@ -11,6 +11,22 @@ export default function NotebooksPage() {
 
   const [query, setQuery] = useState("");
 
+  const [expandedNotebooks, setExpandedNotebooks] = useState<Set<string>>(
+    () => new Set(),
+  );
+
+  function toggleNotebook(id: string) {
+    setExpandedNotebooks((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
+
   const filterNotebooks = notebooks.filter((n) => {
     return n.name.toLowerCase().includes(query.trim().toLowerCase());
   });
@@ -95,20 +111,60 @@ export default function NotebooksPage() {
             </p>
           )}
 
-          {filterNotebooks.map((n) => (
-            <button
-              key={n.id}
-              className="group flex items-center gap-2.5 rounded-md px-2 py-2 text-left transition duration-100 ease hover:bg-gray-100"
-            >
-              <span
-                className="size-2.5 shrink rounded-full"
-                style={{ backgroundColor: n.color }}
-              />
-              <span className="truncate text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                {n.name}
-              </span>
-            </button>
-          ))}
+          {filterNotebooks.map((n) => {
+            const isOpen = expandedNotebooks.has(n.id);
+            return (
+              <div key={n.id} className="rounded-md">
+                <button
+                  onClick={() => toggleNotebook(n.id)}
+                  className="group flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left transition duration-100 ease hover:bg-gray-100"
+                >
+                  <span
+                    className="size-2.5 shrink rounded-full"
+                    style={{ backgroundColor: n.color }}
+                  />
+                  <span className="min-w-0 truncate text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                    {n.name}
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    className={`ml-auto size-3.5 shrink-0 text-gray-400 transition-transform duration-200 group-hover:text-gray-600 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </button>
+
+                {isOpen && (
+                  <div className="animate-notes-expand ml-3.5 border-l border-gray-200 pl-2">
+                    {n.notes.length === 0 ? (
+                      <p className="px-2 py-1 text-sm text-gray-400">
+                        Sin notas
+                      </p>
+                    ) : (
+                      n.notes.map((note) => (
+                        <button
+                          key={note.id}
+                          className="flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-600 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900"
+                        >
+                          {note.title}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </nav>
       </aside>
 

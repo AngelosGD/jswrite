@@ -13,6 +13,7 @@ npm workspaces monorepo: `apps/*`, `packages/*`. No root scripts beyond the triv
 - No test suite or typecheck script in this app; the only full verification is `npm run build` (Next.js type-checks during build) or `npm run lint`.
 - Notebooks persist client-side only: `lib/notebooks.ts` reads/writes `window.localStorage` (key `jswrite.notebooks`) — the API app is not wired in yet. Don't build features assuming server persistence.
 - `lib/notebooks.ts` is the single data layer: consume notebooks via its `useNotebooks()` hook (`useSyncExternalStore`) and mutate via `createNotebook` / `updateNotebook` / `deleteNotebook` + `saveNotebooks`. Don't read/write `localStorage` directly in components. Comments in the file are Spanish.
+- It also exports note helpers `addNote`, `createNoteTitle`, and `updaetNote` — note the **typo**: it's `updaetNote`, not `updateNote` (grep will miss it). Adds new deps? The web imports animation libs as both `motion/react` and `framer-motion`; the root `motion` dep exists but components pull from `node_modules` via workspace hoisting.
 
 ## apps/api — NestJS 11 + Express
 

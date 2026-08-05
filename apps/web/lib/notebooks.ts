@@ -107,6 +107,8 @@ export function useNotebooks(): Notebook[] {
   return useSyncExternalStore(subscribe, loadNotebooks, () => EMPTY);
 }
 
+//todo libs para la nota, apartado del noteboook atras
+
 const NOTE_TITLES = [
   "Recordatorios",
   "Apuntes",

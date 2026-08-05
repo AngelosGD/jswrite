@@ -8,6 +8,12 @@ export default function NotebooksPage() {
   const notebooks = useNotebooks();
   const [showNotebookModal, setShowNotebookModal] = useState(false);
 
+  const [query, setQuery] = useState("");
+
+  const filterNotebooks = notebooks.filter((n) => {
+    return n.name.toLowerCase().includes(query.trim().toLowerCase());
+  });
+
   return (
     <div className="flex h-screen">
       <aside className="flex w-64 shrink-0 flex-col border-r border-gray-200 p-4">
@@ -53,6 +59,8 @@ export default function NotebooksPage() {
             />
           </svg>
           <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             type="text"
             placeholder="Buscar..."
             className="w-full rounded-md border border-gray-200 bg-white py-2 pr-3 pl-8 text-sm text-gray-700 placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
@@ -60,11 +68,13 @@ export default function NotebooksPage() {
         </div>
 
         <nav className="mt-4 flex flex-1 flex-col gap-1 overflow-y-auto pr-1">
-          {notebooks.length === 0 && (
-            <p className="px-2 text-sm text-gray-400">Sin notebooks aún</p>
+          {filterNotebooks.length === 0 && (
+            <p className="px-2 text-sm text-gray-400">
+              {notebooks.length === 0 ? "Sin notebooks aún" : "Sin resultados"}
+            </p>
           )}
 
-          {notebooks.map((n) => (
+          {filterNotebooks.map((n) => (
             <button
               key={n.id}
               className="group flex items-center gap-2.5 rounded-md px-2 py-2 text-left transition duration-100 ease hover:bg-gray-100"

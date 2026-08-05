@@ -7,6 +7,7 @@ const PAGE_LINES =
   "repeating-linear-gradient(90deg, #fff 0 1px, #d6d3d1 1px 2px, #fafaf9 2px 4px)";
 
 export default function NotebookCard({ notebook }: { notebook: Notebook }) {
+  
   return (
     <motion.div
       className="group relative mx-auto aspect-[4/3] w-full max-w-[170px] cursor-pointer [perspective:1200px]"

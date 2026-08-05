@@ -2,6 +2,7 @@
 import { useNotebooks } from "@/lib/notebooks";
 import NotebookCard from "@/app/components/notebookCard";
 import NewNotebookModal from "@/app/components/newNotebookModal";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function NotebooksPage() {
@@ -18,9 +19,29 @@ export default function NotebooksPage() {
     <div className="flex h-screen">
       <aside className="flex w-64 shrink-0 flex-col border-r border-gray-200 p-4">
         <div className="flex items-center justify-between px-2">
-          <p className="font-serif text-sm font-semibold text-gray-700">
-            Notebooks
-          </p>
+          <Link
+            href="/"
+            className="group flex items-center gap-1.5"
+            aria-label="Volver al inicio"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              className="size-4 text-gray-400 transition duration-100 ease group-hover:text-gray-900"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+              />
+            </svg>
+            <p className="font-serif text-sm font-semibold text-gray-700">
+              Notebooks
+            </p>
+          </Link>
           <button
             onClick={() => setShowNotebookModal(true)}
             className="flex size-6 items-center justify-center rounded border border-gray-300 text-gray-500 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900 active:scale-95"

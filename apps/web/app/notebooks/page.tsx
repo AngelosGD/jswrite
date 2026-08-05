@@ -1,9 +1,19 @@
 "use client";
-import { useNotebooks } from "@/lib/notebooks";
+import {
+  useNotebooks,
+  createNoteTitle,
+  addNote,
+  updaetNote,
+  deleteNotebook,
+  saveNotebooks,
+} from "@/lib/notebooks";
 import NotebookCard from "@/app/components/notebookCard";
 import NewNotebookModal from "@/app/components/newNotebookModal";
 import Link from "next/link";
 import { useState, type MouseEvent } from "react";
+
+import ContextMenu from "../components/contextMenu";
+import NoteEditor from "../components/noteEditor";
 
 export default function NotebooksPage() {
   const notebooks = useNotebooks();
@@ -19,20 +29,16 @@ export default function NotebooksPage() {
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
-    notebookId: string; 
-  }| null>(null);
-
+    notebookId: string;
+  } | null>(null);
 
   const [selectedNote, setSelectedNote] = useState<{
     notebookId: string;
     noteId: string;
+  } | null>(null);
 
-  }| null>(null)
-
-
-  const [noteTitle, setNoteTitle] = useState("")
-  const [noteContent, setNoteContent] = useState("")
-
+  const [noteTitle, setNoteTitle] = useState("");
+  const [noteContent, setNoteContent] = useState("");
 
   function toggleNotebook(id: string) {
     setExpandedNotebooks((prev) => {
@@ -49,6 +55,32 @@ export default function NotebooksPage() {
   const filterNotebooks = notebooks.filter((n) => {
     return n.name.toLowerCase().includes(query.trim().toLowerCase());
   });
+
+  const handleAddNote = (notebookId: string) => {
+    const result = addNote(notebooks, notebookId, createNoteTitle(), "");
+    saveNotebooks(result.notebooks);
+    setSelectedNote({ notebookId, noteId: result.note.id });
+  };
+  function handleDeleteNotebook(notebookId: string) {
+    saveNotebooks(deleteNotebook(notebooks, notebookId));
+    setSelectedNote((prev) =>
+      prev && prev.notebookId === notebookId ? null : prev,
+    );
+  }
+
+  function handleChangeTitle(noteId: string, title: string) {
+    if (!selectedNote) return;
+    saveNotebooks(
+      updaetNote(notebooks, selectedNote.notebookId, noteId, { title }),
+    );
+  }
+
+  function handleChangeContent(noteId: string, content: string) {
+    if (!selectedNote) return;
+    saveNotebooks(
+      updaetNote(notebooks, selectedNote.notebookId, noteId, { content }),
+    );
+  }
 
   return (
     <div className="flex h-screen">
@@ -133,7 +165,18 @@ export default function NotebooksPage() {
           {filterNotebooks.map((n) => {
             const isOpen = expandedNotebooks.has(n.id);
             return (
-              <div key={n.id} className="rounded-md">
+              <div
+                key={n.id}
+                className="rounded-md"
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  setContextMenu({
+                    x: e.clientX,
+                    y: e.clientY,
+                    notebookId: n.id,
+                  });
+                }}
+              >
                 <button
                   onClick={() => toggleNotebook(n.id)}
                   className="group flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left transition duration-100 ease hover:bg-gray-100"
@@ -173,6 +216,12 @@ export default function NotebooksPage() {
                       n.notes.map((note) => (
                         <button
                           key={note.id}
+                          onClick={() =>
+                            setSelectedNote({
+                              notebookId: n.id,
+                              noteId: note.id,
+                            })
+                          }
                           className="flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-600 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900"
                         >
                           {note.title}
@@ -188,16 +237,37 @@ export default function NotebooksPage() {
       </aside>
 
       <main className="flex-1 overflow-y-auto p-6">
-        <h1 className="font-serif text-2xl text-gray-800">Mis notebooks</h1>
-
-        {notebooks.length === 0 ? (
-          <p className="mt-4 text-gray-400">Sin notebooks aún</p>
+        {selectedNote ? (
+          (() => {
+            const nb = notebooks.find((n) => n.id === selectedNote.notebookId);
+            const note = nb?.notes.find((nt) => nt.id === selectedNote.noteId);
+            if (!nb || !note) return null;
+            return (
+              <NoteEditor
+                notebook={nb}
+                note={note}
+                onChangeTitle={(t) => handleChangeTitle(note.id, t)}
+                onChangeContent={(c) => handleChangeContent(note.id, c)}
+                onClose={() => setSelectedNote(null)}
+              />
+            );
+          })()
         ) : (
-          <div className="mt-6 grid gap-5 sm:grid-cols-3 lg:grid-cols-5">
-            {notebooks.map((n) => (
-              <NotebookCard key={n.id} notebook={n} />
-            ))}
-          </div>
+          <>
+            <h1 className="font-serif text-2xl text-gray-800">
+              Mis notebooks
+            </h1>
+
+            {notebooks.length === 0 ? (
+              <p className="mt-4 text-gray-400">Sin notebooks aún</p>
+            ) : (
+              <div className="mt-6 grid gap-5 sm:grid-cols-3 lg:grid-cols-5">
+                {notebooks.map((n) => (
+                  <NotebookCard key={n.id} notebook={n} />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </main>
 
@@ -205,6 +275,17 @@ export default function NotebooksPage() {
         isOpen={showNotebookModal}
         onClose={() => setShowNotebookModal(false)}
       />
+
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          onAddNote={() => handleAddNote(contextMenu.notebookId)}
+          onDeleteNotebook={() => handleDeleteNotebook(contextMenu.notebookId)}
+          onClose={() => setContextMenu(null)}
+        />
+      )}
     </div>
+    
   );
 }

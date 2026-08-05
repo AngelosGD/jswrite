@@ -20,7 +20,7 @@ export default function ContextMenu({
   onClose,
 }: ContextMenuProps) {
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
+    const onKey = (e: globalThis.KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);

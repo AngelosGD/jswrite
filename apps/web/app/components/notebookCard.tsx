@@ -6,7 +6,7 @@ const RINGS = Array.from({ length: 4 });
 const PAGE_LINES =
   "repeating-linear-gradient(90deg, #fff 0 1px, #d6d3d1 1px 2px, #fafaf9 2px 4px)";
 
-export default function NotebookCard({ notebook }: { notebook: Notebook }) {
+export default function NotebookCard({ notebook, onOpen}: { notebook: Notebook, onOpen: () =>void }) {
   
   return (
     <motion.div
@@ -14,6 +14,7 @@ export default function NotebookCard({ notebook }: { notebook: Notebook }) {
       initial="rest"
       animate="rest"
       whileHover="hover"
+      onClick={onOpen}
     >
       <div
         className="absolute inset-0 rounded-md border border-stone-300 bg-white shadow-md"

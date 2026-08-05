@@ -19,6 +19,9 @@ export default function NotebooksPage() {
   const notebooks = useNotebooks();
   const [showNotebookModal, setShowNotebookModal] = useState(false);
 
+  // estado para hacer cliqueable la card del notebook y abrir sus notas
+  const [openNotebookId, setOpenNotebookId] = useState<string|null>(null);
+
   const [query, setQuery] = useState("");
 
   const [expandedNotebooks, setExpandedNotebooks] = useState<Set<string>>(
@@ -37,8 +40,6 @@ export default function NotebooksPage() {
     noteId: string;
   } | null>(null);
 
-  const [noteTitle, setNoteTitle] = useState("");
-  const [noteContent, setNoteContent] = useState("");
 
   function toggleNotebook(id: string) {
     setExpandedNotebooks((prev) => {
@@ -85,7 +86,79 @@ export default function NotebooksPage() {
   return (
     <div className="flex h-screen">
       <aside className="flex w-64 shrink-0 flex-col border-r border-gray-200 p-4">
-        <div className="flex items-center justify-between px-2">
+        {openNotebookId ? (
+          (() => {
+            const openNb = notebooks.find((n) => n.id === openNotebookId);
+            if (!openNb) return null;
+            return (
+              <>
+                <div className="flex items-center justify-between px-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpenNotebookId(null);
+                      setSelectedNote(null);
+                    }}
+                    className="flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-gray-900"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      className="size-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 19.5 8.25 12l7.5-7.5"
+                      />
+                    </svg>
+                    Volver
+                  </button>
+                  <span
+                    className="rounded-sm px-2 py-0.5 font-serif text-xs font-semibold text-white"
+                    style={{ backgroundColor: openNb.color }}
+                  >
+                    {openNb.name}
+                  </span>
+                </div>
+
+                <nav className="mt-4 flex flex-1 flex-col gap-1 overflow-y-auto pr-1">
+                  {openNb.notes.length === 0 ? (
+                    <p className="px-2 py-1 text-sm text-gray-400">Sin notas</p>
+                  ) : (
+                    openNb.notes.map((note) => (
+                      <button
+                        key={note.id}
+                        onClick={() =>
+                          setSelectedNote({
+                            notebookId: openNb.id,
+                            noteId: note.id,
+                          })
+                        }
+                        className="flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-600 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900"
+                      >
+                        {note.title}
+                      </button>
+                    ))
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => handleAddNote(openNb.id)}
+                    className="mt-2 flex items-center justify-center rounded-md px-2 py-1.5 text-sm text-gray-500 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900"
+                  >
+                    + Añadir nota
+                  </button>
+                </nav>
+              </>
+            );
+          })()
+        ) : (
+          <>
+            <div className="flex items-center justify-between px-2">
           <Link
             href="/"
             className="group flex items-center gap-1.5"
@@ -234,6 +307,8 @@ export default function NotebooksPage() {
             );
           })}
         </nav>
+          </>
+        )}
       </aside>
 
       <main className="flex-1 overflow-y-auto p-6">
@@ -252,6 +327,10 @@ export default function NotebooksPage() {
               />
             );
           })()
+          ) : openNotebookId ? (
+          <p className="font-serif text-2xl text-gray-800">
+            Selecciona una nota del panel izquierdo.
+          </p>
         ) : (
           <>
             <h1 className="font-serif text-2xl text-gray-800">
@@ -263,7 +342,7 @@ export default function NotebooksPage() {
             ) : (
               <div className="mt-6 grid gap-5 sm:grid-cols-3 lg:grid-cols-5">
                 {notebooks.map((n) => (
-                  <NotebookCard key={n.id} notebook={n} />
+                  <NotebookCard key={n.id} notebook={n} onOpen={() => setOpenNotebookId(n.id)}/>
                 ))}
               </div>
             )}

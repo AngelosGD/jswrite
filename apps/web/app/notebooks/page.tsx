@@ -66,6 +66,7 @@ export default function NotebooksPage() {
       return n;
     });
     saveNotebooks(updated);
+    setExpandedNotebooks((prev) => new Set(prev).add(targetNotebookId));
     setDragItem(null);
     setDragOverNotebookId(null);
   }

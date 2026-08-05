@@ -17,7 +17,13 @@ export default function Nav() {
 
         <div className="hidden md:flex items-center gap-3">
           <button className="border border-gray-400 p-2 w-25 transition duration-280 ease hover:bg-black hover:text-white">Github</button>
-          <button className="bg-black border border-black text-white p-2 w-25 transition duration-280 ease hover:bg-white hover:text-black hover:border-black">Escritorio</button>
+          <button
+            disabled
+            className="bg-black border border-black text-white p-2 w-25 opacity-60 cursor-not-allowed transition duration-280 ease"
+            title="Escritorio llegará en una futura versión"
+          >
+            Escritorio (pronto)
+          </button>
         </div>
 
         <button
@@ -36,7 +42,13 @@ export default function Nav() {
           </p>
           <div className="flex gap-3">
             <button className="border border-gray-400 p-2 w-25 transition duration-280 ease hover:bg-black hover:text-white">Github</button>
-            <button className="bg-black border border-black text-white p-2 w-25 transition duration-280 ease hover:bg-white hover:text-black hover:border-black">Escritorio</button>
+            <button
+              disabled
+              className="bg-black border border-black text-white p-2 w-25 opacity-60 cursor-not-allowed transition duration-280 ease"
+              title="Escritorio llegará en una futura versión"
+            >
+              Escritorio (pronto)
+            </button>
           </div>
         </div>
       )}

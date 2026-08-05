@@ -3,7 +3,7 @@ import { useNotebooks } from "@/lib/notebooks";
 import NotebookCard from "@/app/components/notebookCard";
 import NewNotebookModal from "@/app/components/newNotebookModal";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 
 export default function NotebooksPage() {
   const notebooks = useNotebooks();
@@ -14,6 +14,25 @@ export default function NotebooksPage() {
   const [expandedNotebooks, setExpandedNotebooks] = useState<Set<string>>(
     () => new Set(),
   );
+
+  // estados para la nota
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    notebookId: string; 
+  }| null>(null);
+
+
+  const [selectedNote, setSelectedNote] = useState<{
+    notebookId: string;
+    noteId: string;
+
+  }| null>(null)
+
+
+  const [noteTitle, setNoteTitle] = useState("")
+  const [noteContent, setNoteContent] = useState("")
+
 
   function toggleNotebook(id: string) {
     setExpandedNotebooks((prev) => {

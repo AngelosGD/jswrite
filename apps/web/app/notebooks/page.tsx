@@ -40,6 +40,35 @@ export default function NotebooksPage() {
     noteId: string;
   } | null>(null);
 
+  // estado para arrastrar una nota entre notebooks
+  const [dragItem, setDragItem] = useState<{
+    fromNotebookId: string;
+    noteId: string;
+  } | null>(null);
+
+  const [dragOverNotebookId, setDragOverNotebookId] = useState<string | null>(
+    null,
+  );
+
+  function handleMoveNote(targetNotebookId: string) {
+    if (!dragItem || dragItem.fromNotebookId === targetNotebookId) return;
+    const source = notebooks.find((n) => n.id === dragItem.fromNotebookId);
+    const note = source?.notes.find((nt) => nt.id === dragItem.noteId);
+    if (!source || !note) return;
+
+    const updated = notebooks.map((n) => {
+      if (n.id === dragItem.fromNotebookId) {
+        return { ...n, notes: n.notes.filter((nt) => nt.id !== dragItem.noteId) };
+      }
+      if (n.id === targetNotebookId) {
+        return { ...n, notes: [...n.notes, note] };
+      }
+      return n;
+    });
+    saveNotebooks(updated);
+    setDragItem(null);
+    setDragOverNotebookId(null);
+  }
 
   function toggleNotebook(id: string) {
     setExpandedNotebooks((prev) => {
@@ -99,7 +128,7 @@ export default function NotebooksPage() {
                       setOpenNotebookId(null);
                       setSelectedNote(null);
                     }}
-                    className="flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-gray-900"
+                    className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-gray-900 transition hover:scale-95"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -240,7 +269,9 @@ export default function NotebooksPage() {
             return (
               <div
                 key={n.id}
-                className="rounded-md"
+                className={`rounded-md transition-colors duration-100 ${
+                  dragOverNotebookId === n.id ? "bg-black/5 ring-2 ring-black/10" : ""
+                }`}
                 onContextMenu={(e) => {
                   e.preventDefault();
                   setContextMenu({
@@ -248,6 +279,19 @@ export default function NotebooksPage() {
                     y: e.clientY,
                     notebookId: n.id,
                   });
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragOverNotebookId(n.id);
+                }}
+                onDragLeave={() =>
+                  setDragOverNotebookId((prev) =>
+                    prev === n.id ? null : prev,
+                  )
+                }
+                onDrop={(e) => {
+                  e.preventDefault();
+                  handleMoveNote(n.id);
                 }}
               >
                 <button
@@ -289,13 +333,21 @@ export default function NotebooksPage() {
                       n.notes.map((note) => (
                         <button
                           key={note.id}
+                          draggable
+                          onDragStart={() =>
+                            setDragItem({ fromNotebookId: n.id, noteId: note.id })
+                          }
+                          onDragEnd={() => {
+                            setDragItem(null);
+                            setDragOverNotebookId(null);
+                          }}
                           onClick={() =>
                             setSelectedNote({
                               notebookId: n.id,
                               noteId: note.id,
                             })
                           }
-                          className="flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-600 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900"
+                          className="flex w-full cursor-grab items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-600 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900 active:cursor-grabbing"
                         >
                           {note.title}
                         </button>

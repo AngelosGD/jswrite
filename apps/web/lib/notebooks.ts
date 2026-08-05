@@ -1,5 +1,6 @@
+import { m } from "framer-motion";
+import path from "path";
 import { useSyncExternalStore } from "react";
-
 
 /*
 ? definimos los tipos / estructura de las notas y los notebooks
@@ -24,13 +25,18 @@ export type Notebook = {
 };
 
 export const COLORS = [
-  "#ef4444", "#f97316", "#eab308", "#22c55e",
-  "#3b82f6", "#8b5cf6", "#ec4899", "#64748b",
+  "#ef4444",
+  "#f97316",
+  "#eab308",
+  "#22c55e",
+  "#3b82f6",
+  "#8b5cf6",
+  "#ec4899",
+  "#64748b",
 ];
 
 const STORAGE_KEY = "jswrite.notebooks";
 const EMPTY: Notebook[] = [];
-
 
 let cache: Notebook[] | null = null;
 const listeners = new Set<() => void>();
@@ -99,4 +105,62 @@ export function deleteNotebook(notebooks: Notebook[], id: string): Notebook[] {
 
 export function useNotebooks(): Notebook[] {
   return useSyncExternalStore(subscribe, loadNotebooks, () => EMPTY);
+}
+
+const NOTE_TITLES = [
+  "Recordatorios",
+  "Apuntes",
+  "Borradores",
+  "Pendiente",
+  "Lista",
+  "Ideas",
+  "Diario",
+];
+
+
+export function createNoteTitle(): string{
+  const index = Math.floor(Math.random() * NOTE_TITLES.length)
+  return NOTE_TITLES[index]
+}
+
+export function addNote (
+  notebooks: Notebook[],
+  notebookId: string,
+  title: string,
+  content: string
+): {notebooks: Notebook[], note: Note}{
+  const note: Note = {
+    id: crypto.randomUUID(),
+    title,
+    content,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  return {
+    note,
+    notebooks: notebooks.map((n) =>
+      n.id === notebookId ? { ...n, notes: [...n.notes, note] } : n,
+    ),
+  };
+}
+
+export function updaetNote(
+  notebooks: Notebook[],
+  notebookId: string,
+  noteId: string,
+  patch: Partial<Note>
+): Notebook[]{
+   return notebooks.map((n) =>
+    n.id !== notebookId
+      ? n
+      : {
+          ...n,
+          notes: n.notes.map((note) =>
+            note.id === noteId
+              ? { ...note, ...patch, updatedAt: new Date().toISOString() }
+              : note,
+          ),
+        },
+  );
 }

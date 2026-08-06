@@ -9,6 +9,7 @@ export type Note = {
   id: string;
   title: string;
   content: string;
+  pinned: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -135,6 +136,7 @@ export function addNote (
     id: crypto.randomUUID(),
     title,
     content,
+    pinned: false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };

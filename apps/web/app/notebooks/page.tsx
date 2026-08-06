@@ -133,6 +133,18 @@ export default function NotebooksPage() {
     );
   }
 
+  function handleToggleNotePin(noteId: string) {
+    if (!selectedNote) return;
+    const nb = notebooks.find((n) => n.id === selectedNote.notebookId);
+    const note = nb?.notes.find((nt) => nt.id === noteId);
+    if (!note) return;
+    saveNotebooks(
+      updaetNote(notebooks, selectedNote.notebookId, noteId, {
+        pinned: !note.pinned,
+      }),
+    );
+  }
+
   return (
     <div className="flex h-screen">
       <aside className="flex w-64 shrink-0 flex-col border-r border-gray-200 p-4">
@@ -179,20 +191,40 @@ export default function NotebooksPage() {
                   {openNb.notes.length === 0 ? (
                     <p className="px-2 py-1 text-sm text-gray-400">Sin notas</p>
                   ) : (
-                    openNb.notes.map((note) => (
-                      <button
-                        key={note.id}
-                        onClick={() =>
-                          setSelectedNote({
-                            notebookId: openNb.id,
-                            noteId: note.id,
-                          })
-                        }
-                        className="flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-600 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900"
-                      >
-                        {note.title}
-                      </button>
-                    ))
+                    [...openNb.notes]
+                      .sort((a, b) => Number(b.pinned) - Number(a.pinned))
+                      .map((note) => (
+                        <button
+                          key={note.id}
+                          onClick={() =>
+                            setSelectedNote({
+                              notebookId: openNb.id,
+                              noteId: note.id,
+                            })
+                          }
+                          className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-600 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900"
+                        >
+                          {note.pinned && (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="size-3 shrink-0 text-gray-400"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                              />
+                            </svg>
+                          )}
+                          <span className="min-w-0 truncate">
+                            {note.title}
+                          </span>
+                        </button>
+                      ))
                   )}
 
                   <button
@@ -371,31 +403,51 @@ export default function NotebooksPage() {
                             Sin notas
                           </p>
                         ) : (
-                          n.notes.map((note) => (
-                            <button
-                              key={note.id}
-                              draggable
-                              onDragStart={() =>
-                                setDragItem({
-                                  fromNotebookId: n.id,
-                                  noteId: note.id,
-                                })
-                              }
-                              onDragEnd={() => {
-                                setDragItem(null);
-                                setDragOverNotebookId(null);
-                              }}
-                              onClick={() =>
-                                setSelectedNote({
-                                  notebookId: n.id,
-                                  noteId: note.id,
-                                })
-                              }
-                              className="flex w-full cursor-grab items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-600 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900 active:cursor-grabbing"
-                            >
-                              {note.title}
-                            </button>
-                          ))
+                          [...n.notes]
+                            .sort((a, b) => Number(b.pinned) - Number(a.pinned))
+                            .map((note) => (
+                              <button
+                                key={note.id}
+                                draggable
+                                onDragStart={() =>
+                                  setDragItem({
+                                    fromNotebookId: n.id,
+                                    noteId: note.id,
+                                  })
+                                }
+                                onDragEnd={() => {
+                                  setDragItem(null);
+                                  setDragOverNotebookId(null);
+                                }}
+                                onClick={() =>
+                                  setSelectedNote({
+                                    notebookId: n.id,
+                                    noteId: note.id,
+                                  })
+                                }
+                                className="flex w-full cursor-grab items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-600 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900 active:cursor-grabbing"
+                              >
+                                {note.pinned && (
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="size-3 shrink-0 text-gray-400"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                    />
+                                  </svg>
+                                )}
+                                <span className="min-w-0 truncate">
+                                  {note.title}
+                                </span>
+                              </button>
+                            ))
                         )}
                       </div>
                     )}
@@ -416,6 +468,7 @@ export default function NotebooksPage() {
             return (
               <NoteEditor
                 onDelete={() => handleDeleteNote(nb.id, note.id)}
+                onTogglePin={() => handleToggleNotePin(note.id)}
                 notebook={nb}
                 note={note}
                 onChangeTitle={(t) => handleChangeTitle(note.id, t)}

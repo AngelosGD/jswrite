@@ -10,6 +10,7 @@ type EditorNodeProps = {
   onChangeContent: (content: string) => void;
   onClose: () => void;
   onDelete: () => void;
+  onTogglePin: () => void;
 };
 
 
@@ -19,7 +20,8 @@ export default function NoteEditor({
   onChangeTitle,
   onChangeContent,
   onClose,
-  onDelete
+  onDelete,
+  onTogglePin,
 }: EditorNodeProps) {
   const [editingTitle, setEditingTitle] = useState(false);
   const [draftTitle, setDraftTitle] = useState(note.title);
@@ -43,8 +45,14 @@ export default function NoteEditor({
         <div className="flex items-center gap-2">
           <button
             type="button"
+            onClick={onTogglePin}
             aria-label="Fijar nota"
-            className="rounded border border-gray-300 p-2 text-gray-600 hover:bg-gray-100"
+            title={note.pinned ? "Desfijar" : "Fijar"}
+            className={`rounded border p-2 ${
+              note.pinned
+                ? "border-gray-900 bg-gray-900 text-white"
+                : "border-gray-300 text-gray-600 hover:bg-gray-100"
+            }`}
           >
             {/* fijar */}
             <svg

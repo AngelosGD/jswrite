@@ -6,6 +6,8 @@ import { KeyboardEvent, useEffect, useEffectEvent } from "react"
 type ContextMenuProps = {
     x: number;
     y: number;
+    pinned: boolean;
+    onTogglePin: () => void;
     onAddNote: () => void;
     onDeleteNotebook: () => void;
     onClose: () => void
@@ -15,6 +17,8 @@ type ContextMenuProps = {
 export default function ContextMenu({
   x,
   y,
+  pinned,
+  onTogglePin,
   onAddNote,
   onDeleteNotebook,
   onClose,
@@ -45,6 +49,16 @@ export default function ContextMenu({
           className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
         >
           Añadir nota
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            onTogglePin();
+            onClose();
+          }}
+          className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+        >
+          {pinned ? "Desfijar notebook" : "Fijar notebook"}
         </button>
         <button
           type="button"

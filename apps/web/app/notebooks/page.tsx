@@ -7,6 +7,7 @@ import {
   deleteNotebook,
   saveNotebooks,
   deleteNote,
+  updateNotebook,
   Notebook,
 } from "@/lib/notebooks";
 import NotebookCard from "@/app/components/notebookCard";
@@ -88,9 +89,9 @@ export default function NotebooksPage() {
     });
   }
 
-  const filterNotebooks = notebooks.filter((n) => {
-    return n.name.toLowerCase().includes(query.trim().toLowerCase());
-  });
+  const filterNotebooks = notebooks
+    .filter((n) => n.name.toLowerCase().includes(query.trim().toLowerCase()))
+    .sort((a, b) => Number(b.pinned) - Number(a.pinned));
 
   const handleAddNote = (notebookId: string) => {
     const result = addNote(notebooks, notebookId, createNoteTitle(), "");
@@ -101,6 +102,14 @@ export default function NotebooksPage() {
     saveNotebooks(deleteNotebook(notebooks, notebookId));
     setSelectedNote((prev) =>
       prev && prev.notebookId === notebookId ? null : prev,
+    );
+  }
+
+  function handleTogglePin(notebookId: string) {
+    const nb = notebooks.find((n) => n.id === notebookId);
+    if (!nb) return;
+    saveNotebooks(
+      updateNotebook(notebooks, notebookId, { pinned: !nb.pinned }),
     );
   }
 
@@ -321,6 +330,22 @@ export default function NotebooksPage() {
                       <span className="min-w-0 truncate text-sm font-medium text-gray-700 group-hover:text-gray-900">
                         {n.name}
                       </span>
+                      {n.pinned && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="size-3.5 shrink-0 text-gray-400"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                          />
+                        </svg>
+                      )}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -433,6 +458,11 @@ export default function NotebooksPage() {
         <ContextMenu
           x={contextMenu.x}
           y={contextMenu.y}
+          pinned={
+            notebooks.find((n) => n.id === contextMenu.notebookId)?.pinned ??
+            false
+          }
+          onTogglePin={() => handleTogglePin(contextMenu.notebookId)}
           onAddNote={() => handleAddNote(contextMenu.notebookId)}
           onDeleteNotebook={() => handleDeleteNotebook(contextMenu.notebookId)}
           onClose={() => setContextMenu(null)}

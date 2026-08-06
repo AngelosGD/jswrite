@@ -167,3 +167,6 @@ export function updaetNote(
   );
 }
 
+export function deleteNote(notebooks: Notebook[], notebookId: string, noteId: string): Notebook[]{
+  return notebooks.map((n) => n.id !== notebookId ? n : {...n, notes: n.notes.filter((note) => note.id !== noteId)})
+}

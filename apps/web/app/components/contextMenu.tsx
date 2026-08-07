@@ -8,6 +8,7 @@ type ContextMenuProps = {
     y: number;
     pinned: boolean;
     onTogglePin: () => void;
+    onEditNotebook: () => void;
     onAddNote: () => void;
     onDeleteNotebook: () => void;
     onClose: () => void
@@ -19,6 +20,7 @@ export default function ContextMenu({
   y,
   pinned,
   onTogglePin,
+  onEditNotebook,
   onAddNote,
   onDeleteNotebook,
   onClose,
@@ -59,6 +61,16 @@ export default function ContextMenu({
           className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
         >
           {pinned ? "Desfijar notebook" : "Fijar notebook"}
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            onEditNotebook();
+            onClose();
+          }}
+          className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+        >
+          Editar notebook
         </button>
         <button
           type="button"

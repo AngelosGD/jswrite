@@ -1,7 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "motion/react";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   COLORS,
@@ -9,8 +9,6 @@ import {
   loadNotebooks,
   saveNotebooks,
 } from "@/lib/notebooks";
-import { userAgent } from "next/server";
-import { ReactFormState } from "react-dom/client";
 
 // ? funcion para abrir o cerrar el modal del notebook
 export default function NewNotebookModal({
@@ -24,7 +22,7 @@ export default function NewNotebookModal({
   const [name, setName] = useState("");
   const [color, setColor] = useState(COLORS[0]);
 
-  const handleCreateNotebook = (e: React.FormEvent) => {
+  const handleCreateNotebook = (e: FormEvent) => {
     e.preventDefault();
     saveNotebooks([...loadNotebooks(), createNotebook(name, color)]);
     setName("");

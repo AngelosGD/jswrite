@@ -17,6 +17,7 @@ import { useState, type MouseEvent } from "react";
 
 import ContextMenu from "../components/contextMenu";
 import NoteEditor from "../components/noteEditor";
+import EditNotebookModal from "../components/editNotebookModal";
 
 export default function NotebooksPage() {
   const notebooks = useNotebooks();
@@ -37,6 +38,10 @@ export default function NotebooksPage() {
     y: number;
     notebookId: string;
   } | null>(null);
+
+  const [editingNotebookId, setEditingNotebookId] = useState<string | null>(
+    null,
+  );
 
   const [selectedNote, setSelectedNote] = useState<{
     notebookId: string;
@@ -111,6 +116,10 @@ export default function NotebooksPage() {
     saveNotebooks(
       updateNotebook(notebooks, notebookId, { pinned: !nb.pinned }),
     );
+  }
+
+  function handleEditNotebook(id: string, name: string, color: string) {
+    saveNotebooks(updateNotebook(notebooks, id, { name, color }));
   }
 
   // todo: funcion para eliminar la nota
@@ -605,6 +614,15 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
         onClose={() => setShowNotebookModal(false)}
       />
 
+      <EditNotebookModal
+        isOpen={editingNotebookId !== null}
+        notebook={
+          notebooks.find((n) => n.id === editingNotebookId) ?? null
+        }
+        onSave={handleEditNotebook}
+        onClose={() => setEditingNotebookId(null)}
+      />
+
       {contextMenu && (
         <ContextMenu
           x={contextMenu.x}
@@ -614,6 +632,7 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
             false
           }
           onTogglePin={() => handleTogglePin(contextMenu.notebookId)}
+          onEditNotebook={() => setEditingNotebookId(contextMenu.notebookId)}
           onAddNote={() => handleAddNote(contextMenu.notebookId)}
           onDeleteNotebook={() => handleDeleteNotebook(contextMenu.notebookId)}
           onClose={() => setContextMenu(null)}

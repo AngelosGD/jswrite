@@ -195,7 +195,7 @@ export default function NotebooksPage() {
                       .map((note) => (
                         <div
                           key={note.id}
-                          className="group flex items-center gap-1 rounded-md pr-1 transition duration-100 ease hover:bg-gray-100"
+                          className="group flex items-center gap-1 rounded-lg pr-1 transition duration-100 ease hover:bg-gray-50"
                         >
 <button
                             onClick={() =>
@@ -204,7 +204,7 @@ setSelectedNote({
                               noteId: note.id,
                             })
                           }
-                            className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-600 transition duration-100 ease group-hover:text-gray-900"
+                            className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800"
                           >
                             <span className="min-w-0 flex-1 truncate">
                               {note.title}
@@ -219,7 +219,7 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                             className={`shrink-0 rounded-md p-1 transition ${
                               note.pinned
                                 ? "text-gray-900"
-                                : "text-gray-400 hover:text-gray-900"
+                                : "text-gray-300 hover:text-gray-700"
                             }`}
                           >
                             <svg
@@ -244,9 +244,23 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                   <button
                     type="button"
                     onClick={() => handleAddNote(openNb.id)}
-                    className="mt-2 flex items-center justify-center rounded-md px-2 py-1.5 text-sm text-gray-500 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900"
+                    className="mt-2 flex items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium text-gray-400 transition duration-100 ease hover:bg-gray-50 hover:text-gray-700"
                   >
-                    + Añadir nota
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      className="size-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                      />
+                    </svg>
+                    Añadir nota
                   </button>
                 </nav>
               </>
@@ -281,7 +295,7 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
               </Link>
               <button
                 onClick={() => setShowNotebookModal(true)}
-                className="flex size-6 items-center justify-center rounded border border-gray-300 text-gray-500 transition duration-100 ease hover:bg-gray-100 hover:text-gray-900 active:scale-95"
+                className="flex size-7 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition duration-100 ease hover:bg-black hover:text-white active:scale-95"
                 aria-label="Nuevo notebook"
               >
                 <svg
@@ -321,7 +335,7 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                 onChange={(e) => setQuery(e.target.value)}
                 type="text"
                 placeholder="Buscar..."
-                className="w-full rounded-md border border-gray-200 bg-white py-2 pr-3 pl-8 text-sm text-gray-700 placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
+                className="w-full rounded-lg border border-transparent bg-gray-50 py-2 pr-3 pl-8 text-sm text-gray-700 placeholder:text-gray-400 transition focus:border-gray-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-gray-200"
               />
             </div>
 
@@ -366,16 +380,16 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                       handleMoveNote(n.id);
                     }}
                   >
-                    <div className="group flex items-center gap-1 rounded-md pr-1 transition duration-100 ease hover:bg-gray-100">
+                    <div className="group flex items-center gap-1 rounded-lg pr-1 transition duration-100 ease hover:bg-gray-50">
                       <button
                         onClick={() => toggleNotebook(n.id)}
-                        className="flex min-w-0 flex-1 items-center gap-2.5 rounded-md py-2 pl-2 text-left"
+                        className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg py-2 pl-2 text-left"
                       >
                         <span
-                          className="size-2.5 shrink rounded-full"
+                          className="size-2.5 shrink rounded-full ring-1 ring-black/5"
                           style={{ backgroundColor: n.color }}
                         />
-                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-gray-600 group-hover:text-gray-900">
                           {n.name}
                         </span>
                       </button>
@@ -387,7 +401,7 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                         className={`shrink-0 rounded-md p-1 transition ${
                           n.pinned
                             ? "text-gray-900"
-                            : "text-gray-400 hover:text-gray-900"
+                            : "text-gray-300 hover:text-gray-700"
                         }`}
                       >
                         <svg
@@ -409,7 +423,7 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                       <button
                         onClick={() => toggleNotebook(n.id)}
                         aria-label="Expandir"
-                        className={`shrink-0 rounded-md p-1 text-gray-400 transition-transform duration-200 hover:text-gray-600 ${
+                        className={`shrink-0 rounded-md p-1 text-gray-300 transition-transform duration-200 group-hover:text-gray-500 ${
                           isOpen ? "rotate-180" : ""
                         }`}
                       >
@@ -430,8 +444,8 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                       </button>
                     </div>
 
-                    {isOpen && (
-                      <div className="animate-notes-expand ml-3.5 border-l border-gray-200 pl-2">
+{isOpen && (
+                      <div className="animate-notes-expand ml-4 border-l border-gray-100 pl-3">
                         {n.notes.length === 0 ? (
                           <p className="px-2 py-1 text-sm text-gray-400">
                             Sin notas
@@ -442,7 +456,7 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                             .map((note) => (
                               <div
                                 key={note.id}
-                                className="group flex items-center gap-1 rounded-md pr-1 transition duration-100 ease hover:bg-gray-100"
+                                className="group flex items-center gap-1 rounded-lg pr-1 transition duration-100 ease hover:bg-gray-50"
                               >
                                 <button
                                   draggable
@@ -462,14 +476,14 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                                       noteId: note.id,
                                     })
                                   }
-                                  className="flex min-w-0 flex-1 cursor-grab items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-600 transition duration-100 ease group-hover:text-gray-900 active:cursor-grabbing"
+                                  className="flex min-w-0 flex-1 cursor-grab items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800 active:cursor-grabbing"
                                 >
                                   <span className="min-w-0 flex-1 truncate">
                                     {note.title}
                                   </span>
                                 </button>
                                 <button
-onClick={() => handleToggleNotePin(n.id, note.id)}
+                                  onClick={() => handleToggleNotePin(n.id, note.id)}
                                   aria-label={
                                     note.pinned ? "Desfijar nota" : "Fijar nota"
                                   }
@@ -477,7 +491,7 @@ onClick={() => handleToggleNotePin(n.id, note.id)}
                                   className={`shrink-0 rounded-md p-1 transition ${
                                     note.pinned
                                       ? "text-gray-900"
-                                      : "text-gray-400 hover:text-gray-900"
+                                      : "text-gray-300 hover:text-gray-700"
                                   }`}
                                 >
                                   <svg

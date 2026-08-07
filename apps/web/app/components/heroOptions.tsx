@@ -1,10 +1,18 @@
 "use client";
 
 import NewNotebookModal from "./newNotebookModal";
-import { useState } from "react";
+import { use, useState } from "react";
+import { useNotebooks } from "@/lib/notebooks";
 
 export default function HeroOptions() {
   const [showNotebookModal, setShowNotebookModal] = useState(false);
+  const notebooks = useNotebooks();
+  const [query, setQuery] = useState("");
+
+  const filterNotebooks = notebooks
+    .filter((n) => n.name.toLowerCase().includes(query.trim().toLowerCase()))
+    .sort((a, b) => Number(b.pinned) - Number(a.pinned));
+
   return (
     <div className="items-center justify-center flex mt-[8%] flex-col gap-5">
       <div className="flex flex-col md:flex-row gap-10 items-start justify-center">
@@ -171,13 +179,22 @@ export default function HeroOptions() {
           <div>
             <p className="font-sans text-gray-700 mb-1">Recientes</p>
             <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               type="text"
               placeholder="Buscar..."
               className="border h-9 border-gray-400 p-2 w-full focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 rounded transition duration-100 ease"
             />
           </div>
-          <p className="font-sans text-gray-400 text-sm text-center">
-            Sin notas/notebooks aun
+          {filterNotebooks.length === 0 && (
+            <p className="px-2 text-sm text-gray-400">
+              {notebooks.length === 0 ? "Sin notebooks aún" : "Sin resultados"}
+            </p>
+          )}
+          <p className="font-bold text-mist-800 mb-4 ">
+            {filterNotebooks.map((n) => {
+              return <p key={n.id}>{n.name}</p>;
+            })}
           </p>
         </div>
       </div>

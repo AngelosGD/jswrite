@@ -206,6 +206,20 @@ setSelectedNote({
                           }
                             className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800"
                           >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="size-3.5 shrink-0 text-gray-300"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M9 12h6m-6 4h6M10 3.75H6.375A2.625 2.625 0 0 0 3.75 6.375v11.25A2.625 2.625 0 0 0 6.375 20.25h11.25A2.625 2.625 0 0 0 20.25 17.625V6.375A2.625 2.625 0 0 0 17.625 3.75H14M9 3.75a1.5 1.5 0 0 1 3 0h.25A1.5 1.5 0 0 0 15 3.15v.832A1.5 1.5 0 0 0 15 5.25V6a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-.75a1.5 1.5 0 0 0 0-.9V3.75Z"
+                              />
+                            </svg>
                             <span className="min-w-0 flex-1 truncate">
                               {note.title}
                             </span>
@@ -380,17 +394,25 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                       handleMoveNote(n.id);
                     }}
                   >
-                    <div className="group flex items-center gap-1 rounded-lg pr-1 transition duration-100 ease hover:bg-gray-50">
+                    <div className="group flex items-center gap-1 rounded-lg border border-gray-100 bg-white p-1 pr-1 shadow-sm transition duration-100 ease hover:border-gray-200 hover:shadow">
                       <button
                         onClick={() => toggleNotebook(n.id)}
-                        className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg py-2 pl-2 text-left"
+                        className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-2 py-1.5 text-left"
                       >
                         <span
-                          className="size-2.5 shrink rounded-full ring-1 ring-black/5"
-                          style={{ backgroundColor: n.color }}
-                        />
-                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-gray-600 group-hover:text-gray-900">
+                          className="flex size-5 shrink-0 items-center justify-center rounded-md"
+                          style={{ backgroundColor: n.color + "1a" }}
+                        >
+                          <span
+                            className="size-2 rounded-full"
+                            style={{ backgroundColor: n.color }}
+                          />
+                        </span>
+                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-gray-700 group-hover:text-gray-900">
                           {n.name}
+                        </span>
+                        <span className="shrink-0 text-xs text-gray-300">
+                          {n.notes.length}
                         </span>
                       </button>
 
@@ -423,7 +445,7 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                       <button
                         onClick={() => toggleNotebook(n.id)}
                         aria-label="Expandir"
-                        className={`shrink-0 rounded-md p-1 text-gray-300 transition-transform duration-200 group-hover:text-gray-500 ${
+                        className={`shrink-0 rounded-md p-1 text-gray-300 transition-transform duration-200 hover:text-gray-500 ${
                           isOpen ? "rotate-180" : ""
                         }`}
                       >
@@ -445,7 +467,7 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                     </div>
 
 {isOpen && (
-                      <div className="animate-notes-expand ml-4 border-l border-gray-100 pl-3">
+                      <div className="animate-notes-expand mt-1 ml-3 flex flex-col gap-0.5 border-l border-gray-100 pl-3">
                         {n.notes.length === 0 ? (
                           <p className="px-2 py-1 text-sm text-gray-400">
                             Sin notas
@@ -456,7 +478,7 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                             .map((note) => (
                               <div
                                 key={note.id}
-                                className="group flex items-center gap-1 rounded-lg pr-1 transition duration-100 ease hover:bg-gray-50"
+                                className="group flex items-center gap-1 rounded-md transition duration-100 ease hover:bg-gray-50"
                               >
                                 <button
                                   draggable
@@ -476,8 +498,22 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                                       noteId: note.id,
                                     })
                                   }
-                                  className="flex min-w-0 flex-1 cursor-grab items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800 active:cursor-grabbing"
+                                  className="flex min-w-0 flex-1 cursor-grab items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800 active:cursor-grabbing"
                                 >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="size-3.5 shrink-0 text-gray-300"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M9 12h6m-6 4h6M10 3.75H6.375A2.625 2.625 0 0 0 3.75 6.375v11.25A2.625 2.625 0 0 0 6.375 20.25h11.25A2.625 2.625 0 0 0 20.25 17.625V6.375A2.625 2.625 0 0 0 17.625 3.75H14M9 3.75a1.5 1.5 0 0 1 3 0h.25A1.5 1.5 0 0 0 15 3.15v.832A1.5 1.5 0 0 0 15 5.25V6a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-.75a1.5 1.5 0 0 0 0-.9V3.75Z"
+                                    />
+                                  </svg>
                                   <span className="min-w-0 flex-1 truncate">
                                     {note.title}
                                   </span>

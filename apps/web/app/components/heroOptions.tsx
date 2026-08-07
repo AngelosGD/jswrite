@@ -41,8 +41,8 @@ export default function HeroOptions() {
                 className="size-6 bg-gray-200 rounded"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
                 />
               </svg>
@@ -60,7 +60,7 @@ export default function HeroOptions() {
                 >
                   <path
                     strokeLinecap="round"
-                    stroke-linejoin="round"
+                    strokeLinejoin="round"
                     d="m8.25 4.5 7.5 7.5-7.5 7.5"
                   />
                 </svg>
@@ -82,7 +82,7 @@ export default function HeroOptions() {
               >
                 <path
                   strokeLinecap="round"
-                  stroke-linejoin="round"
+                  strokeLinejoin="round"
                   d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
                 />
               </svg>
@@ -98,8 +98,8 @@ export default function HeroOptions() {
                 className="size-5 transition-all duration-300 ease group-hover:translate-x-1 group-hover:text-green-700"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="m8.25 4.5 7.5 7.5-7.5 7.5"
                 />
               </svg>
@@ -115,8 +115,8 @@ export default function HeroOptions() {
                 className="size-6 bg-gray-200 rounded m-2"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z"
                 />
               </svg>
@@ -132,8 +132,8 @@ export default function HeroOptions() {
                 className="size-5 transition-all duration-300 ease group-hover:translate-x-1 group-hover:text-green-700"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="m8.25 4.5 7.5 7.5-7.5 7.5"
                 />
               </svg>
@@ -149,8 +149,8 @@ export default function HeroOptions() {
                 className="size-6 bg-gray-200 rounded m-2"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25"
                 />
               </svg>
@@ -166,8 +166,8 @@ export default function HeroOptions() {
                 className="size-5 transition-all duration-300 ease group-hover:translate-x-1 group-hover:text-green-700"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="m8.25 4.5 7.5 7.5-7.5 7.5"
                 />
               </svg>

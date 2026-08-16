@@ -191,11 +191,32 @@ export default function HeroOptions() {
               {notebooks.length === 0 ? "Sin notebooks aún" : "Sin resultados"}
             </p>
           )}
-          <p className="font-bold text-mist-800 mb-4 ">
-            {filterNotebooks.map((n) => {
-              return <p key={n.id}>{n.name}</p>;
-            })}
-          </p>
+          <ul className="flex flex-col gap-2">
+            {filterNotebooks.map((n) => (
+              <li
+                key={n.id}
+                className="flex items-center gap-3 rounded-lg border border-black/10 bg-white px-3 py-2.5 transition hover:border-green-600/40 hover:bg-green-50/50 cursor-pointer"
+              >
+                {/* punto de color del notebook */}
+                <span
+                  className="size-2.5 shrink-0 rounded-full"
+                  style={{ backgroundColor: n.color }}
+                />
+                {/* nombre */}
+                <span className="flex-1 truncate text-sm font-medium text-gray-800">
+                  {n.name}
+                </span>
+                {/* count de notas */}
+                <span className="text-xs text-gray-400">{n.notes.length}</span>
+                {/* pin */}
+                {n.pinned && (
+                  <span className="text-xs text-mist-800" title="Fijado">
+                    📌
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>

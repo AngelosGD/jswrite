@@ -1,7 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Notebook, Note } from "@/lib/notebooks";
+import {
+  copyToClipboard,
+  exporDocx,
+  exportMd,
+  exportPdf,
+  exportTxt,
+} from "@/lib/export-note";
+import { menu } from "motion/react-client";
 
 type EditorNodeProps = {
   notebook: Notebook;
@@ -32,10 +40,39 @@ export default function NoteEditor({
 }: EditorNodeProps) {
   const [editingTitle, setEditingTitle] = useState(false);
   const [draftTitle, setDraftTitle] = useState(note.title);
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // use effect para cerrar el menu con el esc o dandole clic fueram
+  useEffect(() => {
+    if (!showExportMenu) return;
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key === "Escape") setShowExportMenu(false);
+    };
+
+    const onClick = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowExportMenu(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("mousedown", onClick);
+
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("mousedown", onClick);
+    };
+  }, [showExportMenu]);
 
   const commitTitle = () => {
     onChangeTitle(draftTitle);
     setEditingTitle(false);
+  };
+
+  const handleExport = (fn: () => void) => {
+    fn();
+    setShowExportMenu(false);
   };
 
   return (
@@ -71,6 +108,101 @@ export default function NoteEditor({
           >
             {notebook.name}
           </span>
+        </div>
+
+        <div className="flex items-center justify-end pl-[70%]">
+          {/* boton de descargar nota */}
+          <div className="relative" ref={menuRef}>
+            <button
+              className="rounded-md p-1.5 text-gray-400 transition hover:bg-gray-200 hover:text-gray-700"
+              onClick={() => setShowExportMenu((v) => !v)}
+              type="button"
+              aria-label="Descargar Nota"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="size-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+                />
+              </svg>
+            </button>
+
+            {/* mostrar el menu al darle clic a descargar D: */}
+            {showExportMenu && (
+              <div className="absolute right-0 z-50 mt-1 w-52 flex flex-col rounded-mb border border-gray-300 bg-white py-1 shadow-lg ">
+                {/* boton para copiar aal clipboard */}
+                <button
+                  type="button"
+                  onClick={() => handleExport(() => copyToClipboard(note))}
+                  className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 items-center flex"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    className="lucide lucide-clipboard-plus-icon lucide-clipboard-plus mr-1 opacity-90"
+                  >
+                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                    <path d="M9 14h6" />
+                    <path d="M12 17v-6" />
+                  </svg>
+                  Copiar al portapapeles
+                </button>
+                {/* boton con opciones de exportacion */}
+                <div>
+                  {/* boton exportar a .txt */}
+                  <button
+                    onClick={() => handleExport(() => exportTxt(note))}
+                    type="button"
+                    className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full"
+                  >
+                    Exportar como .txt
+                  </button>
+
+                  {/* botton para exportar a markdown (md) */}
+                  <button
+                    type="button"
+                    className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full"
+                    onClick={() => handleExport(() => exportMd(note))}
+                  >
+                    Exportar como .md
+                  </button>
+
+                  {/* boton para pdf >:v*/}
+                  <button
+                    className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full"
+                    type="button"
+                    onClick={() => handleExport(() => exportPdf(note))}
+                  >
+                    Exportar como .pdf
+                  </button>
+
+                  {/* exportar como docx (word) */}
+
+                  <button
+                    className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full"
+                    type="button"
+                    onClick={() => handleExport(() => exporDocx(note))}
+                  >Exportar como .docx</button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <button

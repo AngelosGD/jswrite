@@ -17,7 +17,7 @@ export const exportTxt = (note: NoteExport) => {
 // exportar como md (markdown)
 export const exportMd = (note: NoteExport) => {
   const md = `# ${note.title}\n\n${note.content}`;
-  const blob = new Blob([md], { type: "text/markdown;charsef=utf-8" });
+  const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
   saveAs(blob, `${sanitize(note.title)}.md`);
 };
 
@@ -37,7 +37,7 @@ export const exportPdf = (note: NoteExport) => {
   doc.save(`${sanitize(note.title)}.pdf`);
 };
 
-export const exporDocx = (note: NoteExport) => {
+export const exportDocx = (note: NoteExport) => {
   const paragraphs = note.content.split("\n").map(
     (line) =>
       new Paragraph({
@@ -60,7 +60,7 @@ export const exporDocx = (note: NoteExport) => {
   });
 
   Packer.toBlob(doc).then((blob) => {
-    saveAs(blob, `${sanitize(note.title)}.pdf`);
+    saveAs(blob, `${sanitize(note.title)}.docx`);
   });
 };
 

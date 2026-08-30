@@ -169,36 +169,107 @@ export default function NoteEditor({
                   <button
                     onClick={() => handleExport(() => exportTxt(note))}
                     type="button"
-                    className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full"
+                    className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full flex items-center"
                   >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      className="lucide lucide-file-text-icon lucide-file-text opacity-90 mr-1 flex items-center"
+                    >
+                      <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+                      <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+                      <path d="M10 9H8" />
+                      <path d="M16 13H8" />
+                      <path d="M16 17H8" />
+                    </svg>
                     Exportar como .txt
                   </button>
 
                   {/* botton para exportar a markdown (md) */}
                   <button
                     type="button"
-                    className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full"
+                    className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full flex items-center"
                     onClick={() => handleExport(() => exportMd(note))}
                   >
-                    Exportar como .md
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      className="lucide lucide-file-minus-corner-icon lucide-file-minus-corner opacity-90 mr-1"
+                    >
+                      <path d="M20 14V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12" />
+                      <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+                      <path d="M14 18h6" />
+                    </svg>
+                    Exportar como
                   </button>
 
                   {/* boton para pdf >:v*/}
                   <button
-                    className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full"
+                    className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full flex items-center"
                     type="button"
                     onClick={() => handleExport(() => exportPdf(note))}
                   >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      className="lucide lucide-file-box-icon lucide-file-box opacity-90 mr-1"
+                    >
+                      <path d="M14 2v5a1 1 0 001 1h5" />
+                      <path d="M14.692 22H18a2 2 0 002-2V8a2.4 2.4 0 00-.706-1.706l-3.588-3.588A2.4 2.4 0 0014 2H6a2 2 0 00-2 2v3.804" />
+                      <path d="M2.264 13.752 7 16.5l4.737-2.748" />
+                      <path d="M2.995 13.014A2 2 0 002 14.744v3.516a2 2 0 00.996 1.73l3 1.74a2 2 0 002.008 0l3-1.74A2 2 0 0012 18.26v-3.517a2 2 0 00-.995-1.73l-3-1.742a2 2 0 00-1.892-.064z" />
+                      <path d="M7 16.5V22" />
+                    </svg>
                     Exportar como .pdf
                   </button>
 
                   {/* exportar como docx (word) */}
 
                   <button
-                    className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full"
+                    className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full flex items-center"
                     type="button"
                     onClick={() => handleExport(() => exporDocx(note))}
-                  >Exportar como .docx</button>
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      className="lucide lucide-file-badge-icon lucide-file-badge mr-1 opacity-90"
+                    >
+                      <path d="M13 22h5a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v3.3" />
+                      <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+                      <path d="m7.69 16.479 1.29 4.88a.5.5 0 0 1-.698.591l-1.843-.849a1 1 0 0 0-.879.001l-1.846.85a.5.5 0 0 1-.692-.593l1.29-4.88" />
+                      <circle cx="6" cy="14" r="3" />
+                    </svg>
+                    Exportar como .docx
+                  </button>
                 </div>
               </div>
             )}

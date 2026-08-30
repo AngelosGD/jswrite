@@ -37,7 +37,7 @@ export default function HeroOptions() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="size-6 bg-gray-200 rounded"
               >
@@ -55,7 +55,7 @@ export default function HeroOptions() {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke="currentColor"
                   className="size-5 transition-transform duration-300 ease group-hover:translate-x-1"
                 >
@@ -77,7 +77,7 @@ export default function HeroOptions() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="size-6 bg-gray-200 rounded m-2"
               >
@@ -94,7 +94,7 @@ export default function HeroOptions() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="size-5 transition-all duration-300 ease group-hover:translate-x-1 group-hover:text-green-700"
               >
@@ -111,7 +111,7 @@ export default function HeroOptions() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="size-6 bg-gray-200 rounded m-2"
               >
@@ -128,7 +128,7 @@ export default function HeroOptions() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="size-5 transition-all duration-300 ease group-hover:translate-x-1 group-hover:text-green-700"
               >
@@ -145,7 +145,7 @@ export default function HeroOptions() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="size-6 bg-gray-200 rounded m-2"
               >
@@ -162,7 +162,7 @@ export default function HeroOptions() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="size-5 transition-all duration-300 ease group-hover:translate-x-1 group-hover:text-green-700"
               >

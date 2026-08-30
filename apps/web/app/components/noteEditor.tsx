@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Notebook, Note } from "@/lib/notebooks";
 import {
   copyToClipboard,
-  exporDocx,
+  exportDocx,
   exportMd,
   exportPdf,
   exportTxt,
@@ -137,7 +137,7 @@ export default function NoteEditor({
 
             {/* mostrar el menu al darle clic a descargar D: */}
             {showExportMenu && (
-              <div className="absolute right-0 z-50 mt-1 w-52 flex flex-col rounded-mb border border-gray-300 bg-white py-1 shadow-lg ">
+              <div className="absolute right-0 z-50 mt-1 w-52 flex flex-col rounded-md border border-gray-300 bg-white py-1 shadow-lg ">
                 {/* boton para copiar aal clipboard */}
                 <button
                   type="button"
@@ -151,9 +151,9 @@ export default function NoteEditor({
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="lucide lucide-clipboard-plus-icon lucide-clipboard-plus mr-1 opacity-90"
                   >
                     <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
@@ -178,9 +178,9 @@ export default function NoteEditor({
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       className="lucide lucide-file-text-icon lucide-file-text opacity-90 mr-1 flex items-center"
                     >
                       <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
@@ -205,9 +205,9 @@ export default function NoteEditor({
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       className="lucide lucide-file-minus-corner-icon lucide-file-minus-corner opacity-90 mr-1"
                     >
                       <path d="M20 14V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12" />
@@ -230,9 +230,9 @@ export default function NoteEditor({
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       className="lucide lucide-file-box-icon lucide-file-box opacity-90 mr-1"
                     >
                       <path d="M14 2v5a1 1 0 001 1h5" />
@@ -249,7 +249,7 @@ export default function NoteEditor({
                   <button
                     className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200 w-full flex items-center"
                     type="button"
-                    onClick={() => handleExport(() => exporDocx(note))}
+                    onClick={() => handleExport(() => exportDocx(note))}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -258,9 +258,9 @@ export default function NoteEditor({
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       className="lucide lucide-file-badge-icon lucide-file-badge mr-1 opacity-90"
                     >
                       <path d="M13 22h5a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v3.3" />

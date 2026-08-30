@@ -1,7 +1,7 @@
 "use client";
 
 import NewNotebookModal from "./newNotebookModal";
-import { use, useState } from "react";
+import { useState } from "react";
 import { useNotebooks } from "@/lib/notebooks";
 
 export default function HeroOptions() {
@@ -175,48 +175,54 @@ export default function HeroOptions() {
           </div>
         </div>
         {/* Div para la parte de listado de notas recientes y input para busquedda */}
-        <div className="flex flex-col gap-4 w-80">
-          <div>
-            <p className="font-sans text-gray-700 mb-1">Recientes</p>
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              type="text"
-              placeholder="Buscar..."
-              className="border h-9 border-gray-400 p-2 w-full focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 rounded transition duration-100 ease"
-            />
-          </div>
+        <div className="flex flex-col gap-3 w-80">
+          <p className="text-sm font-medium text-gray-500">Recientes</p>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            type="text"
+            placeholder="Buscar notebook..."
+            className="h-9 rounded-md border border-gray-200 bg-gray-50 px-3 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-gray-300 transition"
+          />
           {filterNotebooks.length === 0 && (
-            <p className="px-2 text-sm text-gray-400">
+            <p className="px-1 text-sm text-gray-400">
               {notebooks.length === 0 ? "Sin notebooks aún" : "Sin resultados"}
             </p>
           )}
-          <ul className="flex flex-col gap-2">
-            {filterNotebooks.map((n) => (
-              <li
-                key={n.id}
-                className="flex items-center gap-3 rounded-lg border border-black/10 bg-white px-3 py-2.5 transition hover:border-green-600/40 hover:bg-green-50/50 cursor-pointer"
-              >
-                {/* punto de color del notebook */}
-                <span
-                  className="size-2.5 shrink-0 rounded-full"
-                  style={{ backgroundColor: n.color }}
-                />
-                {/* nombre */}
-                <span className="flex-1 truncate text-sm font-medium text-gray-800">
+          {filterNotebooks.map((n) => (
+            <a
+              key={n.id}
+              href={`/notebooks?open=${n.id}`}
+              className="group flex items-center gap-3 rounded-lg border border-gray-100 bg-white px-3 py-2.5 shadow-sm transition hover:shadow-md hover:border-gray-200 active:scale-[0.98]"
+            >
+              <span
+                className="size-3 shrink-0 rounded-full"
+                style={{ backgroundColor: n.color }}
+              />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-medium text-gray-800 group-hover:text-black">
                   {n.name}
                 </span>
-                {/* count de notas */}
-                <span className="text-xs text-gray-400">{n.notes.length}</span>
-                {/* pin */}
-                {n.pinned && (
-                  <span className="text-xs text-mist-800" title="Fijado">
-                    📌
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
+                <span className="text-xs text-gray-400">
+                  {n.notes.length} {n.notes.length === 1 ? "nota" : "notas"}
+                </span>
+              </span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="size-4 shrink-0 text-gray-300 transition group-hover:text-gray-500 group-hover:translate-x-0.5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m8.25 4.5 7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </a>
+          ))}
         </div>
       </div>
     </div>

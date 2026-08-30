@@ -13,7 +13,7 @@ import {
 import NotebookCard from "@/app/components/notebookCard";
 import NewNotebookModal from "@/app/components/newNotebookModal";
 import Link from "next/link";
-import { useState, type MouseEvent } from "react";
+import { useState, useEffect, type MouseEvent } from "react";
 
 import ContextMenu from "../components/contextMenu";
 import NoteEditor from "../components/noteEditor";
@@ -25,6 +25,13 @@ export default function NotebooksPage() {
 
   // estado para hacer cliqueable la card del notebook y abrir sus notas
   const [openNotebookId, setOpenNotebookId] = useState<string | null>(null);
+
+  // abrir notebook desde query param (?open=<id>)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("open");
+    if (id) setOpenNotebookId(id);
+  }, []);
 
   const [query, setQuery] = useState("");
 

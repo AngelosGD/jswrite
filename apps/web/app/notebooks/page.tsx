@@ -26,11 +26,17 @@ export default function NotebooksPage() {
   // estado para hacer cliqueable la card del notebook y abrir sus notas
   const [openNotebookId, setOpenNotebookId] = useState<string | null>(null);
 
-  // abrir notebook desde query param (?open=<id>)
+  // abrir notebook/nota desde query param (?open=<id>&note=<id>)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("open");
-    if (id) setOpenNotebookId(id);
+    const nbId = params.get("open");
+    const noteId = params.get("note");
+    if (nbId) {
+      setOpenNotebookId(nbId);
+      if (noteId) {
+        setSelectedNote({ notebookId: nbId, noteId });
+      }
+    }
   }, []);
 
   const [query, setQuery] = useState("");

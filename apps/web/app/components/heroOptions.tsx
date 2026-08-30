@@ -8,6 +8,7 @@ export default function HeroOptions() {
   const [showNotebookModal, setShowNotebookModal] = useState(false);
   const notebooks = useNotebooks();
   const [query, setQuery] = useState("");
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const filterNotebooks = notebooks
     .filter((n) => n.name.toLowerCase().includes(query.trim().toLowerCase()))
@@ -190,38 +191,59 @@ export default function HeroOptions() {
             </p>
           )}
           {filterNotebooks.map((n) => (
-            <a
+            <div
               key={n.id}
-              href={`/notebooks?open=${n.id}`}
-              className="group flex items-center gap-3 rounded-lg border border-gray-100 bg-white px-3 py-2.5 shadow-sm transition hover:shadow-md hover:border-gray-200 active:scale-[0.98]"
+              className="relative"
+              onMouseEnter={() => setHoveredId(n.id)}
+              onMouseLeave={() => setHoveredId(null)}
             >
-              <span
-                className="size-3 shrink-0 rounded-full"
-                style={{ backgroundColor: n.color }}
-              />
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-medium text-gray-800 group-hover:text-black">
+              {/* notebook row */}
+              <a
+                href={`/notebooks?open=${n.id}`}
+                className="flex items-center gap-3 rounded-lg border border-transparent px-3 py-2 transition hover:bg-gray-50 active:scale-[0.98]"
+              >
+                <span
+                  className="size-2 shrink-0 rounded-full"
+                  style={{ backgroundColor: n.color }}
+                />
+                <span className="min-w-0 flex-1 truncate text-sm text-gray-700">
                   {n.name}
                 </span>
-                <span className="text-xs text-gray-400">
-                  {n.notes.length} {n.notes.length === 1 ? "nota" : "notas"}
-                </span>
-              </span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="size-4 shrink-0 text-gray-300 transition group-hover:text-gray-500 group-hover:translate-x-0.5"
+                {n.notes.length > 0 && (
+                  <span className="text-[11px] text-gray-400 tabular-nums">
+                    {n.notes.length}
+                  </span>
+                )}
+              </a>
+
+              {/* notas desplegadas con animación */}
+              <div
+                className="grid transition-all duration-200 ease-out"
+                style={{
+                  gridTemplateRows: hoveredId === n.id ? "1fr" : "0fr",
+                }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                />
-              </svg>
-            </a>
+                <div className="overflow-hidden">
+                  <div className="ml-5 flex flex-col border-l border-gray-100 pl-3 pb-1">
+                    {n.notes.length === 0 && (
+                      <span className="py-1.5 text-xs text-gray-300 italic">
+                        Sin notas
+                      </span>
+                    )}
+                    {n.notes.map((note) => (
+                      <a
+                        key={note.id}
+                        href={`/notebooks?open=${n.id}&note=${note.id}`}
+                        className="flex items-center gap-2 rounded px-2 py-1.5 text-xs text-gray-500 transition hover:bg-gray-50 hover:text-gray-700"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <span className="truncate">{note.title}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>

@@ -48,7 +48,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
   if (!editor) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-0.5 border-b border-gray-100 pb-2">
+    <div className="flex flex-wrap items-center gap-0.5">
       {/* boton para bold mode */}
       <Btn
         onClick={() => editor.chain().focus().toggleBold().run()}

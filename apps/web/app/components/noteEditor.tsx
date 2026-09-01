@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
+import { BubbleMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
@@ -362,11 +363,20 @@ export default function NoteEditor({
       {/* contenido */}
       {/* barra de formato + contenido */}
       <div className="mt-6 flex flex-1 flex-col overflow-hidden">
-        <FormatToolbar editor={editor} />
         <div className="flex-1 overflow-y-auto">
           <EditorContent editor={editor} />
         </div>
       </div>
+
+      {/* toolbar flotante que aparece al seleccionar texto */}
+      {editor && (
+        <BubbleMenu
+          editor={editor}
+          className="flex items-center gap-0.5 rounded-lg border border-gray-200 bg-white px-2 py-1 shadow-lg"
+        >
+          <FormatToolbar editor={editor} />
+        </BubbleMenu>
+      )}
     </div>
   );
 }

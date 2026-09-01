@@ -18,3 +18,25 @@ body{
 .animate-notes-expand {
   animation: notes-expand 0.2s ease-out;
 }
+
+/* estilos del editor tiptap */
+.tiptap {
+  outline: none;
+  min-height: 200px;
+}
+
+.tiptap:focus {
+  outline: none;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #d1d5db;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror-selectednode {
+  outline: none;
+}

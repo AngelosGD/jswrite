@@ -58,7 +58,7 @@ export default function NoteEditor({
       TextAlign.configure({types:["heading","paragraph"]}),
       Color,
       TextStyle,
-      Highlight
+      Highlight.configure({ multicolor: true })
     ],
     content: note.content,
     onUpdate: ({editor}) =>{

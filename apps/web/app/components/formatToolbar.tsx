@@ -158,13 +158,24 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
         Color
       </label>
 
-      {/* highlight */}
-      <Btn
-        onClick={() => editor.chain().focus().toggleHighlight().run()}
-        active={editor.isActive("highlight")}
-      >
-        Resaltar
-      </Btn>
+      {/* highlight con selector de color */}
+      <div className="flex items-center gap-1">
+        <input
+          type="color"
+          className="size-5 cursor-pointer rounded border-0 bg-transparent p-0"
+          value={editor.getAttributes("highlight").color || "#ffff00"}
+          onMouseDown={(e) => e.preventDefault()}
+          onChange={(e) =>
+            editor.chain().focus().toggleHighlight({ color: e.target.value }).run()
+          }
+        />
+        <Btn
+          onClick={() => editor.chain().focus().toggleHighlight({ color: "#ffff00" }).run()}
+          active={editor.isActive("highlight")}
+        >
+          Resaltar
+        </Btn>
+      </div>
     </div>
   );
 };

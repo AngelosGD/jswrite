@@ -1,24 +1,31 @@
 "use client";
 import { Editor } from "@tiptap/react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 type FormatToolBarProps = { editor: Editor | null };
 
 export default function FormatToolbar({ editor }: FormatToolBarProps) {
   const [highlightColor, setHighlightColor] = useState("#ffff00");
 
-  if (!editor) return null;
+  const cmd = useCallback(
+    (fn: () => void) => {
+      if (!editor) return;
+      requestAnimationFrame(() => {
+        editor.view.focus();
+        fn();
+      });
+    },
+    [editor],
+  );
 
-  const run = (cmd: () => void) => {
-    cmd();
-  };
+  if (!editor) return null;
 
   return (
     <div className="flex flex-wrap items-center gap-0.5 border-b border-gray-200 bg-gray-50 px-2 py-1.5">
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().focus().toggleBold().run())}
+        onClick={() => cmd(() => editor.chain().toggleBold().run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("bold") ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         <strong>B</strong>
@@ -27,7 +34,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().focus().toggleItalic().run())}
+        onClick={() => cmd(() => editor.chain().toggleItalic().run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("italic") ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         <em>I</em>
@@ -36,7 +43,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().focus().toggleUnderline().run())}
+        onClick={() => cmd(() => editor.chain().toggleUnderline().run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("underline") ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         <span className="underline">U</span>
@@ -45,7 +52,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().focus().toggleStrike().run())}
+        onClick={() => cmd(() => editor.chain().toggleStrike().run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("strike") ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         <span className="line-through">S</span>
@@ -56,7 +63,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().focus().toggleHeading({ level: 1 }).run())}
+        onClick={() => cmd(() => editor.chain().toggleHeading({ level: 1 }).run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("heading", { level: 1 }) ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         H1
@@ -64,7 +71,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().focus().toggleHeading({ level: 2 }).run())}
+        onClick={() => cmd(() => editor.chain().toggleHeading({ level: 2 }).run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("heading", { level: 2 }) ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         H2
@@ -72,7 +79,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().focus().toggleHeading({ level: 3 }).run())}
+        onClick={() => cmd(() => editor.chain().toggleHeading({ level: 3 }).run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("heading", { level: 3 }) ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         H3
@@ -83,7 +90,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().focus().toggleBulletList().run())}
+        onClick={() => cmd(() => editor.chain().toggleBulletList().run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("bulletList") ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         • Lista
@@ -91,7 +98,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().focus().toggleOrderedList().run())}
+        onClick={() => cmd(() => editor.chain().toggleOrderedList().run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("orderedList") ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         1. Lista
@@ -102,7 +109,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().focus().setTextAlign("left").run())}
+        onClick={() => cmd(() => editor.chain().setTextAlign("left").run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive({ textAlign: "left" }) ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         ←
@@ -110,7 +117,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().focus().setTextAlign("center").run())}
+        onClick={() => cmd(() => editor.chain().setTextAlign("center").run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive({ textAlign: "center" }) ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         ↔
@@ -118,7 +125,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().focus().setTextAlign("right").run())}
+        onClick={() => cmd(() => editor.chain().setTextAlign("right").run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive({ textAlign: "right" }) ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         →
@@ -134,7 +141,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
           onMouseDown={(e) => e.preventDefault()}
           onChange={(e) => {
             const color = e.target.value;
-            run(() => editor.chain().focus().setColor(color).run());
+            cmd(() => editor.chain().setColor(color).run());
           }}
         />
         Color
@@ -149,18 +156,18 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
           onChange={(e) => {
             const color = e.target.value;
             setHighlightColor(color);
-            run(() => editor.chain().focus().toggleHighlight({ color }).run());
+            cmd(() => editor.chain().toggleHighlight({ color }).run());
           }}
         />
         <button
           type="button"
           onMouseDown={(e) => e.preventDefault()}
           onClick={() =>
-            run(() => {
+            cmd(() => {
               if (editor.isActive("highlight")) {
-                editor.chain().focus().unsetHighlight().run();
+                editor.chain().unsetHighlight().run();
               } else {
-                editor.chain().focus().toggleHighlight({ color: highlightColor }).run();
+                editor.chain().toggleHighlight({ color: highlightColor }).run();
               }
             })
           }

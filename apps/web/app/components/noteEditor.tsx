@@ -17,6 +17,7 @@ import {
 } from "@/lib/export-note";
 import FormatToolbar from "./formatToolbar";
 import { TextStyle } from "@tiptap/extension-text-style";
+import { useMemo } from "react";
 
 type EditorNodeProps = {
   notebook: Notebook;
@@ -50,15 +51,17 @@ export default function NoteEditor({
   const [showExportMenu, setShowExportMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const extensions = useMemo(() => [
+    StarterKit, 
+    Underline,
+    TextAlign.configure({types:["heading","paragraph"]}),
+    Color,
+    TextStyle,
+    Highlight.configure({ multicolor: true })
+  ], []);
+
   const editor = useEditor({
-    extensions:[
-      StarterKit, 
-      Underline,
-      TextAlign.configure({types:["heading","paragraph"]}),
-      Color,
-      TextStyle,
-      Highlight.configure({ multicolor: true })
-    ],
+    extensions,
     content: note.content,
     onUpdate: ({editor}) =>{
       onChangeContent(editor.getHTML())
@@ -87,12 +90,6 @@ export default function NoteEditor({
     };
   }, [showExportMenu]);
 
-  useEffect(() =>{
-      return () => {
-        editor?.destroy()
-      }
-    },[editor])
-
   const commitTitle = () => {
     onChangeTitle(draftTitle);
     setEditingTitle(false);
@@ -104,7 +101,7 @@ export default function NoteEditor({
   };
 
   return (
-    <div className="mx-auto flex h-full max-w-3xl flex-col px-6 py-8">
+    <div className="mx-auto flex h-full max-w-6xl flex-col px-6 py-8">
       {/* cabecera */}
       <div className="flex items-center justify-between border-b border-gray-100 pb-4">
         <div className="flex items-center gap-2">

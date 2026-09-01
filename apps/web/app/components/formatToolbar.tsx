@@ -19,7 +19,7 @@ const Btn = ({
   disabled = false,
   children,
 }: {
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
   active?: boolean;
   disabled?: boolean;
   children: React.ReactNode;
@@ -27,7 +27,10 @@ const Btn = ({
   return (
     <button
       type="button"
-      onClick={onClick}
+      onMouseDown={(e) => {
+        e.preventDefault();
+        onClick(e);
+      }}
       disabled={disabled}
       className={`rounded px-2 py-1 text-sm transition ${
         active

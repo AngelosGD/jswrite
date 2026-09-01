@@ -56,7 +56,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().toggleHeading({ level: 1 }).run())}
+        onClick={() => run(() => editor.chain().focus().toggleHeading({ level: 1 }).run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("heading", { level: 1 }) ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         H1
@@ -64,7 +64,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().toggleHeading({ level: 2 }).run())}
+        onClick={() => run(() => editor.chain().focus().toggleHeading({ level: 2 }).run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("heading", { level: 2 }) ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         H2
@@ -72,7 +72,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().toggleHeading({ level: 3 }).run())}
+        onClick={() => run(() => editor.chain().focus().toggleHeading({ level: 3 }).run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("heading", { level: 3 }) ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         H3
@@ -83,7 +83,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().toggleBulletList().run())}
+        onClick={() => run(() => editor.chain().focus().toggleBulletList().run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("bulletList") ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         • Lista
@@ -91,7 +91,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       <button
         type="button"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => run(() => editor.chain().toggleOrderedList().run())}
+        onClick={() => run(() => editor.chain().focus().toggleOrderedList().run())}
         className={`rounded px-2 py-1 text-sm transition ${editor.isActive("orderedList") ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
       >
         1. Lista

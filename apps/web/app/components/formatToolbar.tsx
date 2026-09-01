@@ -1,15 +1,6 @@
 "use client";
 import { Editor } from "@tiptap/react";
-import "@tiptap/extension-bold";
-import "@tiptap/extension-italic";
-import "@tiptap/extension-underline";
-import "@tiptap/extension-strike";
-import "@tiptap/extension-heading";
-import "@tiptap/extension-bullet-list";
-import "@tiptap/extension-ordered-list";
-import "@tiptap/extension-text-align";
-import "@tiptap/extension-color";
-import "@tiptap/extension-highlight";
+import { useState } from "react";
 
 type FormatToolBarProps = { editor: Editor | null };
 
@@ -19,7 +10,7 @@ const Btn = ({
   disabled = false,
   children,
 }: {
-  onClick: (e: React.MouseEvent) => void;
+  onClick: () => void;
   active?: boolean;
   disabled?: boolean;
   children: React.ReactNode;
@@ -29,7 +20,7 @@ const Btn = ({
       type="button"
       onMouseDown={(e) => {
         e.preventDefault();
-        onClick(e);
+        requestAnimationFrame(() => onClick());
       }}
       disabled={disabled}
       className={`rounded px-2 py-1 text-sm transition ${
@@ -48,11 +39,12 @@ const Sep = () => {
 };
 
 export default function FormatToolbar({ editor }: FormatToolBarProps) {
+  const [highlightColor, setHighlightColor] = useState("#ffff00");
+
   if (!editor) return null;
 
   return (
     <div className="flex flex-wrap items-center gap-0.5">
-      {/* boton para bold mode */}
       <Btn
         onClick={() => editor.chain().focus().toggleBold().run()}
         active={editor.isActive("bold")}
@@ -60,7 +52,6 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
         <strong>B</strong>
       </Btn>
 
-      {/* boton para italic */}
       <Btn
         onClick={() => editor.chain().focus().toggleItalic().run()}
         active={editor.isActive("italic")}
@@ -68,7 +59,6 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
         <em>I</em>
       </Btn>
 
-      {/* boton para underline */}
       <Btn
         onClick={() => editor.chain().focus().toggleUnderline().run()}
         active={editor.isActive("underline")}
@@ -76,7 +66,6 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
         <span className="underline">U</span>
       </Btn>
 
-      {/* boton para strike throught (linea en medio del texto) */}
       <Btn
         onClick={() => editor.chain().focus().toggleStrike().run()}
         active={editor.isActive("strike")}
@@ -85,7 +74,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       </Btn>
 
       <Sep />
-      {/* tipo de headings 1-3 */}
+
       <Btn
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         active={editor.isActive("heading", { level: 1 })}
@@ -107,7 +96,6 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
 
       <Sep />
 
-      {/* lists - tipos de listas */}
       <Btn
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         active={editor.isActive("bulletList")}
@@ -123,7 +111,6 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
 
       <Sep />
 
-      {/* alignment  donde se alinea el texto */}
       <Btn
         onClick={() => editor.chain().focus().setTextAlign("left").run()}
         active={editor.isActive({ textAlign: "left" })}
@@ -145,32 +132,43 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
 
       <Sep />
 
-      {/* resaltar o cambiar de color el texto D: */}
       <label className="flex items-center gap-1 text-sm text-gray-500">
         <input
           type="color"
           className="size-5 cursor-pointer border-0 bg-transparent p-0"
           value={editor.getAttributes("textStyle").color || "#000000"}
-          onChange={(e) =>
-            editor.chain().focus().setColor(e.target.value).run()
-          }
+          onMouseDown={(e) => e.preventDefault()}
+          onChange={(e) => {
+            const color = e.target.value;
+            requestAnimationFrame(() => {
+              editor.chain().focus().setColor(color).run();
+            });
+          }}
         />
         Color
       </label>
 
-      {/* highlight con selector de color */}
       <div className="flex items-center gap-1">
         <input
           type="color"
           className="size-5 cursor-pointer rounded border-0 bg-transparent p-0"
-          value={editor.getAttributes("highlight").color || "#ffff00"}
+          value={highlightColor}
           onMouseDown={(e) => e.preventDefault()}
-          onChange={(e) =>
-            editor.chain().focus().toggleHighlight({ color: e.target.value }).run()
-          }
+          onChange={(e) => {
+            setHighlightColor(e.target.value);
+            requestAnimationFrame(() => {
+              editor.chain().focus().toggleHighlight({ color: e.target.value }).run();
+            });
+          }}
         />
         <Btn
-          onClick={() => editor.chain().focus().toggleHighlight({ color: "#ffff00" }).run()}
+          onClick={() => {
+            if (editor.isActive("highlight")) {
+              editor.chain().focus().unsetHighlight().run();
+            } else {
+              editor.chain().focus().toggleHighlight({ color: highlightColor }).run();
+            }
+          }}
           active={editor.isActive("highlight")}
         >
           Resaltar
@@ -178,4 +176,4 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
       </div>
     </div>
   );
-};
+}

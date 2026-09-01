@@ -11,7 +11,7 @@ import "@tiptap/extension-text-align";
 import "@tiptap/extension-color";
 import "@tiptap/extension-highlight";
 
-type formatToolBarProps = { editor: Editor | null };
+type FormatToolBarProps = { editor: Editor | null };
 
 const Btn = ({
   onClick,
@@ -44,7 +44,7 @@ const Sep = () => {
   return <span className="mx-1 text-gray-200">|</span>;
 };
 
-export const formatToolbar = ({ editor }: formatToolBarProps) => {
+export default function FormatToolbar({ editor }: FormatToolBarProps) {
   if (!editor) return null;
 
   return (

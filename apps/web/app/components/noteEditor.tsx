@@ -1,6 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
+import TextAlign from "@tiptap/extension-text-align";
+import Color from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
 import { Notebook, Note } from "@/lib/notebooks";
 import {
   copyToClipboard,
@@ -9,7 +15,8 @@ import {
   exportPdf,
   exportTxt,
 } from "@/lib/export-note";
-import { menu } from "motion/react-client";
+import FormatToolbar from "./formatToolbar";
+import { TextStyle } from "@tiptap/extension-text-style";
 
 type EditorNodeProps = {
   notebook: Notebook;
@@ -43,6 +50,20 @@ export default function NoteEditor({
   const [showExportMenu, setShowExportMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const editor = useEditor({
+    extensions:[
+      StarterKit, 
+      Underline,
+      TextAlign.configure({types:["heading","paragraph"]}),
+      Color,
+      TextStyle,
+      Highlight
+    ],
+    content: note.content,
+    onUpdate: ({editor}) =>{
+      onChangeContent(editor.getHTML())
+    }
+  })
   // use effect para cerrar el menu con el esc o dandole clic fueram
   useEffect(() => {
     if (!showExportMenu) return;
@@ -58,12 +79,19 @@ export default function NoteEditor({
 
     window.addEventListener("keydown", onKey);
     window.addEventListener("mousedown", onClick);
+    
 
     return () => {
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("mousedown", onClick);
     };
   }, [showExportMenu]);
+
+  useEffect(() =>{
+      return () => {
+        editor?.destroy()
+      }
+    },[editor])
 
   const commitTitle = () => {
     onChangeTitle(draftTitle);
@@ -332,13 +360,12 @@ export default function NoteEditor({
       </div>
 
       {/* contenido */}
-      <div className="mt-6 flex flex-1 overflow-hidden">
-        <textarea
-          value={note.content}
-          onChange={(e) => onChangeContent(e.target.value)}
-          placeholder="Empieza a escribir..."
-          className="flex-1 resize-none border-none text-base leading-7 text-gray-700 placeholder:text-gray-300 focus:outline-none"
-        />
+      {/* barra de formato + contenido */}
+      <div className="mt-6 flex flex-1 flex-col overflow-hidden">
+        <FormatToolbar editor={editor} />
+        <div className="flex-1 overflow-y-auto">
+          <EditorContent editor={editor} />
+        </div>
       </div>
     </div>
   );

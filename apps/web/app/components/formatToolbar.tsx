@@ -10,10 +10,7 @@ export default function FormatToolbar({ editor }: FormatToolBarProps) {
   const cmd = useCallback(
     (fn: () => void) => {
       if (!editor) return;
-      requestAnimationFrame(() => {
-        editor.view.focus();
-        fn();
-      });
+      fn();
     },
     [editor],
   );

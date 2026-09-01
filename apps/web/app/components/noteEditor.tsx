@@ -101,7 +101,7 @@ export default function NoteEditor({
   };
 
   return (
-    <div className="mx-auto flex h-full max-w-6xl flex-col px-6 py-8">
+    <div className="mx-auto flex h-full w-[85%] flex-col px-6 py-8">
       {/* cabecera */}
       <div className="flex items-center justify-between border-b border-gray-100 pb-4">
         <div className="flex items-center gap-2">

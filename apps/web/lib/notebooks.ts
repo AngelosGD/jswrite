@@ -10,6 +10,7 @@ export type Note = {
   title: string;
   content: string;
   pinned: boolean;
+  type?: "quick";
   createdAt: string;
   updatedAt: string;
 };
@@ -76,6 +77,49 @@ export function saveNotebooks(notebooks: Notebook[]): void {
   notify();
 }
 
+const QUICK_KEY = "jswrite.quickNotes";
+const EMPTY_Q: Note[] = [];
+let quickCache: Note[] | null = null;
+const quickListeners = new Set<() => void>();
+
+const quickSubscrite = (cb: () => void) => {
+  quickListeners.add(cb);
+  return () => {
+    quickListeners.delete(cb);
+  };
+};
+
+const quickNotify = () => {
+  quickListeners.forEach((cb) => cb());
+};
+
+export function loadQuickNotes(): Note[] {
+  if (typeof window === "undefined") return EMPTY_Q;
+  if (quickCache) return quickCache;
+  const raw = window.localStorage.getItem(QUICK_KEY);
+  if (!raw) {
+    quickCache = EMPTY_Q;
+    return quickCache;
+  }
+  try {
+    quickCache = JSON.parse(raw) as Note[]
+    return quickCache
+  } catch {
+    quickCache = EMPTY_Q;
+    return quickCache;
+  }
+}
+
+export function saveQuickNotes(notes: Note[]): void{
+  quickCache = notes
+  window.localStorage.setItem(QUICK_KEY, JSON.stringify(notes))
+}
+
+export function useQuickNotes(): Note[]{
+  return useSyncExternalStore(quickSubscrite, loadQuickNotes, () => EMPTY_Q)
+}
+
+
 export function createNotebook(name: string, color: string): Notebook {
   const now = new Date().toISOString();
   return {
@@ -120,18 +164,17 @@ const NOTE_TITLES = [
   "Diario",
 ];
 
-
-export function createNoteTitle(): string{
-  const index = Math.floor(Math.random() * NOTE_TITLES.length)
-  return NOTE_TITLES[index]
+export function createNoteTitle(): string {
+  const index = Math.floor(Math.random() * NOTE_TITLES.length);
+  return NOTE_TITLES[index];
 }
 
-export function addNote (
+export function addNote(
   notebooks: Notebook[],
   notebookId: string,
   title: string,
-  content: string
-): {notebooks: Notebook[], note: Note}{
+  content: string,
+): { notebooks: Notebook[]; note: Note } {
   const note: Note = {
     id: crypto.randomUUID(),
     title,
@@ -153,9 +196,9 @@ export function updaetNote(
   notebooks: Notebook[],
   notebookId: string,
   noteId: string,
-  patch: Partial<Note>
-): Notebook[]{
-   return notebooks.map((n) =>
+  patch: Partial<Note>,
+): Notebook[] {
+  return notebooks.map((n) =>
     n.id !== notebookId
       ? n
       : {
@@ -169,6 +212,14 @@ export function updaetNote(
   );
 }
 
-export function deleteNote(notebooks: Notebook[], notebookId: string, noteId: string): Notebook[]{
-  return notebooks.map((n) => n.id !== notebookId ? n : {...n, notes: n.notes.filter((note) => note.id !== noteId)})
+export function deleteNote(
+  notebooks: Notebook[],
+  notebookId: string,
+  noteId: string,
+): Notebook[] {
+  return notebooks.map((n) =>
+    n.id !== notebookId
+      ? n
+      : { ...n, notes: n.notes.filter((note) => note.id !== noteId) },
+  );
 }

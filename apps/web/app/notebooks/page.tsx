@@ -774,13 +774,14 @@ export default function NotebooksPage() {
 
       <main className="flex-1 overflow-y-auto p-6">
         {selectedQuickNote ? (
-          <NoteEditor
-            note={selectedQuickNote}
-            onChangeTitle={(t) => handleChangeQuickNoteTitle(selectedQuickNote.id, t)}
-            onChangeContent={(c) => handleChangeQuickNoteContent(selectedQuickNote.id, c)}
-            onClose={() => setSelectedQuickNote(null)}
-            onDelete={() => handleDeleteQuickNoteAndClose(selectedQuickNote.id)}
-          />
+              <NoteEditor
+                key={selectedQuickNote.id}
+                note={selectedQuickNote}
+                onChangeTitle={(t) => handleChangeQuickNoteTitle(selectedQuickNote.id, t)}
+                onChangeContent={(c) => handleChangeQuickNoteContent(selectedQuickNote.id, c)}
+                onClose={() => setSelectedQuickNote(null)}
+                onDelete={() => handleDeleteQuickNoteAndClose(selectedQuickNote.id)}
+              />
         ) : selectedNote ? (
           (() => {
             const nb = notebooks.find((n) => n.id === selectedNote.notebookId);
@@ -788,6 +789,7 @@ export default function NotebooksPage() {
             if (!nb || !note) return null;
             return (
               <NoteEditor
+                key={note.id}
                 onDelete={() => handleDeleteNote(nb.id, note.id)}
                 notebook={nb}
                 note={note}

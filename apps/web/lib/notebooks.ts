@@ -113,6 +113,7 @@ export function loadQuickNotes(): Note[] {
 export function saveQuickNotes(notes: Note[]): void{
   quickCache = notes
   window.localStorage.setItem(QUICK_KEY, JSON.stringify(notes))
+  quickNotify()
 }
 
 export function useQuickNotes(): Note[]{

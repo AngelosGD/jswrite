@@ -93,6 +93,7 @@ export default function NotebooksPage() {
   const [selectedQuickNote, setSelectedQuickNote] = useState<Note | null>(null);
 
   function handleClickQuickNote(note: Note) {
+    setSelectedNote(null);
     setSelectedQuickNote(note);
   }
 
@@ -199,6 +200,7 @@ export default function NotebooksPage() {
   const handleAddNote = (notebookId: string) => {
     const result = addNote(notebooks, notebookId, createNoteTitle(), "");
     saveNotebooks(result.notebooks);
+    setSelectedQuickNote(null);
     setSelectedNote({ notebookId, noteId: result.note.id });
   };
   function handleDeleteNotebook(notebookId: string) {
@@ -305,12 +307,13 @@ export default function NotebooksPage() {
                           className="group flex items-center gap-1 rounded-lg pr-1 transition duration-100 ease hover:bg-gray-50"
                         >
                           <button
-                            onClick={() =>
+                            onClick={() => {
+                              setSelectedQuickNote(null);
                               setSelectedNote({
                                 notebookId: openNb.id,
                                 noteId: note.id,
-                              })
-                            }
+                              });
+                            }}
                             className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800"
                           >
                             <svg
@@ -612,12 +615,13 @@ export default function NotebooksPage() {
                                     setDragItem(null);
                                     setDragOverNotebookId(null);
                                   }}
-                                  onClick={() =>
+                                  onClick={() => {
+                                    setSelectedQuickNote(null);
                                     setSelectedNote({
                                       notebookId: n.id,
                                       noteId: note.id,
-                                    })
-                                  }
+                                    });
+                                  }}
                                   className="flex min-w-0 flex-1 cursor-grab items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800 active:cursor-grabbing"
                                 >
                                   <svg

@@ -9,6 +9,10 @@ import {
   deleteNote,
   updateNotebook,
   Notebook,
+  useQuickNotes,
+  saveQuickNotes,
+  addQuickNote,
+  deleteQuickNote,
 } from "@/lib/notebooks";
 import NotebookCard from "@/app/components/notebookCard";
 import NewNotebookModal from "@/app/components/newNotebookModal";

@@ -223,3 +223,53 @@ export function deleteNote(
       : { ...n, notes: n.notes.filter((note) => note.id !== noteId) },
   );
 }
+
+
+
+// ! helpers para las quick notes
+// ! funciones auxiliares para tareas repetitivas
+
+export function createQuickNoteTitle(quickNotes: Note[]): string{
+  let i = 1;
+  while(quickNotes.some((n) => n.title === `Untitled${i}`)) i ++
+  return `Untitled${i}`
+}
+
+export function addQuickNote(quickNotes: Note[]): {quickNotes: Note[]; note: Note}{
+  const note: Note = {
+    id: crypto.randomUUID(),
+    title: createQuickNoteTitle(quickNotes),
+    content:"",
+    pinned: false,
+    type: "quick",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  return {quickNotes: [...quickNotes, note], note}
+}
+
+
+export function deleteQuickNote(quickNotes: Note[], noteId: string): Note[]{
+  return quickNotes.filter((n) => n.id !== noteId)
+}
+
+
+export function moveQuickNoteToNotebook(
+  quickNotes: Note[],
+  notebooks: Notebook[],
+  noteId: string,
+  notebookId: string
+):{quickNotes: Note[], notebooks: Notebook[]} {
+  const note = quickNotes.find((n) => n.id === noteId);
+  if(!note) return {quickNotes, notebooks}
+  const moved: Note = {...note, type:undefined}
+  return {
+    quickNotes: quickNotes.filter((n) => n.id !== noteId),
+    notebooks: notebooks.map((n) =>
+      n.id === notebookId ? {...n, notes: [...n.notes, moved]} : n,
+    )
+  }
+}
+
+

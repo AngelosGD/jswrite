@@ -145,6 +145,13 @@ export default function NotebooksPage() {
     noteId: string;
   } | null>(null);
 
+  const [noteContextMenu, setNoteContextMenu] = useState<{
+    x: number;
+    y: number;
+    notebookId: string;
+    noteId: string;
+  } | null>(null);
+
   const [dragOverNotebookId, setDragOverNotebookId] = useState<string | null>(
     null,
   );
@@ -582,6 +589,16 @@ export default function NotebooksPage() {
                               <div
                                 key={note.id}
                                 className="group flex items-center gap-1 rounded-md transition duration-100 ease hover:bg-gray-50"
+                                onContextMenu={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setNoteContextMenu({
+                                    x: e.clientX,
+                                    y: e.clientY,
+                                    notebookId: n.id,
+                                    noteId: note.id,
+                                  });
+                                }}
                               >
                                 <button
                                   draggable
@@ -856,6 +873,38 @@ export default function NotebooksPage() {
               onClick={() => {
                 handleDeleteQuickNote(quickContextMenu.noteId);
                 setQuickContextMenu(null);
+              }}
+              className="px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+            >
+              Eliminar nota
+            </button>
+          </div>
+        </>
+      )}
+
+      {noteContextMenu && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setNoteContextMenu(null)} />
+          <div
+            className="fixed z-50 flex w-48 flex-col rounded-md border border-gray-200 bg-white py-1 shadow-lg"
+            style={{ left: noteContextMenu.x, top: noteContextMenu.y }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                handleToggleNotePin(noteContextMenu.notebookId, noteContextMenu.noteId);
+                setNoteContextMenu(null);
+              }}
+              className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+            >
+              {notebooks.find((n) => n.id === noteContextMenu.notebookId)?.notes.find((nt) => nt.id === noteContextMenu.noteId)?.pinned ? "Desfijar nota" : "Fijar nota"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                handleDeleteNote(noteContextMenu.notebookId, noteContextMenu.noteId);
+                setNoteContextMenu(null);
               }}
               className="px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
             >

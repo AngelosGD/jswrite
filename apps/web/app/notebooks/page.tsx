@@ -14,11 +14,12 @@ import {
   saveQuickNotes,
   addQuickNote,
   deleteQuickNote,
+  moveQuickNoteToNotebook,
 } from "@/lib/notebooks";
 import NotebookCard from "@/app/components/notebookCard";
 import NewNotebookModal from "@/app/components/newNotebookModal";
 import Link from "next/link";
-import { useState, useEffect, type MouseEvent } from "react";
+import { useState, useEffect, type MouseEvent, use } from "react";
 
 import ContextMenu from "../components/contextMenu";
 import NoteEditor from "../components/noteEditor";
@@ -94,6 +95,24 @@ export default function NotebooksPage() {
   function handleClickQuickNote(note: Note) {
     setSelectedQuickNote(note);
   }
+
+  function handleMoveQuickNoteToNotebook(noteId: string, notebookId: string) {
+    const result = moveQuickNoteToNotebook(
+      quickNotes,
+      notebooks,
+      noteId,
+      notebookId,
+    );
+
+    saveQuickNotes(result.quickNotes);
+    saveNotebooks(result.notebooks);
+  }
+
+  const [showNotebookPicker, setShowNotebookPicker] = useState<{
+    x: number;
+    y: number;
+    noteId: string;
+  } | null>(null);
 
   const [dragOverNotebookId, setDragOverNotebookId] = useState<string | null>(
     null,
@@ -648,6 +667,10 @@ export default function NotebooksPage() {
                         >
                           <button
                             onClick={() => handleClickQuickNote(note)}
+                            onContextMenu={(e) => {
+                              e.preventDefault();
+                              setQuickContextMenu({ x: e.clientX, y: e.clientY, noteId: note.id });
+                            }}
                             className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800"
                           >
                             <svg
@@ -769,6 +792,71 @@ export default function NotebooksPage() {
           onDeleteNotebook={() => handleDeleteNotebook(contextMenu.notebookId)}
           onClose={() => setContextMenu(null)}
         />
+      )}
+
+      {quickContextMenu && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setQuickContextMenu(null)} />
+          <div
+            className="fixed z-50 flex w-48 flex-col rounded-md border border-gray-200 bg-white py-1 shadow-lg"
+            style={{ left: quickContextMenu.x, top: quickContextMenu.y }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setShowNotebookPicker({ x: quickContextMenu.x, y: quickContextMenu.y, noteId: quickContextMenu.noteId });
+                setQuickContextMenu(null);
+              }}
+              className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+            >
+              Agregar a notebook
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                handleDeleteQuickNote(quickContextMenu.noteId);
+                setQuickContextMenu(null);
+              }}
+              className="px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+            >
+              Eliminar nota
+            </button>
+          </div>
+        </>
+      )}
+
+      {showNotebookPicker && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setShowNotebookPicker(null)} />
+          <div
+            className="fixed z-50 flex w-52 flex-col rounded-md border border-gray-200 bg-white py-1 shadow-lg"
+            style={{ left: showNotebookPicker.x, top: showNotebookPicker.y }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="px-4 py-1.5 text-xs font-medium text-gray-400">Selecciona un notebook</p>
+            {notebooks.map((n) => (
+              <button
+                key={n.id}
+                type="button"
+                onClick={() => {
+                  handleMoveQuickNoteToNotebook(showNotebookPicker.noteId, n.id);
+                  setShowNotebookPicker(null);
+                }}
+                className="flex items-center gap-2 px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+              >
+                <span
+                  className="size-2.5 shrink-0 rounded-full"
+                  style={{ backgroundColor: n.color }}
+                />
+                {n.name}
+              </button>
+            ))}
+            {notebooks.length === 0 && (
+              <p className="px-4 py-2 text-sm text-gray-400">Sin notebooks</p>
+            )}
+          </div>
+        </>
       )}
     </div>
   );

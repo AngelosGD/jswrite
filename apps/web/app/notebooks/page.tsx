@@ -9,6 +9,7 @@ import {
   deleteNote,
   updateNotebook,
   Notebook,
+  Note,
   useQuickNotes,
   saveQuickNotes,
   addQuickNote,
@@ -70,6 +71,29 @@ export default function NotebooksPage() {
     fromNotebookId: string;
     noteId: string;
   } | null>(null);
+
+  const quickNotes = useQuickNotes();
+  const [showQuickNotes, setShowQuickNotes] = useState(false);
+  const [quickContextMenu, setQuickContextMenu] = useState<{
+    x: number;
+    y: number;
+    noteId: string;
+  } | null>(null);
+
+  // ! Funciones para las quicknotes
+  function handleAddQuickNote() {
+    const result = addQuickNote(quickNotes);
+    saveQuickNotes(result.quickNotes);
+  }
+
+  function handleDeleteQuickNote(noteId: string) {
+    saveQuickNotes(deleteQuickNote(quickNotes, noteId));
+  }
+  const [selectedQuickNote, setSelectedQuickNote] = useState<Note | null>(null);
+
+  function handleClickQuickNote(note: Note) {
+    setSelectedQuickNote(note);
+  }
 
   const [dragOverNotebookId, setDragOverNotebookId] = useState<string | null>(
     null,
@@ -223,13 +247,13 @@ export default function NotebooksPage() {
                           key={note.id}
                           className="group flex items-center gap-1 rounded-lg pr-1 transition duration-100 ease hover:bg-gray-50"
                         >
-<button
+                          <button
                             onClick={() =>
-setSelectedNote({
-                              notebookId: openNb.id,
-                              noteId: note.id,
-                            })
-                          }
+                              setSelectedNote({
+                                notebookId: openNb.id,
+                                noteId: note.id,
+                              })
+                            }
                             className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800"
                           >
                             <svg
@@ -249,12 +273,14 @@ setSelectedNote({
                             <span className="min-w-0 flex-1 truncate">
                               {note.title}
                             </span>
-                                </button>
-                                <button
-onClick={() => handleToggleNotePin(openNb.id, note.id)}
-                                  aria-label={
-                                    note.pinned ? "Desfijar nota" : "Fijar nota"
-                                  }
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleToggleNotePin(openNb.id, note.id)
+                            }
+                            aria-label={
+                              note.pinned ? "Desfijar nota" : "Fijar nota"
+                            }
                             title={note.pinned ? "Desfijar" : "Fijar"}
                             className={`shrink-0 rounded-md p-1 transition ${
                               note.pinned
@@ -331,7 +357,6 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                 <p className="font-serif text-sm font-semibold text-gray-700">
                   Notebooks
                 </p>
-                
               </Link>
               <button
                 onClick={() => setShowNotebookModal(true)}
@@ -444,7 +469,9 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
 
                       <button
                         onClick={() => handleTogglePin(n.id)}
-                        aria-label={n.pinned ? "Desfijar notebook" : "Fijar notebook"}
+                        aria-label={
+                          n.pinned ? "Desfijar notebook" : "Fijar notebook"
+                        }
                         title={n.pinned ? "Desfijar" : "Fijar"}
                         className={`shrink-0 rounded-md p-1 transition ${
                           n.pinned
@@ -492,7 +519,7 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                       </button>
                     </div>
 
-{isOpen && (
+                    {isOpen && (
                       <div className="animate-notes-expand mt-1 ml-3 flex flex-col gap-0.5 border-l border-gray-100 pl-3">
                         {n.notes.length === 0 ? (
                           <p className="px-2 py-1 text-sm text-gray-400">
@@ -545,7 +572,9 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                                   </span>
                                 </button>
                                 <button
-                                  onClick={() => handleToggleNotePin(n.id, note.id)}
+                                  onClick={() =>
+                                    handleToggleNotePin(n.id, note.id)
+                                  }
                                   aria-label={
                                     note.pinned ? "Desfijar nota" : "Fijar nota"
                                   }
@@ -579,6 +608,94 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
                   </div>
                 );
               })}
+              <div className="mt-4 border-t border-gray-100 pt-3">
+                <button
+                  type="button"
+                  onClick={() => setShowQuickNotes((v) => !v)}
+                  className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-700"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    className={`size-3.5 transition-transform duration-200 ${showQuickNotes ? "rotate-180" : ""}`}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                  Notas rápidas
+                  <span className="ml-auto text-xs text-gray-300">
+                    {quickNotes.length}
+                  </span>
+                </button>
+
+                {showQuickNotes && (
+                  <div className="mt-1 ml-3 flex flex-col gap-0.5 border-l border-gray-100 pl-3">
+                    {quickNotes.length === 0 ? (
+                      <p className="px-2 py-1 text-sm text-gray-400">
+                        Sin notas rápidas
+                      </p>
+                    ) : (
+                      quickNotes.map((note) => (
+                        <div
+                          key={note.id}
+                          className="group flex items-center gap-1 rounded-md transition duration-100 ease hover:bg-gray-50"
+                        >
+                          <button
+                            onClick={() => handleClickQuickNote(note)}
+                            className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="size-3.5 shrink-0 text-yellow-400"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"
+                              />
+                            </svg>
+                            <span className="min-w-0 flex-1 truncate">
+                              {note.title}
+                            </span>
+                          </button>
+                        </div>
+                      ))
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={handleAddQuickNote}
+                      className="mt-1 flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm text-gray-400 transition duration-100 ease hover:bg-gray-50 hover:text-gray-700"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="2"
+                        stroke="currentColor"
+                        className="size-3.5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 4.5v15m7.5-7.5h-15"
+                        />
+                      </svg>
+                      Nueva nota rápida
+                    </button>
+                  </div>
+                )}
+              </div>
             </nav>
           </>
         )}
@@ -633,9 +750,7 @@ onClick={() => handleToggleNotePin(openNb.id, note.id)}
 
       <EditNotebookModal
         isOpen={editingNotebookId !== null}
-        notebook={
-          notebooks.find((n) => n.id === editingNotebookId) ?? null
-        }
+        notebook={notebooks.find((n) => n.id === editingNotebookId) ?? null}
         onSave={handleEditNotebook}
         onClose={() => setEditingNotebookId(null)}
       />

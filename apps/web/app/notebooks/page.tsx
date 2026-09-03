@@ -96,6 +96,37 @@ export default function NotebooksPage() {
     setSelectedQuickNote(note);
   }
 
+  function handleChangeQuickNoteTitle(noteId: string, title: string) {
+    saveQuickNotes(
+      quickNotes.map((n) =>
+        n.id === noteId
+          ? { ...n, title, updatedAt: new Date().toISOString() }
+          : n,
+      ),
+    );
+    setSelectedQuickNote((prev) =>
+      prev && prev.id === noteId ? { ...prev, title } : prev,
+    );
+  }
+
+  function handleChangeQuickNoteContent(noteId: string, content: string) {
+    saveQuickNotes(
+      quickNotes.map((n) =>
+        n.id === noteId
+          ? { ...n, content, updatedAt: new Date().toISOString() }
+          : n,
+      ),
+    );
+    setSelectedQuickNote((prev) =>
+      prev && prev.id === noteId ? { ...prev, content } : prev,
+    );
+  }
+
+  function handleDeleteQuickNoteAndClose(noteId: string) {
+    saveQuickNotes(deleteQuickNote(quickNotes, noteId));
+    setSelectedQuickNote(null);
+  }
+
   function handleMoveQuickNoteToNotebook(noteId: string, notebookId: string) {
     const result = moveQuickNoteToNotebook(
       quickNotes,
@@ -725,7 +756,15 @@ export default function NotebooksPage() {
       </aside>
 
       <main className="flex-1 overflow-y-auto p-6">
-        {selectedNote ? (
+        {selectedQuickNote ? (
+          <NoteEditor
+            note={selectedQuickNote}
+            onChangeTitle={(t) => handleChangeQuickNoteTitle(selectedQuickNote.id, t)}
+            onChangeContent={(c) => handleChangeQuickNoteContent(selectedQuickNote.id, c)}
+            onClose={() => setSelectedQuickNote(null)}
+            onDelete={() => handleDeleteQuickNoteAndClose(selectedQuickNote.id)}
+          />
+        ) : selectedNote ? (
           (() => {
             const nb = notebooks.find((n) => n.id === selectedNote.notebookId);
             const note = nb?.notes.find((nt) => nt.id === selectedNote.noteId);

@@ -20,7 +20,7 @@ import { TextStyle } from "@tiptap/extension-text-style";
 import { useMemo } from "react";
 
 type EditorNodeProps = {
-  notebook: Notebook;
+  notebook?: Notebook;
   note: Note;
   onChangeTitle: (title: string) => void;
   onChangeContent: (content: string) => void;
@@ -127,12 +127,14 @@ export default function NoteEditor({
             </svg>
           </button>
 
-          <span
-            className="rounded-full px-2.5 py-0.5 text-xs font-medium text-white"
-            style={{ backgroundColor: notebook.color }}
-          >
-            {notebook.name}
-          </span>
+          {notebook && (
+            <span
+              className="rounded-full px-2.5 py-0.5 text-xs font-medium text-white"
+              style={{ backgroundColor: notebook.color }}
+            >
+              {notebook.name}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center justify-end pl-[70%]">

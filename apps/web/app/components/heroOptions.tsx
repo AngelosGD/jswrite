@@ -2,7 +2,8 @@
 
 import NewNotebookModal from "./newNotebookModal";
 import { useState } from "react";
-import { useNotebooks } from "@/lib/notebooks";
+import { addQuickNote, saveQuickNotes, useNotebooks } from "@/lib/notebooks";
+import { useRouter } from "next/router";
 
 export default function HeroOptions() {
   const [showNotebookModal, setShowNotebookModal] = useState(false);
@@ -72,7 +73,14 @@ export default function HeroOptions() {
               onClose={() => setShowNotebookModal(false)}
             />
 
-            <button className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/20 rounded active:scale-95">
+            <button
+              onClick={() => {
+                const result = addQuickNote([]);
+                saveQuickNotes(result.quickNotes);
+                window.location.href = '/notebooks'
+              }}
+              className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/20 rounded active:scale-95"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

@@ -84,6 +84,7 @@ export default function NotebooksPage() {
   } | null>(null);
 
   const [dragQuickNoteId, setDragQuickNoteId] = useState<string | null>(null);
+  const [disintegratingId, setDisintegratingId] = useState<string | null>(null);
 
   const quickNotes = useQuickNotes();
   const [showQuickNotes, setShowQuickNotes] = useState(false);
@@ -107,6 +108,15 @@ export default function NotebooksPage() {
   function handleClickQuickNote(note: Note) {
     setSelectedNote(null);
     setSelectedQuickNote(note);
+  }
+
+  function handleDisintegrateQuickNote(noteId: string) {
+    setDisintegratingId(noteId);
+    setTimeout(() => {
+      saveQuickNotes(deleteQuickNote(quickNotes, noteId));
+      setDisintegratingId(null);
+      setSelectedQuickNote((prev) => (prev && prev.id === noteId ? null : prev));
+    }, 350);
   }
 
   function handleChangeQuickNoteTitle(noteId: string, title: string) {
@@ -733,7 +743,7 @@ export default function NotebooksPage() {
                       quickNotes.map((note) => (
                         <div
                           key={note.id}
-                          className="group flex items-center gap-1 rounded-md transition duration-100 ease hover:bg-gray-50"
+                          className={`group flex items-center gap-1 rounded-md transition duration-100 ease hover:bg-gray-50 ${disintegratingId === note.id ? "animate-disintegrate" : ""}`}
                         >
                           <button
                             draggable
@@ -767,6 +777,27 @@ export default function NotebooksPage() {
                             <span className="min-w-0 flex-1 truncate">
                               {note.title}
                             </span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDisintegrateQuickNote(note.id)}
+                            className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition-all duration-150 hover:text-red-500 group-hover:opacity-100"
+                            aria-label="Eliminar nota rápida"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="2"
+                              stroke="currentColor"
+                              className="size-3"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18 18 6M6 6l12 12"
+                              />
+                            </svg>
                           </button>
                         </div>
                       ))

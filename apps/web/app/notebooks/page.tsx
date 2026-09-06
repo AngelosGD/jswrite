@@ -73,6 +73,8 @@ export default function NotebooksPage() {
     noteId: string;
   } | null>(null);
 
+  const [dragQuickNoteId, setDragQuickNoteId] = useState<string | null>(null);
+
   const quickNotes = useQuickNotes();
   const [showQuickNotes, setShowQuickNotes] = useState(false);
   const [quickContextMenu, setQuickContextMenu] = useState<{
@@ -500,9 +502,15 @@ export default function NotebooksPage() {
                         prev === n.id ? null : prev,
                       )
                     }
+                    // ? modificacion para editar para hacer posible el dragAnDrop de las rapidas
                     onDrop={(e) => {
                       e.preventDefault();
-                      handleMoveNote(n.id);
+                      if(dragQuickNoteId){
+                        handleMoveQuickNoteToNotebook(dragQuickNoteId, n.id)
+                        setDragQuickNoteId(null)
+                      } else {  
+                        handleMoveNote(n.id)
+                      }
                     }}
                   >
                     <div className="group flex items-center gap-1 rounded-lg border border-gray-100 bg-white p-1 pr-1 shadow-sm transition duration-100 ease hover:border-gray-200 hover:shadow">
@@ -718,10 +726,17 @@ export default function NotebooksPage() {
                           className="group flex items-center gap-1 rounded-md transition duration-100 ease hover:bg-gray-50"
                         >
                           <button
+                            draggable
+                            onDragStart={() => setDragQuickNoteId(note.id)}
+                            onDragEnd={() => setDragQuickNoteId(null)}
                             onClick={() => handleClickQuickNote(note)}
                             onContextMenu={(e) => {
                               e.preventDefault();
-                              setQuickContextMenu({ x: e.clientX, y: e.clientY, noteId: note.id });
+                              setQuickContextMenu({
+                                x: e.clientX,
+                                y: e.clientY,
+                                noteId: note.id,
+                              });
                             }}
                             className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800"
                           >
@@ -778,14 +793,18 @@ export default function NotebooksPage() {
 
       <main className="flex-1 overflow-y-auto p-6">
         {selectedQuickNote ? (
-              <NoteEditor
-                key={selectedQuickNote.id}
-                note={selectedQuickNote}
-                onChangeTitle={(t) => handleChangeQuickNoteTitle(selectedQuickNote.id, t)}
-                onChangeContent={(c) => handleChangeQuickNoteContent(selectedQuickNote.id, c)}
-                onClose={() => setSelectedQuickNote(null)}
-                onDelete={() => handleDeleteQuickNoteAndClose(selectedQuickNote.id)}
-              />
+          <NoteEditor
+            key={selectedQuickNote.id}
+            note={selectedQuickNote}
+            onChangeTitle={(t) =>
+              handleChangeQuickNoteTitle(selectedQuickNote.id, t)
+            }
+            onChangeContent={(c) =>
+              handleChangeQuickNoteContent(selectedQuickNote.id, c)
+            }
+            onClose={() => setSelectedQuickNote(null)}
+            onDelete={() => handleDeleteQuickNoteAndClose(selectedQuickNote.id)}
+          />
         ) : selectedNote ? (
           (() => {
             const nb = notebooks.find((n) => n.id === selectedNote.notebookId);
@@ -858,7 +877,10 @@ export default function NotebooksPage() {
 
       {quickContextMenu && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setQuickContextMenu(null)} />
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => setQuickContextMenu(null)}
+          />
           <div
             className="fixed z-50 flex w-48 flex-col rounded-md border border-gray-200 bg-white py-1 shadow-lg"
             style={{ left: quickContextMenu.x, top: quickContextMenu.y }}
@@ -867,7 +889,11 @@ export default function NotebooksPage() {
             <button
               type="button"
               onClick={() => {
-                setShowNotebookPicker({ x: quickContextMenu.x, y: quickContextMenu.y, noteId: quickContextMenu.noteId });
+                setShowNotebookPicker({
+                  x: quickContextMenu.x,
+                  y: quickContextMenu.y,
+                  noteId: quickContextMenu.noteId,
+                });
                 setQuickContextMenu(null);
               }}
               className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
@@ -890,7 +916,10 @@ export default function NotebooksPage() {
 
       {noteContextMenu && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setNoteContextMenu(null)} />
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => setNoteContextMenu(null)}
+          />
           <div
             className="fixed z-50 flex w-48 flex-col rounded-md border border-gray-200 bg-white py-1 shadow-lg"
             style={{ left: noteContextMenu.x, top: noteContextMenu.y }}
@@ -899,17 +928,27 @@ export default function NotebooksPage() {
             <button
               type="button"
               onClick={() => {
-                handleToggleNotePin(noteContextMenu.notebookId, noteContextMenu.noteId);
+                handleToggleNotePin(
+                  noteContextMenu.notebookId,
+                  noteContextMenu.noteId,
+                );
                 setNoteContextMenu(null);
               }}
               className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
             >
-              {notebooks.find((n) => n.id === noteContextMenu.notebookId)?.notes.find((nt) => nt.id === noteContextMenu.noteId)?.pinned ? "Desfijar nota" : "Fijar nota"}
+              {notebooks
+                .find((n) => n.id === noteContextMenu.notebookId)
+                ?.notes.find((nt) => nt.id === noteContextMenu.noteId)?.pinned
+                ? "Desfijar nota"
+                : "Fijar nota"}
             </button>
             <button
               type="button"
               onClick={() => {
-                handleDeleteNote(noteContextMenu.notebookId, noteContextMenu.noteId);
+                handleDeleteNote(
+                  noteContextMenu.notebookId,
+                  noteContextMenu.noteId,
+                );
                 setNoteContextMenu(null);
               }}
               className="px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
@@ -922,19 +961,27 @@ export default function NotebooksPage() {
 
       {showNotebookPicker && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setShowNotebookPicker(null)} />
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => setShowNotebookPicker(null)}
+          />
           <div
             className="fixed z-50 flex w-52 flex-col rounded-md border border-gray-200 bg-white py-1 shadow-lg"
             style={{ left: showNotebookPicker.x, top: showNotebookPicker.y }}
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="px-4 py-1.5 text-xs font-medium text-gray-400">Selecciona un notebook</p>
+            <p className="px-4 py-1.5 text-xs font-medium text-gray-400">
+              Selecciona un notebook
+            </p>
             {notebooks.map((n) => (
               <button
                 key={n.id}
                 type="button"
                 onClick={() => {
-                  handleMoveQuickNoteToNotebook(showNotebookPicker.noteId, n.id);
+                  handleMoveQuickNoteToNotebook(
+                    showNotebookPicker.noteId,
+                    n.id,
+                  );
                   setShowNotebookPicker(null);
                 }}
                 className="flex items-center gap-2 px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"

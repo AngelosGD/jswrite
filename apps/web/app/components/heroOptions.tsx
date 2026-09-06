@@ -2,12 +2,12 @@
 
 import NewNotebookModal from "./newNotebookModal";
 import { useState } from "react";
-import { addQuickNote, saveQuickNotes, useNotebooks } from "@/lib/notebooks";
-import { useRouter } from "next/router";
+import { addQuickNote, saveQuickNotes, useQuickNotes, useNotebooks } from "@/lib/notebooks";
 
 export default function HeroOptions() {
   const [showNotebookModal, setShowNotebookModal] = useState(false);
   const notebooks = useNotebooks();
+  const quickNotes = useQuickNotes();
   const [query, setQuery] = useState("");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
@@ -75,9 +75,9 @@ export default function HeroOptions() {
 
             <button
               onClick={() => {
-                const result = addQuickNote([]);
+                const result = addQuickNote(quickNotes);
                 saveQuickNotes(result.quickNotes);
-                window.location.href = '/notebooks'
+                window.location.href = `/notebooks?quick=${result.note.id}`;
               }}
               className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/20 rounded active:scale-95"
             >

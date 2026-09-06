@@ -15,6 +15,7 @@ import {
   addQuickNote,
   deleteQuickNote,
   moveQuickNoteToNotebook,
+  loadQuickNotes,
 } from "@/lib/notebooks";
 import NotebookCard from "@/app/components/notebookCard";
 import NewNotebookModal from "@/app/components/newNotebookModal";
@@ -37,10 +38,19 @@ export default function NotebooksPage() {
     const params = new URLSearchParams(window.location.search);
     const nbId = params.get("open");
     const noteId = params.get("note");
+    const quickId = params.get("quick");
     if (nbId) {
       setOpenNotebookId(nbId);
       if (noteId) {
         setSelectedNote({ notebookId: nbId, noteId });
+      }
+    }
+    if (quickId) {
+      const allQuick = loadQuickNotes();
+      const found = allQuick.find((n) => n.id === quickId);
+      if (found) {
+        setSelectedQuickNote(found);
+        setShowQuickNotes(true);
       }
     }
   }, []);

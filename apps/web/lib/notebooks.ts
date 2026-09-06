@@ -230,10 +230,12 @@ export function deleteNote(
 // ! helpers para las quick notes
 // ! funciones auxiliares para tareas repetitivas
 
+function randomSuffix(): string{
+  return Math.random().toString(36).slice(2,6)
+}
+
 export function createQuickNoteTitle(quickNotes: Note[]): string{
-  let i = 1;
-  while(quickNotes.some((n) => n.title === `Untitled${i}`)) i ++
-  return `Untitled${i}`
+  return `Untitled-${randomSuffix()}`  
 }
 
 export function addQuickNote(quickNotes: Note[]): {quickNotes: Note[]; note: Note}{

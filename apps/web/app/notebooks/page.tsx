@@ -332,8 +332,8 @@ export default function NotebooksPage() {
   }
 
   return (
-    <div className="flex h-screen">
-      <aside className="flex w-64 shrink-0 flex-col border-r border-gray-200 p-4">
+    <div className="flex h-screen bg-[#fbfbfd]">
+      <aside className="flex w-64 shrink-0 flex-col border-r border-black/5 bg-white/70 p-4 backdrop-blur-xl">
         {openNotebookId ? (
           (() => {
             const openNb = notebooks.find((n) => n.id === openNotebookId);
@@ -890,7 +890,7 @@ export default function NotebooksPage() {
         )}
       </aside>
 
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto px-8 py-8">
         {selectedQuickNote ? (
           <NoteEditor
             key={selectedQuickNote.id}
@@ -926,26 +926,56 @@ export default function NotebooksPage() {
             );
           })()
         ) : openNotebookId ? (
-          <p className="font-serif text-2xl text-gray-800">
-            Selecciona una nota del panel izquierdo.
-          </p>
+          <div className="mx-auto flex h-full max-w-3xl flex-col items-center justify-center text-center">
+            <div className="flex size-14 items-center justify-center rounded-2xl bg-black/5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="size-7 text-gray-400"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12h6m-6 4h6M10 3.75H6.375A2.625 2.625 0 0 0 3.75 6.375v11.25A2.625 2.625 0 0 0 6.375 20.25h11.25A2.625 2.625 0 0 0 20.25 17.625V6.375A2.625 2.625 0 0 0 17.625 3.75H14M9 3.75a1.5 1.5 0 0 1 3 0h.25A1.5 1.5 0 0 0 15 3.15v.832A1.5 1.5 0 0 0 15 5.25V6a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-.75a1.5 1.5 0 0 0 0-.9V3.75Z"
+                />
+              </svg>
+            </div>
+            <p className="mt-4 text-xl font-semibold tracking-tight text-gray-800">
+              Selecciona una nota
+            </p>
+            <p className="mt-1 text-sm text-gray-400">
+              Elígela del panel izquierdo para empezar a escribir
+            </p>
+          </div>
         ) : (
           <>
-            <h1 className="font-serif text-2xl text-gray-800">Mis notebooks</h1>
+            <div className="mx-auto max-w-5xl">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+                Mis notebooks
+              </h1>
+              <p className="mt-1 text-sm text-gray-400">
+                {notebooks.length === 0
+                  ? "Crea tu primer notebook para empezar"
+                  : `${notebooks.length} notebook${notebooks.length === 1 ? "" : "s"}`}
+              </p>
 
-            {notebooks.length === 0 ? (
-              <p className="mt-4 text-gray-400">Sin notebooks aún</p>
-            ) : (
-              <div className="mt-6 grid gap-5 sm:grid-cols-3 lg:grid-cols-5">
-                {notebooks.map((n) => (
-                  <NotebookCard
-                    key={n.id}
-                    notebook={n}
-                    onOpen={() => setOpenNotebookId(n.id)}
-                  />
-                ))}
-              </div>
-            )}
+              {notebooks.length === 0 ? (
+                <p className="mt-8 text-gray-400">Sin notebooks aún</p>
+              ) : (
+                <div className="mt-6 grid gap-5 sm:grid-cols-3 lg:grid-cols-5">
+                  {notebooks.map((n) => (
+                    <NotebookCard
+                      key={n.id}
+                      notebook={n}
+                      onOpen={() => setOpenNotebookId(n.id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </>
         )}
       </main>

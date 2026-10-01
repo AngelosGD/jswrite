@@ -26,6 +26,8 @@ import { useState, useEffect, type MouseEvent, use } from "react";
 import ContextMenu from "../components/contextMenu";
 import NoteEditor from "../components/noteEditor";
 import EditNotebookModal from "../components/editNotebookModal";
+import SidebarFooter from "../components/sidebarFooter";
+import SearchModal from "../components/searchModal";
 
 export default function NotebooksPage() {
   const notebooks = useNotebooks();
@@ -192,6 +194,39 @@ export default function NotebooksPage() {
   const [dragOverNotebookId, setDragOverNotebookId] = useState<string | null>(
     null,
   );
+
+  const [showSearch, setShowSearch] = useState(false);
+
+  // ? atajo "/" para abrir la búsqueda (si no se está escribiendo)
+  useEffect(() => {
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const typing =
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable);
+      if (e.key === "/" && !typing) {
+        e.preventDefault();
+        setShowSearch(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  function handleOpenSearchNote(notebookId: string, noteId: string) {
+    setSelectedQuickNote(null);
+    setOpenNotebookId(notebookId);
+    setExpandedNotebooks((prev) => new Set(prev).add(notebookId));
+    setSelectedNote({ notebookId, noteId });
+  }
+
+  function handleOpenSearchQuickNote(note: Note) {
+    setSelectedNote(null);
+    setSelectedQuickNote(note);
+    setShowQuickNotes(true);
+  }
 
   function handleMoveNote(targetNotebookId: string) {
     if (!dragItem || dragItem.fromNotebookId === targetNotebookId) return;
@@ -432,6 +467,7 @@ export default function NotebooksPage() {
                     Añadir nota
                   </button>
                 </nav>
+                <SidebarFooter onOpenSearch={() => setShowSearch(true)} />
               </>
             );
           })()
@@ -849,6 +885,7 @@ export default function NotebooksPage() {
                 )}
               </div>
             </nav>
+            <SidebarFooter onOpenSearch={() => setShowSearch(true)} />
           </>
         )}
       </aside>
@@ -923,6 +960,15 @@ export default function NotebooksPage() {
         notebook={notebooks.find((n) => n.id === editingNotebookId) ?? null}
         onSave={handleEditNotebook}
         onClose={() => setEditingNotebookId(null)}
+      />
+
+      <SearchModal
+        isOpen={showSearch}
+        onClose={() => setShowSearch(false)}
+        notebooks={notebooks}
+        quickNotes={quickNotes}
+        onOpenNote={handleOpenSearchNote}
+        onOpenQuickNote={handleOpenSearchQuickNote}
       />
 
       {contextMenu && (

@@ -5,12 +5,31 @@ import { useSyncExternalStore } from "react";
 /*
 ? definimos los tipos / estructura de las notas y los notebooks
 */
+
+// ? etiqueta de una nota: se muestra con prefijo # y color propio
+export type Tag = {
+  label: string;
+  color: string;
+};
+
+export const TAG_COLORS = [
+  "#ef4444",
+  "#f97316",
+  "#eab308",
+  "#22c55e",
+  "#3b82f6",
+  "#8b5cf6",
+  "#ec4899",
+  "#14b8a6",
+];
+
 export type Note = {
   id: string;
   title: string;
   content: string;
   pinned: boolean;
   type?: "quick";
+  tags?: Tag[];
   createdAt: string;
   updatedAt: string;
 };
@@ -226,6 +245,44 @@ export function deleteNote(
 }
 
 
+
+// ! helpers para las etiquetas de las notas
+
+export function getNoteTags(note: Note): Tag[] {
+  return note.tags ?? [];
+}
+
+function randomTagColor(existing: Tag[]): string {
+  const used = new Set(existing.map((t) => t.color));
+  const free = TAG_COLORS.filter((c) => !used.has(c));
+  const pool = free.length > 0 ? free : TAG_COLORS;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+// ? crea una etiqueta (sin #, sin duplicados, color al azar); null si inválida
+export function createTag(existing: Tag[], rawLabel: string): Tag | null {
+  const label = rawLabel.trim().replace(/^#+/, "").trim();
+  if (!label) return null;
+  if (existing.some((t) => t.label.toLowerCase() === label.toLowerCase()))
+    return null;
+  return { label, color: randomTagColor(existing) };
+}
+
+export function addTagToNote(note: Note, rawLabel: string): Note {
+  const tags = getNoteTags(note);
+  const tag = createTag(tags, rawLabel);
+  if (!tag) return note;
+  return { ...note, tags: [...tags, tag] };
+}
+
+export function removeTagFromNote(note: Note, label: string): Note {
+  return {
+    ...note,
+    tags: getNoteTags(note).filter(
+      (t) => t.label.toLowerCase() !== label.toLowerCase(),
+    ),
+  };
+}
 
 // ! helpers para las quick notes
 // ! funciones auxiliares para tareas repetitivas

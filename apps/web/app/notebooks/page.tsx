@@ -11,6 +11,7 @@ import {
   Notebook,
   Note,
   Tag,
+  getNoteTags,
   useQuickNotes,
   saveQuickNotes,
   addQuickNote,
@@ -21,7 +22,7 @@ import {
 import NotebookCard from "@/app/components/notebookCard";
 import NewNotebookModal from "@/app/components/newNotebookModal";
 import Link from "next/link";
-import { useState, useEffect, type MouseEvent, use } from "react";
+import { useState, useEffect, useMemo, type MouseEvent, use } from "react";
 
 import ContextMenu from "../components/contextMenu";
 import NoteEditor from "../components/noteEditor";
@@ -60,6 +61,7 @@ export default function NotebooksPage() {
   }, []);
 
   const [query, setQuery] = useState("");
+  const [activeTag, setActiveTag] = useState<string | null>(null);
 
   const [expandedNotebooks, setExpandedNotebooks] = useState<Set<string>>(
     () => new Set(),
@@ -92,6 +94,30 @@ export default function NotebooksPage() {
 
   const quickNotes = useQuickNotes();
   const [showQuickNotes, setShowQuickNotes] = useState(false);
+
+  // ? todas las etiquetas existentes (notebooks + rápidas), sin duplicados
+  const allTags = useMemo(() => {
+    const seen = new Map<string, Tag>();
+    const collect = (notes: Note[]) => {
+      for (const note of notes) {
+        for (const tag of getNoteTags(note)) {
+          const key = tag.label.toLowerCase();
+          if (!seen.has(key)) seen.set(key, tag);
+        }
+      }
+    };
+    collect(quickNotes);
+    for (const nb of notebooks) collect(nb.notes);
+    return [...seen.values()];
+  }, [notebooks, quickNotes]);
+
+  const matchesTag = (note: Note) =>
+    !activeTag ||
+    getNoteTags(note).some(
+      (t) => t.label.toLowerCase() === activeTag.toLowerCase(),
+    );
+
+  const visibleQuickNotes = quickNotes.filter(matchesTag);
   const [quickContextMenu, setQuickContextMenu] = useState<{
     x: number;
     y: number;
@@ -267,6 +293,7 @@ export default function NotebooksPage() {
 
   const filterNotebooks = notebooks
     .filter((n) => n.name.toLowerCase().includes(query.trim().toLowerCase()))
+    .filter((n) => !activeTag || n.notes.some(matchesTag))
     .sort((a, b) => Number(b.pinned) - Number(a.pinned));
 
   const handleAddNote = (notebookId: string) => {
@@ -375,10 +402,18 @@ export default function NotebooksPage() {
                 </div>
 
                 <nav className="mt-4 flex flex-1 flex-col gap-1 overflow-y-auto pr-1">
-                  {openNb.notes.length === 0 ? (
-                    <p className="px-2 py-1 text-sm text-gray-400">Sin notas</p>
-                  ) : (
-                    [...openNb.notes]
+                  {(() => {
+                    const visible = openNb.notes.filter(matchesTag);
+                    if (visible.length === 0) {
+                      return (
+                        <p className="px-2 py-1 text-sm text-gray-400">
+                          {openNb.notes.length === 0
+                            ? "Sin notas"
+                            : `Sin notas con #${activeTag}`}
+                        </p>
+                      );
+                    }
+                    return [...visible]
                       .sort((a, b) => Number(b.pinned) - Number(a.pinned))
                       .map((note) => (
                         <div
@@ -445,7 +480,7 @@ export default function NotebooksPage() {
                           </button>
                         </div>
                       ))
-                  )}
+                  })()}
 
                   <button
                     type="button"
@@ -544,6 +579,41 @@ export default function NotebooksPage() {
                 className="w-full rounded-lg border border-transparent bg-gray-50 py-2 pr-3 pl-8 text-sm text-gray-700 placeholder:text-gray-400 transition focus:border-gray-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-gray-200"
               />
             </div>
+
+            {/* filtro por etiquetas */}
+            {allTags.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1 px-1">
+                {allTags.map((tag) => {
+                  const active =
+                    activeTag?.toLowerCase() === tag.label.toLowerCase();
+                  return (
+                    <button
+                      key={tag.label}
+                      type="button"
+                      onClick={() =>
+                        setActiveTag(active ? null : tag.label)
+                      }
+                      title={
+                        active
+                          ? "Quitar filtro"
+                          : `Filtrar por #${tag.label}`
+                      }
+                      className="rounded-full px-2 py-0.5 text-[11px] font-medium transition active:scale-95"
+                      style={
+                        active
+                          ? { backgroundColor: tag.color, color: "#fff" }
+                          : {
+                              backgroundColor: `${tag.color}1a`,
+                              color: tag.color,
+                            }
+                      }
+                    >
+                      #{tag.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
 
             <nav className="mt-4 flex flex-1 flex-col gap-1 overflow-y-auto pr-1">
               {filterNotebooks.length === 0 && (
@@ -668,14 +738,20 @@ export default function NotebooksPage() {
 
                     {isOpen && (
                       <div className="animate-notes-expand mt-1 ml-3 flex flex-col gap-0.5 border-l border-gray-100 pl-3">
-                        {n.notes.length === 0 ? (
-                          <p className="px-2 py-1 text-sm text-gray-400">
-                            Sin notas
-                          </p>
-                        ) : (
-                          [...n.notes]
-                            .sort((a, b) => Number(b.pinned) - Number(a.pinned))
-                            .map((note) => (
+                      {(() => {
+                        const visible = n.notes.filter(matchesTag);
+                        if (visible.length === 0) {
+                          return (
+                            <p className="px-2 py-1 text-sm text-gray-400">
+                              {n.notes.length === 0
+                                ? "Sin notas"
+                                : `Sin notas con #${activeTag}`}
+                            </p>
+                          );
+                        }
+                        return [...visible]
+                          .sort((a, b) => Number(b.pinned) - Number(a.pinned))
+                          .map((note) => (
                               <div
                                 key={note.id}
                                 className="group flex items-center gap-1 rounded-md transition duration-100 ease hover:bg-gray-50"
@@ -763,7 +839,7 @@ export default function NotebooksPage() {
                                 </button>
                               </div>
                             ))
-                        )}
+                      })()}
                       </div>
                     )}
                   </div>
@@ -797,12 +873,14 @@ export default function NotebooksPage() {
 
                 {showQuickNotes && (
                   <div className="mt-1 ml-3 flex flex-col gap-0.5 border-l border-gray-100 pl-3">
-                    {quickNotes.length === 0 ? (
+                    {visibleQuickNotes.length === 0 ? (
                       <p className="px-2 py-1 text-sm text-gray-400">
-                        Sin notas rápidas
+                        {quickNotes.length === 0
+                          ? "Sin notas rápidas"
+                          : `Sin notas rápidas con #${activeTag}`}
                       </p>
                     ) : (
-                      quickNotes.map((note) => (
+                      visibleQuickNotes.map((note) => (
                         <div
                           key={note.id}
                           className={`group flex items-center gap-1 rounded-md transition duration-100 ease hover:bg-gray-50 ${disintegratingId === note.id ? "animate-disintegrate" : ""}`}

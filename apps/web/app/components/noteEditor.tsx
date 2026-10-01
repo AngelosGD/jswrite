@@ -125,15 +125,15 @@ export default function NoteEditor({
   };
 
   return (
-    <div className="mx-auto flex h-full w-[85%] flex-col px-6 py-8">
+    <div className="mx-auto flex h-full w-full max-w-3xl flex-col px-8 py-10">
       {/* cabecera */}
-      <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between pb-5">
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={onClose}
             aria-label="Volver"
-            className="rounded-md p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+            className="rounded-full p-2 text-gray-400 transition hover:bg-black/5 hover:text-gray-700 active:scale-90"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -161,11 +161,11 @@ export default function NoteEditor({
           )}
         </div>
 
-        <div className="flex items-center justify-end pl-[70%]">
+        <div className="flex items-center gap-1">
           {/* boton para añadir etiqueta */}
           <div className="relative" ref={tagRef}>
             <button
-              className="rounded-md p-1.5 text-gray-400 transition hover:bg-gray-200 hover:text-gray-700"
+              className="rounded-full p-2 text-gray-400 transition hover:bg-black/5 hover:text-gray-700 active:scale-90"
               onClick={() => setShowTagInput((v) => !v)}
               type="button"
               aria-label="Añadir etiqueta"
@@ -215,7 +215,7 @@ export default function NoteEditor({
           {/* boton de descargar nota */}
           <div className="relative" ref={menuRef}>
             <button
-              className="rounded-md p-1.5 text-gray-400 transition hover:bg-gray-200 hover:text-gray-700"
+              className="rounded-full p-2 text-gray-400 transition hover:bg-black/5 hover:text-gray-700 active:scale-90"
               onClick={() => setShowExportMenu((v) => !v)}
               type="button"
               aria-label="Descargar Nota"
@@ -381,7 +381,7 @@ export default function NoteEditor({
           type="button"
           onClick={onDelete}
           aria-label="Eliminar nota"
-          className="rounded-md p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+          className="rounded-full p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600 active:scale-90"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -401,7 +401,7 @@ export default function NoteEditor({
       </div>
 
       {/* título: doble clic para editar */}
-      <div className="pt-8">
+      <div className="pt-10">
         {editingTitle ? (
           <input
             autoFocus
@@ -412,7 +412,7 @@ export default function NoteEditor({
               if (e.key === "Enter") commitTitle();
               if (e.key === "Escape") setEditingTitle(false);
             }}
-            className="w-full border-b border-gray-200 pb-2 font-serif text-3xl font-medium text-gray-900 outline-none focus:border-gray-400"
+            className="w-full bg-transparent pb-2 text-4xl font-bold tracking-tight text-gray-900 outline-none placeholder:text-gray-300"
           />
         ) : (
           <h2
@@ -420,7 +420,7 @@ export default function NoteEditor({
               setDraftTitle(note.title);
               setEditingTitle(true);
             }}
-            className="cursor-text select-none pb-2 font-serif text-3xl leading-snug text-gray-900 transition hover:border-b hover:border-gray-200"
+            className="cursor-text text-4xl leading-tight font-bold tracking-tight text-gray-900 select-none"
             title="Doble clic para editar"
           >
             {note.title}
@@ -469,9 +469,9 @@ export default function NoteEditor({
       </div>
 
       {/* barra de formato + contenido */}
-      <div className="mt-6 flex flex-1 flex-col overflow-hidden rounded-lg border border-gray-200">
+      <div className="mt-8 flex flex-1 flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)]">
         <FormatToolbar editor={editor} />
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto px-7 py-5">
           <EditorContent editor={editor} />
         </div>
       </div>

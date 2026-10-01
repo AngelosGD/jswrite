@@ -21,12 +21,14 @@ export default function HeroOptions() {
     <div className="items-center justify-center flex mt-[8%] flex-col gap-5">
       <div className="flex flex-col md:flex-row gap-10 items-start justify-center">
         <div className="items-center justify-center flex flex-col ">
-          <p className="font-sans font-bold ">Guardado local automatico</p>
-          <p className="font-sans text-3xl font-bold">
+          <p className="font-sans text-sm font-medium text-gray-400">
+            Guardado local automático
+          </p>
+          <p className="font-sans text-4xl font-bold tracking-tight text-gray-900">
             Empieza a <span className="text-mist-800">ordenar</span>
           </p>
 
-          <p className="font-sans text-center text-gray-700 text-lg">
+          <p className="font-sans max-w-md text-center text-gray-500">
             Crea un nuevo cuaderno y ordena tus ideas y apuntes o ve directo al
             board para empezar a idear.
           </p>
@@ -34,7 +36,7 @@ export default function HeroOptions() {
           <div className="flex flex-col gap-4 mt-5">
             <button
               onClick={() => setShowNotebookModal(true)}
-              className="group flex items-center gap-2 transition duration-300 ease pr-20 pl-20 border h-12 border-black/20 rounded active:scale-95"
+              className="group flex items-center gap-2 transition duration-300 ease pr-20 pl-20 border h-12 border-black/5 bg-white rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition duration-200 ease hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:translate-y-0 active:scale-[0.98]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +44,7 @@ export default function HeroOptions() {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-6 bg-gray-200 rounded"
+                className="size-6 rounded-xl bg-black/5 p-1 text-gray-600"
               >
                 <path
                   strokeLinecap="round"
@@ -85,7 +87,7 @@ export default function HeroOptions() {
                 saveQuickNotes(result.quickNotes);
                 window.location.href = `/notebooks?quick=${result.note.id}`;
               }}
-              className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/20 rounded active:scale-95"
+              className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/5 bg-white rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition duration-200 ease hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:translate-y-0 active:scale-[0.98]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -93,7 +95,7 @@ export default function HeroOptions() {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-6 bg-gray-200 rounded m-2"
+                className="size-6 rounded-xl bg-black/5 p-1 text-gray-600 m-2"
               >
                 <path
                   strokeLinecap="round"
@@ -120,14 +122,14 @@ export default function HeroOptions() {
               </svg>
             </button>
 
-            <button className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/20 rounded active:scale-95">
+            <button className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/5 bg-white rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition duration-200 ease hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:translate-y-0 active:scale-[0.98]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-6 bg-gray-200 rounded m-2"
+                className="size-6 rounded-xl bg-black/5 p-1 text-gray-600 m-2"
               >
                 <path
                   strokeLinecap="round"
@@ -156,14 +158,14 @@ export default function HeroOptions() {
 
             <button
               onClick={() => setShowTemplateModal(true)}
-              className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/20 rounded active:scale-95">
+              className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/5 bg-white rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition duration-200 ease hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:translate-y-0 active:scale-[0.98]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-6 bg-gray-200 rounded m-2"
+                className="size-6 rounded-xl bg-black/5 p-1 text-gray-600 m-2"
               >
                 <path
                   strokeLinecap="round"

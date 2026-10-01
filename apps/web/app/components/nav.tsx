@@ -5,21 +5,26 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="w-full border-b-2 border-gray-200 p-5">
-      <div className="flex items-center justify-between">
+    <nav className="sticky top-0 z-40 w-full border-b border-black/5 bg-[#fbfbfd]/80 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <div className="flex items-center gap-5">
-          <p className="font-serif text-2xl text-gray-800 pl-5">JsWrite</p>
-          <p className="hidden md:block font-serif pt-1">
-            cualquier <span className="font-bold">nota</span> en tu navegador,
-            solo <span className="font-bold">escribelo</span> o dictalo por voz
+          <p className="text-xl font-bold tracking-tight text-gray-900">
+            JsWrite
           </p>
-        </div>  
+          <p className="hidden pt-0.5 text-sm text-gray-500 md:block">
+            cualquier <span className="font-semibold text-gray-800">nota</span>{" "}
+            en tu navegador, solo{" "}
+            <span className="font-semibold text-gray-800">escríbelo</span>
+          </p>
+        </div>
 
-        <div className="hidden md:flex items-center gap-3">
-          <button className="border border-gray-400 p-2 w-25 transition duration-280 ease hover:bg-black hover:text-white">Github</button>
+        <div className="hidden items-center gap-2 md:flex">
+          <button className="rounded-full border border-black/10 px-4 py-1.5 text-sm font-medium text-gray-700 transition duration-200 ease hover:border-black hover:bg-black hover:text-white active:scale-95">
+            Github
+          </button>
           <button
             disabled
-            className="bg-black border border-black text-white p-2 w-25 opacity-60 cursor-not-allowed transition duration-280 ease"
+            className="cursor-not-allowed rounded-full border border-black bg-black px-4 py-1.5 text-sm font-medium text-white opacity-40"
             title="Escritorio llegará en una futura versión"
           >
             Escritorio (pronto)
@@ -27,7 +32,7 @@ export default function Nav() {
         </div>
 
         <button
-          className="md:hidden border border-gray-400 px-3 py-1 text-sm"
+          className="rounded-full border border-black/10 px-3 py-1.5 text-sm md:hidden"
           onClick={() => setOpen(!open)}
         >
           {open ? "✕" : "☰"}
@@ -35,16 +40,18 @@ export default function Nav() {
       </div>
 
       {open && (
-        <div className="md:hidden flex flex-col items-center gap-3 mt-4 pb-2">
-          <p className="font-serif text-center">
-            cualquier <span className="font-bold">nota</span> en tu navegador,
-            solo <span className="font-bold">escribelo</span> o dictalo por voz
+        <div className="flex flex-col items-center gap-3 px-6 pt-1 pb-4 md:hidden">
+          <p className="text-center text-sm text-gray-500">
+            cualquier <span className="font-semibold">nota</span> en tu
+            navegador, solo <span className="font-semibold">escríbelo</span>
           </p>
-          <div className="flex gap-3">
-            <button className="border border-gray-400 p-2 w-25 transition duration-280 ease hover:bg-black hover:text-white">Github</button>
+          <div className="flex gap-2">
+            <button className="rounded-full border border-black/10 px-4 py-1.5 text-sm font-medium transition duration-200 ease hover:bg-black hover:text-white">
+              Github
+            </button>
             <button
               disabled
-              className="bg-black border border-black text-white p-2 w-25 opacity-60 cursor-not-allowed transition duration-280 ease"
+              className="cursor-not-allowed rounded-full border border-black bg-black px-4 py-1.5 text-sm font-medium text-white opacity-40"
               title="Escritorio llegará en una futura versión"
             >
               Escritorio (pronto)

@@ -125,7 +125,7 @@ export default function NoteEditor({
   };
 
   return (
-    <div className="mx-auto flex h-full w-full max-w-3xl flex-col px-8 py-10">
+    <div className="mx-auto flex h-full w-full max-w-5xl flex-col px-10 py-10">
       {/* cabecera */}
       <div className="flex items-center justify-between pb-5">
         <div className="flex items-center gap-2.5">

@@ -7,7 +7,7 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
-import { Notebook, Note } from "@/lib/notebooks";
+import { Notebook, Note, Tag, getNoteTags, createTag } from "@/lib/notebooks";
 import {
   copyToClipboard,
   exportDocx,
@@ -24,6 +24,7 @@ type EditorNodeProps = {
   note: Note;
   onChangeTitle: (title: string) => void;
   onChangeContent: (content: string) => void;
+  onChangeTags: (tags: Tag[]) => void;
   onClose: () => void;
   onDelete: () => void;
 };
@@ -43,13 +44,30 @@ export default function NoteEditor({
   note,
   onChangeTitle,
   onChangeContent,
+  onChangeTags,
   onClose,
   onDelete,
 }: EditorNodeProps) {
   const [editingTitle, setEditingTitle] = useState(false);
   const [draftTitle, setDraftTitle] = useState(note.title);
   const [showExportMenu, setShowExportMenu] = useState(false);
+  const [showTagInput, setShowTagInput] = useState(false);
+  const [draftTag, setDraftTag] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
+  const tagRef = useRef<HTMLDivElement>(null);
+
+  const tags = getNoteTags(note);
+
+  const commitTag = () => {
+    const tag = createTag(tags, draftTag);
+    if (tag) onChangeTags([...tags, tag]);
+    setDraftTag("");
+    setShowTagInput(false);
+  };
+
+  const removeTag = (label: string) => {
+    onChangeTags(tags.filter((t) => t.label.toLowerCase() !== label.toLowerCase()));
+  };
 
   const extensions = useMemo(() => [
     StarterKit, 
@@ -69,26 +87,32 @@ export default function NoteEditor({
   })
   // use effect para cerrar el menu con el esc o dandole clic fueram
   useEffect(() => {
-    if (!showExportMenu) return;
+    if (!showExportMenu && !showTagInput) return;
     const onKey = (e: globalThis.KeyboardEvent) => {
-      if (e.key === "Escape") setShowExportMenu(false);
+      if (e.key === "Escape") {
+        setShowExportMenu(false);
+        setShowTagInput(false);
+      }
     };
 
     const onClick = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setShowExportMenu(false);
       }
+      if (tagRef.current && !tagRef.current.contains(e.target as Node)) {
+        setShowTagInput(false);
+      }
     };
 
     window.addEventListener("keydown", onKey);
     window.addEventListener("mousedown", onClick);
-    
+
 
     return () => {
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("mousedown", onClick);
     };
-  }, [showExportMenu]);
+  }, [showExportMenu, showTagInput]);
 
   const commitTitle = () => {
     onChangeTitle(draftTitle);
@@ -138,6 +162,56 @@ export default function NoteEditor({
         </div>
 
         <div className="flex items-center justify-end pl-[70%]">
+          {/* boton para añadir etiqueta */}
+          <div className="relative" ref={tagRef}>
+            <button
+              className="rounded-md p-1.5 text-gray-400 transition hover:bg-gray-200 hover:text-gray-700"
+              onClick={() => setShowTagInput((v) => !v)}
+              type="button"
+              aria-label="Añadir etiqueta"
+              title="Añadir etiqueta"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="size-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 6h.008v.008H6V6Z"
+                />
+              </svg>
+            </button>
+
+            {showTagInput && (
+              <div className="absolute right-0 z-50 mt-1 w-56 rounded-md border border-gray-300 bg-white p-2 shadow-lg">
+                <input
+                  autoFocus
+                  value={draftTag}
+                  onChange={(e) => setDraftTag(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") commitTag();
+                  }}
+                  type="text"
+                  placeholder="#reunion, salida..."
+                  className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm outline-none focus:border-gray-500"
+                />
+                <p className="mt-1 px-1 text-[11px] text-gray-400">
+                  Enter para añadir
+                </p>
+              </div>
+            )}
+          </div>
+
           {/* boton de descargar nota */}
           <div className="relative" ref={menuRef}>
             <button
@@ -356,6 +430,42 @@ export default function NoteEditor({
         <p className="pt-2 text-xs text-gray-400">
           Actualizado {formatDate(note.updatedAt, true)}
         </p>
+
+        {/* etiquetas de la nota */}
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 pt-3">
+            {tags.map((tag) => (
+              <span
+                key={tag.label}
+                className="group/tag inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
+                style={{ backgroundColor: `${tag.color}1a`, color: tag.color }}
+              >
+                #{tag.label}
+                <button
+                  type="button"
+                  onClick={() => removeTag(tag.label)}
+                  aria-label={`Quitar etiqueta ${tag.label}`}
+                  className="rounded-full opacity-0 transition group-hover/tag:opacity-100 hover:font-bold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2.5"
+                    stroke="currentColor"
+                    className="size-3"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18 18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* barra de formato + contenido */}

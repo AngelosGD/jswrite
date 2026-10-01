@@ -10,6 +10,7 @@ import {
   updateNotebook,
   Notebook,
   Note,
+  Tag,
   useQuickNotes,
   saveQuickNotes,
   addQuickNote,
@@ -145,6 +146,19 @@ export default function NotebooksPage() {
     );
   }
 
+  function handleChangeQuickNoteTags(noteId: string, tags: Tag[]) {
+    saveQuickNotes(
+      quickNotes.map((n) =>
+        n.id === noteId
+          ? { ...n, tags, updatedAt: new Date().toISOString() }
+          : n,
+      ),
+    );
+    setSelectedQuickNote((prev) =>
+      prev && prev.id === noteId ? { ...prev, tags } : prev,
+    );
+  }
+
   function handleDeleteQuickNoteAndClose(noteId: string) {
     saveQuickNotes(deleteQuickNote(quickNotes, noteId));
     setSelectedQuickNote(null);
@@ -261,6 +275,13 @@ export default function NotebooksPage() {
     if (!selectedNote) return;
     saveNotebooks(
       updaetNote(notebooks, selectedNote.notebookId, noteId, { content }),
+    );
+  }
+
+  function handleChangeTags(noteId: string, tags: Tag[]) {
+    if (!selectedNote) return;
+    saveNotebooks(
+      updaetNote(notebooks, selectedNote.notebookId, noteId, { tags }),
     );
   }
 
@@ -843,6 +864,9 @@ export default function NotebooksPage() {
             onChangeContent={(c) =>
               handleChangeQuickNoteContent(selectedQuickNote.id, c)
             }
+            onChangeTags={(tags) =>
+              handleChangeQuickNoteTags(selectedQuickNote.id, tags)
+            }
             onClose={() => setSelectedQuickNote(null)}
             onDelete={() => handleDeleteQuickNoteAndClose(selectedQuickNote.id)}
           />
@@ -859,6 +883,7 @@ export default function NotebooksPage() {
                 note={note}
                 onChangeTitle={(t) => handleChangeTitle(note.id, t)}
                 onChangeContent={(c) => handleChangeContent(note.id, c)}
+                onChangeTags={(tags) => handleChangeTags(note.id, tags)}
                 onClose={() => setSelectedNote(null)}
               />
             );

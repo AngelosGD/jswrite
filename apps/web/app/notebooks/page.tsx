@@ -28,6 +28,7 @@ import NoteEditor from "../components/noteEditor";
 import EditNotebookModal from "../components/editNotebookModal";
 import SidebarFooter from "../components/sidebarFooter";
 import SearchModal from "../components/searchModal";
+import SidebarNoteTags from "../components/sidebarNoteTags";
 
 export default function NotebooksPage() {
   const notebooks = useNotebooks();
@@ -408,8 +409,9 @@ export default function NotebooksPage() {
                                 d="M9 12h6m-6 4h6M10 3.75H6.375A2.625 2.625 0 0 0 3.75 6.375v11.25A2.625 2.625 0 0 0 6.375 20.25h11.25A2.625 2.625 0 0 0 20.25 17.625V6.375A2.625 2.625 0 0 0 17.625 3.75H14M9 3.75a1.5 1.5 0 0 1 3 0h.25A1.5 1.5 0 0 0 15 3.15v.832A1.5 1.5 0 0 0 15 5.25V6a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-.75a1.5 1.5 0 0 0 0-.9V3.75Z"
                               />
                             </svg>
-                            <span className="min-w-0 flex-1 truncate">
-                              {note.title}
+                            <span className="flex min-w-0 flex-1 flex-col">
+                              <span className="truncate">{note.title}</span>
+                              <SidebarNoteTags note={note} />
                             </span>
                           </button>
                           <button
@@ -723,8 +725,11 @@ export default function NotebooksPage() {
                                       d="M9 12h6m-6 4h6M10 3.75H6.375A2.625 2.625 0 0 0 3.75 6.375v11.25A2.625 2.625 0 0 0 6.375 20.25h11.25A2.625 2.625 0 0 0 20.25 17.625V6.375A2.625 2.625 0 0 0 17.625 3.75H14M9 3.75a1.5 1.5 0 0 1 3 0h.25A1.5 1.5 0 0 0 15 3.15v.832A1.5 1.5 0 0 0 15 5.25V6a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-.75a1.5 1.5 0 0 0 0-.9V3.75Z"
                                     />
                                   </svg>
-                                  <span className="min-w-0 flex-1 truncate">
-                                    {note.title}
+                                  <span className="flex min-w-0 flex-1 flex-col">
+                                    <span className="truncate">
+                                      {note.title}
+                                    </span>
+                                    <SidebarNoteTags note={note} />
                                   </span>
                                 </button>
                                 <button
@@ -831,8 +836,9 @@ export default function NotebooksPage() {
                                 d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"
                               />
                             </svg>
-                            <span className="min-w-0 flex-1 truncate">
-                              {note.title}
+                            <span className="flex min-w-0 flex-1 flex-col">
+                              <span className="truncate">{note.title}</span>
+                              <SidebarNoteTags note={note} />
                             </span>
                           </button>
                           <button

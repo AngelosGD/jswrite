@@ -61,7 +61,7 @@ export default function SearchModal({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-start justify-center bg-black/30 pt-24"
+          className="fixed inset-0 z-50 flex items-start justify-center bg-black/25 backdrop-blur-sm pt-24"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

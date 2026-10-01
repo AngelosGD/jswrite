@@ -25,7 +25,7 @@ function EditForm({
 
   return (
     <motion.div
-      className="w-96 rounded border border-gray-200 bg-white p-6 shadow-lg"
+      className="w-96 rounded-2xl border border-black/5 bg-white p-6 shadow-xl"
       initial={{ opacity: 0, scale: 0.95, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -92,7 +92,7 @@ export default function EditNotebookModal({
     <AnimatePresence>
       {isOpen && notebook && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

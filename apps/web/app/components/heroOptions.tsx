@@ -40,12 +40,13 @@ function ParallaxIcon({
   return (
     <div
       aria-hidden="true"
+      data-parallax=""
       className={`pointer-events-none absolute will-change-transform transition-transform duration-300 ease-out ${className ?? ""}`}
       style={
         {
           "--depth": `${depth}px`,
           transform:
-            "translate3d(calc(var(--mx, 0) * var(--depth)), calc(var(--my, 0) * var(--depth)), 0)",
+            "translate3d(calc(var(--mx, 0) * var(--depth) + var(--ix, 0px)), calc(var(--my, 0) * var(--depth) + var(--iy, 0px)), 0) scale(var(--is, 1)) rotate(var(--ir, 0deg))",
         } as CSSProperties
       }
     >
@@ -65,6 +66,10 @@ export default function HeroOptions() {
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    const icons = Array.from(
+      el.querySelectorAll<HTMLElement>("[data-parallax]"),
+    );
+
     let frame = 0;
     const onMove = (event: PointerEvent) => {
       cancelAnimationFrame(frame);
@@ -74,12 +79,37 @@ export default function HeroOptions() {
         const y = (event.clientY - rect.top) / rect.height - 0.5;
         el.style.setProperty("--mx", (x * 2).toFixed(3));
         el.style.setProperty("--my", (y * 2).toFixed(3));
+
+        for (const icon of icons) {
+          const box = icon.getBoundingClientRect();
+          const cx = box.left + box.width / 2;
+          const cy = box.top + box.height / 2;
+          const dx = event.clientX - cx;
+          const dy = event.clientY - cy;
+          const dist = Math.hypot(dx, dy);
+          const reach = Math.max(box.width, box.height) * 0.9 + 120;
+          const strength = Math.max(0, 1 - dist / reach);
+          const nx = dist === 0 ? 0 : dx / dist;
+          const ny = dist === 0 ? 0 : dy / dist;
+          const push = strength * 18;
+
+          icon.style.setProperty("--ix", `${(nx * push).toFixed(2)}px`);
+          icon.style.setProperty("--iy", `${(ny * push).toFixed(2)}px`);
+          icon.style.setProperty("--is", (1 + strength * 0.08).toFixed(3));
+          icon.style.setProperty("--ir", `${(nx * strength * 4).toFixed(2)}deg`);
+        }
       });
     };
     const reset = () => {
       cancelAnimationFrame(frame);
       el.style.setProperty("--mx", "0");
       el.style.setProperty("--my", "0");
+      for (const icon of icons) {
+        icon.style.setProperty("--ix", "0px");
+        icon.style.setProperty("--iy", "0px");
+        icon.style.setProperty("--is", "1");
+        icon.style.setProperty("--ir", "0deg");
+      }
     };
 
     el.addEventListener("pointermove", onMove);

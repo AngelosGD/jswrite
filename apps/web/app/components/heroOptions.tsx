@@ -29,11 +29,9 @@ function ArrowIcon() {
 }
 
 function ParallaxIcon({
-  depth,
   className,
   children,
 }: {
-  depth: number;
   className?: string;
   children: ReactNode;
 }) {
@@ -44,9 +42,8 @@ function ParallaxIcon({
       className={`pointer-events-none absolute will-change-transform transition-transform duration-300 ease-out ${className ?? ""}`}
       style={
         {
-          "--depth": `${depth}px`,
           transform:
-            "translate3d(calc(var(--mx, 0) * var(--depth) + var(--ix, 0px)), calc(var(--my, 0) * var(--depth) + var(--iy, 0px)), 0) scale(var(--is, 1)) rotate(var(--ir, 0deg))",
+            "translate3d(var(--ix, 0px), var(--iy, 0px), 0) scale(var(--is, 1)) rotate(var(--ir, 0deg))",
         } as CSSProperties
       }
     >
@@ -74,12 +71,6 @@ export default function HeroOptions() {
     const onMove = (event: PointerEvent) => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const rect = el.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width - 0.5;
-        const y = (event.clientY - rect.top) / rect.height - 0.5;
-        el.style.setProperty("--mx", (x * 2).toFixed(3));
-        el.style.setProperty("--my", (y * 2).toFixed(3));
-
         for (const icon of icons) {
           const box = icon.getBoundingClientRect();
           const cx = box.left + box.width / 2;
@@ -91,7 +82,7 @@ export default function HeroOptions() {
           const strength = Math.max(0, 1 - dist / reach);
           const nx = dist === 0 ? 0 : dx / dist;
           const ny = dist === 0 ? 0 : dy / dist;
-          const push = strength * 18;
+          const push = strength * 22;
 
           icon.style.setProperty("--ix", `${(nx * push).toFixed(2)}px`);
           icon.style.setProperty("--iy", `${(ny * push).toFixed(2)}px`);
@@ -102,8 +93,6 @@ export default function HeroOptions() {
     };
     const reset = () => {
       cancelAnimationFrame(frame);
-      el.style.setProperty("--mx", "0");
-      el.style.setProperty("--my", "0");
       for (const icon of icons) {
         icon.style.setProperty("--ix", "0px");
         icon.style.setProperty("--iy", "0px");
@@ -133,7 +122,6 @@ export default function HeroOptions() {
         className="pointer-events-none absolute inset-0 overflow-hidden"
       >
         <ParallaxIcon
-          depth={22}
           className="left-[4%] top-[26%] hidden md:block"
         >
           <svg
@@ -150,7 +138,6 @@ export default function HeroOptions() {
         </ParallaxIcon>
 
         <ParallaxIcon
-          depth={34}
           className="right-[7%] top-[32%] hidden sm:block"
         >
           <svg
@@ -168,7 +155,6 @@ export default function HeroOptions() {
         </ParallaxIcon>
 
         <ParallaxIcon
-          depth={18}
           className="bottom-[16%] left-[10%] hidden lg:block"
         >
           <svg
@@ -186,7 +172,6 @@ export default function HeroOptions() {
         </ParallaxIcon>
 
         <ParallaxIcon
-          depth={28}
           className="bottom-[20%] right-[12%] hidden md:block"
         >
           <svg
@@ -204,7 +189,6 @@ export default function HeroOptions() {
         </ParallaxIcon>
 
         <ParallaxIcon
-          depth={14}
           className="left-[30%] top-[10%] hidden lg:block"
         >
           <svg
@@ -222,7 +206,6 @@ export default function HeroOptions() {
         </ParallaxIcon>
 
         <ParallaxIcon
-          depth={26}
           className="bottom-[10%] right-[30%] hidden xl:block"
         >
           <svg

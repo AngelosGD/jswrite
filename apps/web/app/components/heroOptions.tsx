@@ -280,19 +280,21 @@ export default function HeroOptions() {
           <div className="mt-9 w-full max-w-md">
             <button
               onClick={() => setShowNotebookModal(true)}
-              className="group flex h-12 w-full items-center gap-3 rounded-2xl bg-brand px-5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(59,91,219,0.28)] transition duration-200 hover:bg-brand-hover active:scale-[0.99]"
+              className="group flex h-12 w-full items-center gap-3 rounded-2xl border border-blue-border bg-blue-bg px-4 text-sm font-semibold text-blue-ink shadow-[0_6px_18px_rgba(52,81,199,0.12)] transition duration-200 hover:border-blue-ink/30 hover:bg-blue-border/60 hover:shadow-[0_10px_24px_rgba(52,81,199,0.16)] active:scale-[0.99]"
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                aria-hidden="true"
-                className="size-4"
-              >
-                <path d="M12 5v14M5 12h14" />
-              </svg>
+              <span className="grid size-6 shrink-0 place-items-center rounded-lg bg-surface/80 shadow-[0_1px_2px_rgba(28,25,23,0.06)]">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  aria-hidden="true"
+                  className="size-3.5"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </span>
               <span>Nuevo notebook</span>
               <span className="ml-auto transition-transform duration-200 group-hover:translate-x-0.5">
                 <ArrowIcon />

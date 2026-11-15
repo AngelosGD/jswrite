@@ -1,270 +1,205 @@
 "use client";
 
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import NewNotebookModal from "./newNotebookModal";
 import TemplateModal from "./templateModal";
-import { useState } from "react";
-import { addQuickNote, saveQuickNotes, useQuickNotes, useNotebooks } from "@/lib/notebooks";
+import {
+  addQuickNote,
+  saveQuickNotes,
+  useQuickNotes,
+} from "@/lib/notebooks";
+
+function ArrowIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="size-4"
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+}
 
 export default function HeroOptions() {
   const [showNotebookModal, setShowNotebookModal] = useState(false);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
-  const notebooks = useNotebooks();
   const quickNotes = useQuickNotes();
-  const [query, setQuery] = useState("");
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-
-  const filterNotebooks = notebooks
-    .filter((n) => n.name.toLowerCase().includes(query.trim().toLowerCase()))
-    .sort((a, b) => Number(b.pinned) - Number(a.pinned));
 
   return (
-    <div className="items-center justify-center flex mt-[8%] flex-col gap-5">
-      <div className="flex flex-col md:flex-row gap-10 items-start justify-center">
-        <div className="items-center justify-center flex flex-col ">
-          <p className="font-sans text-sm font-medium text-gray-400">
+    <section className="relative overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="dotted-canvas pointer-events-none absolute inset-0"
+      />
+
+      <div className="relative mx-auto flex w-full max-w-5xl flex-col px-6 pb-28 pt-10 sm:pt-14">
+        <div className="flex justify-center sm:justify-end">
+          <span className="inline-flex items-center gap-2 rounded-full border border-green-border bg-green-bg px-3 py-1 text-xs font-medium text-green-ink">
+            <span className="relative flex size-1.5">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-green-ink opacity-60" />
+              <span className="relative inline-flex size-1.5 rounded-full bg-green-ink" />
+            </span>
             Guardado local automático
+          </span>
+        </div>
+
+        <div className="mt-10 flex flex-col items-center text-center">
+          <h1 className="max-w-2xl text-4xl font-semibold tracking-tight text-text sm:text-5xl">
+            Empieza a ordenar
+          </h1>
+
+          <div className="mt-6 flex items-center gap-3">
+            <Image
+              src="/icon.svg"
+              alt=""
+              width={52}
+              height={52}
+              priority
+              className="size-12 rounded-2xl sm:size-[52px]"
+            />
+            <span className="text-3xl font-bold tracking-tight text-text sm:text-4xl">
+              <span className="text-blue-ink">L</span>yno
+              <span className="text-purple-ink">.</span>
+            </span>
+          </div>
+
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-text-2 sm:text-lg">
+            Una idea, un punto, todo empieza por algo desordenado, que al final
+            conecta.
           </p>
-          <p className="font-sans text-4xl font-bold tracking-tight text-gray-900">
-            Empieza a <span className="text-mist-800">ordenar</span>
+          <p className="mt-2 max-w-md text-sm text-text-3">
+            Crea notas con guardado local y compartido en tiempo real.
           </p>
 
-          <p className="font-sans max-w-md text-center text-gray-500">
-            Crea un nuevo cuaderno y ordena tus ideas y apuntes o ve directo al
-            board para empezar a idear.
-          </p>
-
-          <div className="flex flex-col gap-4 mt-5">
+          <div className="mt-9 w-full max-w-md">
             <button
               onClick={() => setShowNotebookModal(true)}
-              className="group flex items-center gap-2 transition duration-300 ease pr-20 pl-20 border h-12 border-black/5 bg-white rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition duration-200 ease hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:translate-y-0 active:scale-[0.98]"
+              className="group flex h-12 w-full items-center gap-3 rounded-2xl bg-brand px-5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(59,91,219,0.28)] transition duration-200 hover:bg-brand-hover active:scale-[0.99]"
             >
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth="1.5"
+                fill="none"
                 stroke="currentColor"
-                className="size-6 rounded-xl bg-black/5 p-1 text-gray-600"
+                strokeWidth="2"
+                strokeLinecap="round"
+                aria-hidden="true"
+                className="size-4"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
-                />
+                <path d="M12 5v14M5 12h14" />
               </svg>
-              <span className="hover:text-green-700 flex items-center gap-2">
-                <span className="font-sans font-semibold transition duration-200 ease">
-                  Nuevo notebook
-                </span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="size-5 transition-transform duration-300 ease group-hover:translate-x-1"
-                >
-                  <path
+              <span>Nuevo notebook</span>
+              <span className="ml-auto transition-transform duration-200 group-hover:translate-x-0.5">
+                <ArrowIcon />
+              </span>
+            </button>
+
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <button
+                onClick={() => {
+                  const result = addQuickNote(quickNotes);
+                  saveQuickNotes(result.quickNotes);
+                  window.location.href = `/notebooks?quick=${result.note.id}`;
+                }}
+                className="group flex flex-col items-start gap-3 rounded-2xl border border-border bg-surface p-4 text-left shadow-[0_1px_2px_rgba(28,25,23,0.04)] transition duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_10px_28px_rgba(28,25,23,0.07)] active:translate-y-0 active:scale-[0.99]"
+              >
+                <span className="grid size-9 place-items-center rounded-xl bg-blue-bg text-blue-ink transition group-hover:scale-105">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                  />
-                </svg>
-              </span>
-            </button>
-            <NewNotebookModal
-              isOpen={showNotebookModal}
-              onClose={() => setShowNotebookModal(false)}
-            />
-            <TemplateModal
-              isOpen={showTemplateModal}
-              onClose={() => setShowTemplateModal(false)}
-            />
+                    aria-hidden="true"
+                    className="size-[18px]"
+                  >
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                  </svg>
+                </span>
+                <span className="flex w-full items-center justify-between gap-2">
+                  <span className="text-sm font-medium text-text">
+                    Nota rápida
+                  </span>
+                  <span className="text-text-3 transition-transform duration-200 group-hover:translate-x-0.5">
+                    <ArrowIcon />
+                  </span>
+                </span>
+              </button>
 
-            <button
-              onClick={() => {
-                const result = addQuickNote(quickNotes);
-                saveQuickNotes(result.quickNotes);
-                window.location.href = `/notebooks?quick=${result.note.id}`;
-              }}
-              className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/5 bg-white rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition duration-200 ease hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:translate-y-0 active:scale-[0.98]"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="size-6 rounded-xl bg-black/5 p-1 text-gray-600 m-2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                />
-              </svg>
-              <span className="font-sans font-semibold group-hover:text-green-700 transition duration-200 ease">
-                Nota rapida
-              </span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="size-5 transition-all duration-300 ease group-hover:translate-x-1 group-hover:text-green-700"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                />
-              </svg>
-            </button>
+              <button className="group flex flex-col items-start gap-3 rounded-2xl border border-border bg-surface p-4 text-left shadow-[0_1px_2px_rgba(28,25,23,0.04)] transition duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_10px_28px_rgba(28,25,23,0.07)] active:translate-y-0 active:scale-[0.99]">
+                <span className="grid size-9 place-items-center rounded-xl bg-gold-bg text-gold-ink transition group-hover:scale-105">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                    className="size-[18px]"
+                  >
+                    <rect x="3" y="5" width="8" height="6" rx="1.5" />
+                    <rect x="14" y="7" width="7" height="12" rx="1.5" />
+                    <rect x="3" y="14" width="8" height="5" rx="1.5" />
+                  </svg>
+                </span>
+                <span className="flex w-full items-center justify-between gap-2">
+                  <span className="text-sm font-medium text-text">Canva</span>
+                  <span className="text-text-3 transition-transform duration-200 group-hover:translate-x-0.5">
+                    <ArrowIcon />
+                  </span>
+                </span>
+              </button>
 
-            <button className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/5 bg-white rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition duration-200 ease hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:translate-y-0 active:scale-[0.98]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="size-6 rounded-xl bg-black/5 p-1 text-gray-600 m-2"
+              <button
+                onClick={() => setShowTemplateModal(true)}
+                className="group flex flex-col items-start gap-3 rounded-2xl border border-border bg-surface p-4 text-left shadow-[0_1px_2px_rgba(28,25,23,0.04)] transition duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_10px_28px_rgba(28,25,23,0.07)] active:translate-y-0 active:scale-[0.99]"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z"
-                />
-              </svg>
-              <span className="font-sans font-semibold group-hover:text-green-700 transition duration-200 ease">
-                Canva
-              </span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="size-5 transition-all duration-300 ease group-hover:translate-x-1 group-hover:text-green-700"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                />
-              </svg>
-            </button>
-
-            <button
-              onClick={() => setShowTemplateModal(true)}
-              className="group flex items-center justify-center transition duration-300 ease pr-20 pl-20 border h-12 border-black/5 bg-white rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition duration-200 ease hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:translate-y-0 active:scale-[0.98]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="size-6 rounded-xl bg-black/5 p-1 text-gray-600 m-2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25"
-                />
-              </svg>
-              <span className="font-sans font-semibold group-hover:text-green-700 transition duration-200 ease">
-                Plantillas
-              </span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="size-5 transition-all duration-300 ease group-hover:translate-x-1 group-hover:text-green-700"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                />
-              </svg>
-            </button>
+                <span className="grid size-9 place-items-center rounded-xl bg-purple-bg text-purple-ink transition group-hover:scale-105">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                    className="size-[18px]"
+                  >
+                    <path d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />
+                  </svg>
+                </span>
+                <span className="flex w-full items-center justify-between gap-2">
+                  <span className="text-sm font-medium text-text">
+                    Plantillas
+                  </span>
+                  <span className="text-text-3 transition-transform duration-200 group-hover:translate-x-0.5">
+                    <ArrowIcon />
+                  </span>
+                </span>
+              </button>
+            </div>
           </div>
         </div>
-        {/* Div para la parte de listado de notas recientes y input para busquedda */}
-        <div className="flex flex-col gap-3 w-80">
-          <p className="text-sm font-medium text-gray-500">Recientes</p>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            type="text"
-            placeholder="Buscar notebook..."
-            className="h-9 rounded-md border border-gray-200 bg-gray-50 px-3 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-gray-300 transition"
-          />
-          {filterNotebooks.length === 0 && (
-            <p className="px-1 text-sm text-gray-400">
-              {notebooks.length === 0 ? "Sin notebooks aún" : "Sin resultados"}
-            </p>
-          )}
-          {filterNotebooks.map((n) => (
-            <div
-              key={n.id}
-              className="relative"
-              onMouseEnter={() => setHoveredId(n.id)}
-              onMouseLeave={() => setHoveredId(null)}
-            >
-              {/* notebook row */}
-              <a
-                href={`/notebooks?open=${n.id}`}
-                className="flex items-center gap-3 rounded-lg border border-transparent px-3 py-2 transition hover:bg-gray-50 active:scale-[0.98]"
-              >
-                <span
-                  className="size-2 shrink-0 rounded-full"
-                  style={{ backgroundColor: n.color }}
-                />
-                <span className="min-w-0 flex-1 truncate text-sm text-gray-700">
-                  {n.name}
-                </span>
-                {n.notes.length > 0 && (
-                  <span className="text-[11px] text-gray-400 tabular-nums">
-                    {n.notes.length}
-                  </span>
-                )}
-              </a>
-
-              {/* notas desplegadas con animación */}
-              <div
-                className="grid transition-all duration-200 ease-out"
-                style={{
-                  gridTemplateRows: hoveredId === n.id ? "1fr" : "0fr",
-                }}
-              >
-                <div className="overflow-hidden">
-                  <div className="ml-5 flex flex-col border-l border-gray-100 pl-3 pb-1">
-                    {n.notes.length === 0 && (
-                      <span className="py-1.5 text-xs text-gray-300 italic">
-                        Sin notas
-                      </span>
-                    )}
-                    {n.notes.map((note) => (
-                      <a
-                        key={note.id}
-                        href={`/notebooks?open=${n.id}&note=${note.id}`}
-                        className="flex items-center gap-2 rounded px-2 py-1.5 text-xs text-gray-500 transition hover:bg-gray-50 hover:text-gray-700"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <span className="truncate">{note.title}</span>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
-    </div>
+
+      <NewNotebookModal
+        isOpen={showNotebookModal}
+        onClose={() => setShowNotebookModal(false)}
+      />
+      <TemplateModal
+        isOpen={showTemplateModal}
+        onClose={() => setShowTemplateModal(false)}
+      />
+    </section>
   );
 }

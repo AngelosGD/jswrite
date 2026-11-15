@@ -1,4 +1,4 @@
-# Funciones planeadas (jsWrite)
+# Funciones planeadas (Lyno)
 
 Lista de funcionalidades a implementar. Se aplican tanto al abrir un notebook como al estar viendo la nota en el listado de notebooks.
 

@@ -56,7 +56,8 @@ export const COLORS = [
   "#64748b",
 ];
 
-const STORAGE_KEY = "jswrite.notebooks";
+const STORAGE_KEY = "lyno.notebooks";
+const LEGACY_STORAGE_KEY = "jswrite.notebooks";
 const EMPTY: Notebook[] = [];
 
 let cache: Notebook[] | null = null;
@@ -73,10 +74,19 @@ function notify() {
   listeners.forEach((callback) => callback());
 }
 
+function readStored(key: string, legacyKey: string): string | null {
+  const current = window.localStorage.getItem(key);
+  if (current) return current;
+  const legacy = window.localStorage.getItem(legacyKey);
+  if (!legacy) return null;
+  window.localStorage.setItem(key, legacy);
+  return legacy;
+}
+
 export function loadNotebooks(): Notebook[] {
   if (typeof window === "undefined") return EMPTY;
   if (cache) return cache;
-  const raw = window.localStorage.getItem(STORAGE_KEY);
+  const raw = readStored(STORAGE_KEY, LEGACY_STORAGE_KEY);
   if (!raw) {
     cache = EMPTY;
     return cache;
@@ -96,7 +106,8 @@ export function saveNotebooks(notebooks: Notebook[]): void {
   notify();
 }
 
-const QUICK_KEY = "jswrite.quickNotes";
+const QUICK_KEY = "lyno.quickNotes";
+const LEGACY_QUICK_KEY = "jswrite.quickNotes";
 const EMPTY_Q: Note[] = [];
 let quickCache: Note[] | null = null;
 const quickListeners = new Set<() => void>();
@@ -115,7 +126,7 @@ const quickNotify = () => {
 export function loadQuickNotes(): Note[] {
   if (typeof window === "undefined") return EMPTY_Q;
   if (quickCache) return quickCache;
-  const raw = window.localStorage.getItem(QUICK_KEY);
+  const raw = readStored(QUICK_KEY, LEGACY_QUICK_KEY);
   if (!raw) {
     quickCache = EMPTY_Q;
     return quickCache;

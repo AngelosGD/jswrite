@@ -1,5 +1,5 @@
 {
-  "name": "jswrite",
+  "name": "lyno",
   "workspaces": [
     "apps/*",
     "packages/*"

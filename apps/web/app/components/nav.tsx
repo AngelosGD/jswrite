@@ -9,7 +9,7 @@ export default function Nav() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <div className="flex items-center gap-5">
           <p className="text-xl font-bold tracking-tight text-gray-900">
-            JsWrite
+            Lyno
           </p>
           <p className="hidden pt-0.5 text-sm text-gray-500 md:block">
             cualquier <span className="font-semibold text-gray-800">nota</span>{" "}

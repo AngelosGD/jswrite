@@ -1,36 +1,36 @@
-# jswrite
+# lyno
 
-npm workspaces monorepo: `apps/*`, `packages/*`. No root scripts beyond the trivial `test` stub. Root `.gitignore` only lists `node_modules` — the real ignores live in each app's `.gitignore`.
+npm workspaces monorepo: `apps/*`, `packages/*`. The root has only a stub `test` script — run every command from the workspace's own directory. Root `.gitignore` lists only `node_modules`; the real ignores are per-app `.gitignore` files.
 
-## apps/web — Next.js 16.2 + React 19 + Tailwind v4
+## apps/web — Next.js 16 + React 19 + Tailwind v4
 
-- **`npm run dev`** — next dev (port 3000)
-- **`npm run build`** — next build
-- **`npm run lint`** — eslint (flat config, `eslint.config.mjs`)
-- App Router (`app/`). Tailwind v4 via `@tailwindcss/postcss` plugin — no `tailwind.config`, CSS-first theming via `@import "tailwindcss"` in `app/globals.css`
-- Imports use the `@/*` path alias → `./` (web root), e.g. `@/lib/notebooks`. Use it, not relative paths.
-- Next.js 16 has breaking API changes — read `node_modules/next/dist/docs/` and the repo-local `apps/web/AGENTS.md` (and `apps/web/CLAUDE.md`, a one-line pointer to it) before writing code.
-- No test suite or typecheck script in this app; the only full verification is `npm run build` (Next.js type-checks during build) or `npm run lint`.
-- Notebooks persist client-side only: `lib/notebooks.ts` reads/writes `window.localStorage` (key `jswrite.notebooks`) — the API app is not wired in yet. Don't build features assuming server persistence.
-- `lib/notebooks.ts` is the single data layer: consume notebooks via its `useNotebooks()` hook (`useSyncExternalStore`) and mutate via `createNotebook` / `updateNotebook` / `deleteNotebook` + `saveNotebooks`. Don't read/write `localStorage` directly in components. Comments in the file are Spanish.
-- It also exports note helpers `addNote`, `createNoteTitle`, and `updaetNote` — note the **typo**: it's `updaetNote`, not `updateNote` (grep will miss it). Adds new deps? The web imports animation libs as both `motion/react` and `framer-motion`; the root `motion` dep exists but components pull from `node_modules` via workspace hoisting.
+- **`npm run dev`** (port 3000), **`npm run build`**, **`npm run lint`** (bare `eslint`, flat config `eslint.config.mjs`).
+- No tests and no typecheck script: the only full verification is `npm run build` (Next type-checks during build) or `npm run lint`.
+- App Router. Components live in `app/components/` (there is no top-level `components/`), filenames are lowercase camelCase (`noteEditor.tsx`; `Footer.tsx` is the lone exception), and every page/component is `"use client"`. Import with `@/app/components/...` and `@/lib/...`; `@/*` resolves to the web root, so prefer it over long relative paths.
+- Tailwind v4 via `@tailwindcss/postcss`; there is no `tailwind.config`. Theme lives in `app/globals.css` (`@import "tailwindcss"`).
+- Next 16 breaks from training data. Read `apps/web/AGENTS.md` plus `node_modules/next/dist/docs/` before writing framework code; `apps/web/CLAUDE.md` is just a pointer to it.
+- Editor is TipTap (`app/components/noteEditor.tsx`) and `Note.content` is HTML. `lib/export-note.ts` (`exportTxt`/`exportMd`/`exportPdf`/`exportDocx`/`copyToClipboard`) converts HTML via a regex `stripHtml` that only understands h1–h3, strong/b, em/i, u, s/del, li, p and br. Templates in `lib/templates.ts` must use only those tags or exports break.
+- Persistence is client-side only; the API is not wired in. `lib/notebooks.ts` is the single data layer over `localStorage` (notebooks key `lyno.notebooks`, quick notes key `lyno.quickNotes`). Components must go through `useNotebooks` / `useQuickNotes` and the `create*` / `update*` / `save*` / `add*` / `delete*` helpers — never `localStorage` directly.
+- Note helpers: `createNoteTitle`, `addNote`, `deleteNote`, and the misspelled **`updaetNote`** (not `updateNote`; grep for the typo). Quick-note helpers: `addQuickNote`, `deleteQuickNote`, `moveQuickNoteToNotebook`, `saveQuickNotes`. Tag helpers: `getNoteTags`, `createTag`, `addTagToNote`, `removeTagFromNote`.
+- Comments and UI copy are Spanish. `PLANNED-FEATURES.md` is the Spanish feature checklist.
+- Motion imports use `motion/react` (some code also uses `framer-motion`) but there is no motion dep in `apps/web/package.json` — it resolves from the root `motion` dep via workspace hoisting. Add new deps in `apps/*`, not at the root.
 
 ## apps/api — NestJS 11 + Express
 
-- **`npm run start:dev`** — `nest start --watch` (port **3001**, from `process.env.PORT ?? 3001`)
-- **`npm run build`** — `nest build` (output `./dist`, `deleteOutDir: true`)
-- **`npm run test`** — jest, `rootDir: src` (unit tests colocated as `*.spec.ts`); run a single test with `npm test -- <name>` (e.g. `npm test -- app.controller.spec`)
-- **`npm run test:e2e`** — jest with config `./test/jest-e2e.json` (`*.e2e-spec.ts`)
-- **`npm run lint`** — eslint **with `--fix`** (auto-modifies files; flat config via `typescript-eslint` + prettier plugin, `endOfLine: "auto"`). **Type-aware** (`recommendedTypeChecked` + `projectService`) — type errors fail lint. `no-explicit-any` is off; `no-floating-promises` / `no-unsafe-argument` are warnings
-- **`npm run format`** — prettier (`singleQuote`, `trailingComma: "all"`, config at `apps/api/.prettierrc`)
-- Uses `experimentalDecorators` / `emitDecoratorMetadata`, `module: nodenext`
+- Stock Nest scaffold: a single `GET /` returning "Hello World!"; nothing is connected to the web app.
+- **`npm run start:dev`** — `nest start --watch` (port **3001**, from `process.env.PORT ?? 3001`).
+- **`npm run build`** — `nest build` (output `./dist`, `deleteOutDir: true`).
+- **`npm run test`** — jest, `rootDir: src`, colocated `*.spec.ts`. Single test: `npm test -- app.controller.spec`.
+- **`npm run test:e2e`** — jest config `./test/jest-e2e.json` (`*.e2e-spec.ts`).
+- **`npm run lint`** — eslint **with `--fix`** (auto-modifies files; prettier plugin, `endOfLine: "auto"`). Type-aware (`recommendedTypeChecked` + `projectService`), so type errors fail lint. `no-explicit-any` is off; `no-floating-promises` / `no-unsafe-argument` are warnings.
+- **`npm run format`** — prettier (`singleQuote`, `trailingComma: "all"`, config `apps/api/.prettierrc`). API code uses single quotes; web code uses double quotes.
+- Decorators are enabled (`experimentalDecorators`, `emitDecoratorMetadata`), `module: nodenext`.
 
-## packages/shared (`@jswrite/shared`)
+## packages/shared (`@lyno/shared`)
 
-Placeholder with no source code yet.
+Placeholder: only `package.json`, no source code.
 
 ## General
 
-- No CI workflows, no typecheck script, no root prettier config. Per-app `.gitignore` files are the real ignores (`.next/`, `dist/`, etc.).
-- Dependencies belong in the workspace that uses them (npm workspaces hoists into root `node_modules`). Root `package.json` currently holds a stray `motion` dep — add new deps in `apps/*`, not at root.
-- Each workspace is self-contained — run commands from its own directory.
+- No CI workflows, no root typecheck script, no root prettier config.
+- Dependencies belong in the workspace that uses them; the root `motion` dep is a stray exception.

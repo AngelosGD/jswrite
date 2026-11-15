@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Lyno">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2A2A44"/>
+      <stop offset="1" stop-color="#1C1C26"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <rect x="1.5" y="1.5" width="509" height="509" rx="114.5" fill="none" stroke="#C7D4FF" stroke-opacity="0.16" stroke-width="3"/>
+  <g transform="translate(-8 0)">
+    <path d="M182 134C172 190 176 250 173 300Q173 380 253 380H277" fill="none" stroke="#C7D4FF" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/>
+    <ellipse cx="338" cy="379" rx="28" ry="25" transform="rotate(-14 338 379)" fill="#F2C14E"/>
+    <circle cx="368" cy="342" r="9" fill="#B9A7F5"/>
+  </g>
+</svg>

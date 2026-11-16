@@ -8,7 +8,6 @@ import {
   saveNotebooks,
   deleteNote,
   updateNotebook,
-  Notebook,
   Note,
   Tag,
   getNoteTags,
@@ -19,10 +18,13 @@ import {
   moveQuickNoteToNotebook,
   loadQuickNotes,
 } from "@/lib/notebooks";
-import NotebookCard from "@/app/components/notebookCard";
 import NewNotebookModal from "@/app/components/newNotebookModal";
+import QuickNoteModal from "@/app/components/quickNoteModal";
+import TemplateModal from "@/app/components/templateModal";
+import DashboardHome from "@/app/components/dashboardHome";
+import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useMemo, type MouseEvent, use } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import ContextMenu from "../components/contextMenu";
 import NoteEditor from "../components/noteEditor";
@@ -34,6 +36,8 @@ import SidebarNoteTags from "../components/sidebarNoteTags";
 export default function NotebooksPage() {
   const notebooks = useNotebooks();
   const [showNotebookModal, setShowNotebookModal] = useState(false);
+  const [showQuickNoteModal, setShowQuickNoteModal] = useState(false);
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
 
   // estado para hacer cliqueable la card del notebook y abrir sus notas
   const [openNotebookId, setOpenNotebookId] = useState<string | null>(null);
@@ -128,6 +132,17 @@ export default function NotebooksPage() {
   function handleAddQuickNote() {
     const result = addQuickNote(quickNotes);
     saveQuickNotes(result.quickNotes);
+    setSelectedNote(null);
+    setSelectedQuickNote(result.note);
+    setShowQuickNotes(true);
+  }
+
+  function handleQuickNoteCreated(noteId: string) {
+    const found = loadQuickNotes().find((note) => note.id === noteId);
+    if (!found) return;
+    setSelectedNote(null);
+    setSelectedQuickNote(found);
+    setShowQuickNotes(true);
   }
 
   function handleDeleteQuickNote(noteId: string) {
@@ -300,8 +315,31 @@ export default function NotebooksPage() {
     const result = addNote(notebooks, notebookId, createNoteTitle(), "");
     saveNotebooks(result.notebooks);
     setSelectedQuickNote(null);
+    setOpenNotebookId(notebookId);
+    setExpandedNotebooks((prev) => new Set(prev).add(notebookId));
     setSelectedNote({ notebookId, noteId: result.note.id });
   };
+
+  function handleOpenNotebook(notebookId: string) {
+    setSelectedNote(null);
+    setSelectedQuickNote(null);
+    setOpenNotebookId(notebookId);
+  }
+
+  function handleOpenNote(notebookId: string, noteId: string) {
+    setSelectedQuickNote(null);
+    setOpenNotebookId(notebookId);
+    setExpandedNotebooks((prev) => new Set(prev).add(notebookId));
+    setSelectedNote({ notebookId, noteId });
+  }
+
+  function handleToggleStar(notebookId: string) {
+    const nb = notebooks.find((n) => n.id === notebookId);
+    if (!nb) return;
+    saveNotebooks(
+      updateNotebook(notebooks, notebookId, { starred: !nb.starred }),
+    );
+  }
   function handleDeleteNotebook(notebookId: string) {
     saveNotebooks(deleteNotebook(notebooks, notebookId));
     setSelectedNote((prev) =>
@@ -360,8 +398,8 @@ export default function NotebooksPage() {
   }
 
   return (
-    <div className="flex h-screen bg-[#fbfbfd]">
-      <aside className="flex w-64 shrink-0 flex-col border-r border-black/5 bg-white/70 p-4 backdrop-blur-xl">
+    <div className="flex h-screen bg-bg">
+      <aside className="flex w-72 shrink-0 flex-col border-r border-border bg-surface/70 p-4 backdrop-blur-xl">
         {openNotebookId ? (
           (() => {
             const openNb = notebooks.find((n) => n.id === openNotebookId);
@@ -375,7 +413,7 @@ export default function NotebooksPage() {
                       setOpenNotebookId(null);
                       setSelectedNote(null);
                     }}
-                    className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-gray-900 transition hover:scale-95"
+                    className="flex items-center gap-1.5 text-sm font-semibold text-text-2 transition hover:text-text hover:scale-95"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -406,7 +444,7 @@ export default function NotebooksPage() {
                     const visible = openNb.notes.filter(matchesTag);
                     if (visible.length === 0) {
                       return (
-                        <p className="px-2 py-1 text-sm text-gray-400">
+                        <p className="px-2 py-1 text-sm text-text-3">
                           {openNb.notes.length === 0
                             ? "Sin notas"
                             : `Sin notas con #${activeTag}`}
@@ -418,7 +456,7 @@ export default function NotebooksPage() {
                       .map((note) => (
                         <div
                           key={note.id}
-                          className="group flex items-center gap-1 rounded-lg pr-1 transition duration-100 ease hover:bg-gray-50"
+                          className="group flex items-center gap-1 rounded-lg pr-1 transition duration-100 ease hover:bg-surface-2"
                         >
                           <button
                             onClick={() => {
@@ -428,7 +466,7 @@ export default function NotebooksPage() {
                                 noteId: note.id,
                               });
                             }}
-                            className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800"
+                            className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-text-2 transition duration-100 ease group-hover:text-text"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -436,7 +474,7 @@ export default function NotebooksPage() {
                               viewBox="0 0 24 24"
                               strokeWidth="1.5"
                               stroke="currentColor"
-                              className="size-3.5 shrink-0 text-gray-300"
+                              className="size-3.5 shrink-0 text-text-3/60"
                             >
                               <path
                                 strokeLinecap="round"
@@ -459,8 +497,8 @@ export default function NotebooksPage() {
                             title={note.pinned ? "Desfijar" : "Fijar"}
                             className={`shrink-0 rounded-md p-1 transition ${
                               note.pinned
-                                ? "text-gray-900"
-                                : "text-gray-300 hover:text-gray-700"
+                                ? "text-blue-ink"
+                                : "text-text-3/60 hover:text-text-2"
                             }`}
                           >
                             <svg
@@ -474,7 +512,7 @@ export default function NotebooksPage() {
                               <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                d="M9 3h6l-.75 5.25L18 12v2H6v-2l3.75-3.75L9 3Z"
                               />
                             </svg>
                           </button>
@@ -485,7 +523,7 @@ export default function NotebooksPage() {
                   <button
                     type="button"
                     onClick={() => handleAddNote(openNb.id)}
-                    className="mt-2 flex items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium text-gray-400 transition duration-100 ease hover:bg-gray-50 hover:text-gray-700"
+                    className="mt-2 flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-border px-2 py-2 text-sm font-medium text-text-3 transition duration-100 ease hover:border-border-strong hover:bg-surface-2 hover:text-text-2"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -510,40 +548,35 @@ export default function NotebooksPage() {
           })()
         ) : (
           <>
-            <div className="flex items-center justify-between px-2">
+            <div className="flex items-center justify-between px-1">
               <Link
                 href="/"
-                className="group flex items-center gap-1.5"
+                className="group flex items-center gap-2.5"
                 aria-label="Volver al inicio"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  className="size-4 text-gray-400 transition duration-100 ease group-hover:text-gray-900"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-                  />
-                </svg>
-                <p className="font-serif text-sm font-semibold text-gray-700">
-                  Notebooks
-                </p>
+                <Image
+                  src="/icon.svg"
+                  alt="Lyno"
+                  width={28}
+                  height={28}
+                  priority
+                  className="size-7 rounded-lg"
+                />
+                <span className="text-[17px] font-bold tracking-tight text-text">
+                  <span className="text-blue-ink">L</span>yno
+                  <span className="text-purple-ink">.</span>
+                </span>
               </Link>
               <button
                 onClick={() => setShowNotebookModal(true)}
-                className="flex size-7 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition duration-100 ease hover:bg-black hover:text-white active:scale-95"
+                className="grid size-8 place-items-center rounded-full border border-border text-text-3 transition hover:border-border-strong hover:bg-surface-2 hover:text-text active:scale-95"
                 aria-label="Nuevo notebook"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth="2"
+                  strokeWidth="1.8"
                   stroke="currentColor"
                   className="size-4"
                 >
@@ -556,14 +589,158 @@ export default function NotebooksPage() {
               </button>
             </div>
 
-            <div className="relative mt-3">
+            <div className="mt-5 rounded-2xl border border-border bg-surface p-3">
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-surface-2 text-text-3">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="size-4"
+                  >
+                    <circle cx="12" cy="8" r="3.5" />
+                    <path d="M5 20c.7-3.4 3.4-5.5 7-5.5s6.3 2.1 7 5.5" />
+                  </svg>
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-text">
+                    Inicia sesión
+                  </p>
+                  <p className="truncate text-[11px] text-text-3">
+                    para trabajar en equipo
+                  </p>
+                </div>
+                <span className="rounded-full border border-border px-1.5 py-px text-[10px] font-medium text-text-3">
+                  pronto
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-5">
+              <p className="px-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-text-3">
+                Home
+              </p>
+              <div className="mt-1.5 flex flex-col gap-0.5">
+                <button
+                  type="button"
+                  onClick={() => setShowNotebookModal(true)}
+                  className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm text-text-2 transition hover:bg-surface-2 hover:text-text"
+                >
+                  <span className="grid size-6 place-items-center rounded-lg bg-blue-bg text-blue-ink">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      className="size-3.5"
+                    >
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                  </span>
+                  Nuevo notebook
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowQuickNoteModal(true)}
+                  className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm text-text-2 transition hover:bg-surface-2 hover:text-text"
+                >
+                  <span className="grid size-6 place-items-center rounded-lg bg-gold-bg text-gold-ink">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="size-3.5"
+                    >
+                      <path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z" />
+                    </svg>
+                  </span>
+                  Nota rápida
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowTemplateModal(true)}
+                  className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm text-text-2 transition hover:bg-surface-2 hover:text-text"
+                >
+                  <span className="grid size-6 place-items-center rounded-lg bg-purple-bg text-purple-ink">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="size-3.5"
+                    >
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <path d="M3 9h18M9 21V9" />
+                    </svg>
+                  </span>
+                  Plantillas
+                </button>
+                <button
+                  type="button"
+                  disabled
+                  title="Canvas llegará pronto"
+                  className="flex cursor-not-allowed items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm text-text-3 opacity-60"
+                >
+                  <span className="grid size-6 place-items-center rounded-lg bg-rose-bg text-rose-ink">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="size-3.5"
+                    >
+                      <path d="M12 19l7-7a4.2 4.2 0 0 0-6-6l-7 7v6h6Z" />
+                      <path d="m15 5 4 4" />
+                    </svg>
+                  </span>
+                  Canvas
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-6 flex items-center justify-between px-1">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-3">
+                Stacks
+              </p>
+              <button
+                type="button"
+                onClick={() => setShowSearch(true)}
+                aria-label="Buscar notas"
+                title="Buscar notas (/)"
+                className="grid size-6 place-items-center rounded-lg text-text-3 transition hover:bg-surface-2 hover:text-text"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  className="size-3.5"
+                >
+                  <path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="relative mt-1.5">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-gray-400"
+                className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-text-3"
               >
                 <path
                   strokeLinecap="round"
@@ -575,14 +752,14 @@ export default function NotebooksPage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 type="text"
-                placeholder="Buscar..."
-                className="w-full rounded-lg border border-transparent bg-gray-50 py-2 pr-3 pl-8 text-sm text-gray-700 placeholder:text-gray-400 transition focus:border-gray-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-gray-200"
+                placeholder="Buscar stack..."
+                className="w-full rounded-xl border border-transparent bg-surface-2 py-2 pr-3 pl-8 text-sm text-text placeholder:text-text-3 transition focus:border-border-strong focus:bg-surface focus:outline-none"
               />
             </div>
 
             {/* filtro por etiquetas */}
             {allTags.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-1 px-1">
+              <div className="mt-2 flex flex-wrap gap-1 px-0.5">
                 {allTags.map((tag) => {
                   const active =
                     activeTag?.toLowerCase() === tag.label.toLowerCase();
@@ -617,7 +794,7 @@ export default function NotebooksPage() {
 
             <nav className="mt-4 flex flex-1 flex-col gap-1 overflow-y-auto pr-1">
               {filterNotebooks.length === 0 && (
-                <p className="px-2 text-sm text-gray-400">
+                <p className="px-2 py-2 text-sm text-text-3">
                   {notebooks.length === 0
                     ? "Sin notebooks aún"
                     : "Sin resultados"}
@@ -629,9 +806,9 @@ export default function NotebooksPage() {
                 return (
                   <div
                     key={n.id}
-                    className={`rounded-md transition-colors duration-100 ${
+                    className={`rounded-xl transition-colors duration-100 ${
                       dragOverNotebookId === n.id
-                        ? "bg-black/5 ring-2 ring-black/10"
+                        ? "bg-blue-bg/60 ring-2 ring-blue-border"
                         : ""
                     }`}
                     onContextMenu={(e) => {
@@ -662,13 +839,13 @@ export default function NotebooksPage() {
                       }
                     }}
                   >
-                    <div className="group flex items-center gap-1 rounded-lg border border-gray-100 bg-white p-1 pr-1 shadow-sm transition duration-100 ease hover:border-gray-200 hover:shadow">
+                    <div className="group flex items-center gap-1 rounded-xl border border-transparent bg-surface p-1 transition duration-100 ease hover:border-border hover:shadow-[0_4px_14px_rgba(28,25,23,0.05)]">
                       <button
-                        onClick={() => toggleNotebook(n.id)}
+                        onClick={() => handleOpenNotebook(n.id)}
                         className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-2 py-1.5 text-left"
                       >
                         <span
-                          className="flex size-5 shrink-0 items-center justify-center rounded-md"
+                          className="flex size-6 shrink-0 items-center justify-center rounded-lg"
                           style={{ backgroundColor: n.color + "1a" }}
                         >
                           <span
@@ -676,12 +853,37 @@ export default function NotebooksPage() {
                             style={{ backgroundColor: n.color }}
                           />
                         </span>
-                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-text-2 group-hover:text-text">
                           {n.name}
                         </span>
-                        <span className="shrink-0 text-xs text-gray-300">
+                        <span className="shrink-0 text-[11px] text-text-3/70">
                           {n.notes.length}
                         </span>
+                      </button>
+
+                      <button
+                        onClick={() => handleToggleStar(n.id)}
+                        aria-label={
+                          n.starred ? "Quitar de favoritos" : "Marcar favorito"
+                        }
+                        title={n.starred ? "Quitar favorito" : "Favorito"}
+                        className={`shrink-0 rounded-md p-1 transition ${
+                          n.starred
+                            ? "text-gold-ink"
+                            : "text-text-3/60 hover:text-text-2"
+                        }`}
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill={n.starred ? "currentColor" : "none"}
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="size-3.5"
+                        >
+                          <path d="m12 3 2.7 5.6 6.2.9-4.5 4.4 1.1 6.1-5.5-2.9-5.5 2.9 1.1-6.1L3.1 9.5l6.2-.9L12 3Z" />
+                        </svg>
                       </button>
 
                       <button
@@ -692,30 +894,28 @@ export default function NotebooksPage() {
                         title={n.pinned ? "Desfijar" : "Fijar"}
                         className={`shrink-0 rounded-md p-1 transition ${
                           n.pinned
-                            ? "text-gray-900"
-                            : "text-gray-300 hover:text-gray-700"
+                            ? "text-blue-ink"
+                            : "text-text-3/60 hover:text-text-2"
                         }`}
                       >
                         <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
                           viewBox="0 0 24 24"
-                          strokeWidth="1.5"
+                          fill="none"
                           stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           className="size-3.5"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                          />
+                          <path d="M9 3h6l-.75 5.25L18 12v2H6v-2l3.75-3.75L9 3Z" />
+                          <path d="M12 14v7" />
                         </svg>
                       </button>
 
                       <button
                         onClick={() => toggleNotebook(n.id)}
-                        aria-label="Expandir"
-                        className={`shrink-0 rounded-md p-1 text-gray-300 transition-transform duration-200 hover:text-gray-500 ${
+                        aria-label="Expandir notas"
+                        className={`shrink-0 rounded-md p-1 text-text-3/60 transition-transform duration-200 hover:text-text-2 ${
                           isOpen ? "rotate-180" : ""
                         }`}
                       >
@@ -737,12 +937,12 @@ export default function NotebooksPage() {
                     </div>
 
                     {isOpen && (
-                      <div className="animate-notes-expand mt-1 ml-3 flex flex-col gap-0.5 border-l border-gray-100 pl-3">
+                      <div className="animate-notes-expand mt-1 ml-3 flex flex-col gap-0.5 border-l border-border pl-3">
                       {(() => {
                         const visible = n.notes.filter(matchesTag);
                         if (visible.length === 0) {
                           return (
-                            <p className="px-2 py-1 text-sm text-gray-400">
+                            <p className="px-2 py-1 text-sm text-text-3">
                               {n.notes.length === 0
                                 ? "Sin notas"
                                 : `Sin notas con #${activeTag}`}
@@ -754,7 +954,7 @@ export default function NotebooksPage() {
                           .map((note) => (
                               <div
                                 key={note.id}
-                                className="group flex items-center gap-1 rounded-md transition duration-100 ease hover:bg-gray-50"
+                                className="group flex items-center gap-1 rounded-lg transition duration-100 ease hover:bg-surface-2"
                                 onContextMenu={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
@@ -778,14 +978,8 @@ export default function NotebooksPage() {
                                     setDragItem(null);
                                     setDragOverNotebookId(null);
                                   }}
-                                  onClick={() => {
-                                    setSelectedQuickNote(null);
-                                    setSelectedNote({
-                                      notebookId: n.id,
-                                      noteId: note.id,
-                                    });
-                                  }}
-                                  className="flex min-w-0 flex-1 cursor-grab items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800 active:cursor-grabbing"
+                                  onClick={() => handleOpenNote(n.id, note.id)}
+                                  className="flex min-w-0 flex-1 cursor-grab items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-text-2 transition duration-100 ease group-hover:text-text active:cursor-grabbing"
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -793,7 +987,7 @@ export default function NotebooksPage() {
                                     viewBox="0 0 24 24"
                                     strokeWidth="1.5"
                                     stroke="currentColor"
-                                    className="size-3.5 shrink-0 text-gray-300"
+                                    className="size-3.5 shrink-0 text-text-3/60"
                                   >
                                     <path
                                       strokeLinecap="round"
@@ -818,8 +1012,8 @@ export default function NotebooksPage() {
                                   title={note.pinned ? "Desfijar" : "Fijar"}
                                   className={`shrink-0 rounded-md p-1 transition ${
                                     note.pinned
-                                      ? "text-gray-900"
-                                      : "text-gray-300 hover:text-gray-700"
+                                      ? "text-blue-ink"
+                                      : "text-text-3/60 hover:text-text-2"
                                   }`}
                                 >
                                   <svg
@@ -845,11 +1039,11 @@ export default function NotebooksPage() {
                   </div>
                 );
               })}
-              <div className="mt-4 border-t border-gray-100 pt-3">
+              <div className="mt-4 border-t border-border pt-3">
                 <button
                   type="button"
                   onClick={() => setShowQuickNotes((v) => !v)}
-                  className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-700"
+                  className="flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-medium text-text-2 transition hover:bg-surface-2 hover:text-text"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -866,15 +1060,15 @@ export default function NotebooksPage() {
                     />
                   </svg>
                   Notas rápidas
-                  <span className="ml-auto text-xs text-gray-300">
+                  <span className="ml-auto text-[11px] text-text-3/70">
                     {quickNotes.length}
                   </span>
                 </button>
 
                 {showQuickNotes && (
-                  <div className="mt-1 ml-3 flex flex-col gap-0.5 border-l border-gray-100 pl-3">
+                  <div className="mt-1 ml-3 flex flex-col gap-0.5 border-l border-border pl-3">
                     {visibleQuickNotes.length === 0 ? (
-                      <p className="px-2 py-1 text-sm text-gray-400">
+                      <p className="px-2 py-1 text-sm text-text-3">
                         {quickNotes.length === 0
                           ? "Sin notas rápidas"
                           : `Sin notas rápidas con #${activeTag}`}
@@ -883,7 +1077,7 @@ export default function NotebooksPage() {
                       visibleQuickNotes.map((note) => (
                         <div
                           key={note.id}
-                          className={`group flex items-center gap-1 rounded-md transition duration-100 ease hover:bg-gray-50 ${disintegratingId === note.id ? "animate-disintegrate" : ""}`}
+                          className={`group flex items-center gap-1 rounded-lg transition duration-100 ease hover:bg-surface-2 ${disintegratingId === note.id ? "animate-disintegrate" : ""}`}
                         >
                           <button
                             draggable
@@ -898,7 +1092,7 @@ export default function NotebooksPage() {
                                 noteId: note.id,
                               });
                             }}
-                            className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-500 transition duration-100 ease group-hover:text-gray-800"
+                            className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-text-2 transition duration-100 ease group-hover:text-text"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -922,7 +1116,7 @@ export default function NotebooksPage() {
                           <button
                             type="button"
                             onClick={() => handleDisintegrateQuickNote(note.id)}
-                            className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition-all duration-150 hover:text-red-500 group-hover:opacity-100"
+                            className="shrink-0 rounded p-1 text-text-3/60 opacity-0 transition-all duration-150 hover:text-error-ink group-hover:opacity-100"
                             aria-label="Eliminar nota rápida"
                           >
                             <svg
@@ -947,7 +1141,7 @@ export default function NotebooksPage() {
                     <button
                       type="button"
                       onClick={handleAddQuickNote}
-                      className="mt-1 flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm text-gray-400 transition duration-100 ease hover:bg-gray-50 hover:text-gray-700"
+                      className="mt-1 flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm text-text-3 transition duration-100 ease hover:bg-surface-2 hover:text-text-2"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -974,7 +1168,7 @@ export default function NotebooksPage() {
         )}
       </aside>
 
-      <main className="flex-1 overflow-y-auto px-8 py-8">
+      <main className="flex-1 overflow-y-auto bg-bg">
         {selectedQuickNote ? (
           <NoteEditor
             key={selectedQuickNote.id}
@@ -1011,14 +1205,14 @@ export default function NotebooksPage() {
           })()
         ) : openNotebookId ? (
           <div className="mx-auto flex h-full max-w-3xl flex-col items-center justify-center text-center">
-            <div className="flex size-14 items-center justify-center rounded-2xl bg-black/5">
+            <div className="flex size-14 items-center justify-center rounded-2xl bg-surface-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-7 text-gray-400"
+                className="size-7 text-text-3"
               >
                 <path
                   strokeLinecap="round"
@@ -1027,46 +1221,44 @@ export default function NotebooksPage() {
                 />
               </svg>
             </div>
-            <p className="mt-4 text-xl font-semibold tracking-tight text-gray-800">
+            <p className="mt-4 text-xl font-semibold tracking-tight text-text">
               Selecciona una nota
             </p>
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-text-3">
               Elígela del panel izquierdo para empezar a escribir
             </p>
           </div>
         ) : (
-          <>
-            <div className="mx-auto max-w-5xl">
-              <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-                Mis notebooks
-              </h1>
-              <p className="mt-1 text-sm text-gray-400">
-                {notebooks.length === 0
-                  ? "Crea tu primer notebook para empezar"
-                  : `${notebooks.length} notebook${notebooks.length === 1 ? "" : "s"}`}
-              </p>
-
-              {notebooks.length === 0 ? (
-                <p className="mt-8 text-gray-400">Sin notebooks aún</p>
-              ) : (
-                <div className="mt-6 grid gap-5 sm:grid-cols-3 lg:grid-cols-5">
-                  {notebooks.map((n) => (
-                    <NotebookCard
-                      key={n.id}
-                      notebook={n}
-                      onOpen={() => setOpenNotebookId(n.id)}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </>
+          <DashboardHome
+            notebooks={notebooks}
+            onNewNotebook={() => setShowNotebookModal(true)}
+            onNewQuickNote={() => setShowQuickNoteModal(true)}
+            onOpenTemplates={() => setShowTemplateModal(true)}
+            onOpenSearch={() => setShowSearch(true)}
+            onOpenNotebook={handleOpenNotebook}
+            onOpenNote={handleOpenNote}
+            onAddNote={handleAddNote}
+            onTogglePin={handleTogglePin}
+            onToggleStar={handleToggleStar}
+          />
         )}
       </main>
 
       <NewNotebookModal
         isOpen={showNotebookModal}
         onClose={() => setShowNotebookModal(false)}
+      />
+
+      <QuickNoteModal
+        isOpen={showQuickNoteModal}
+        onClose={() => setShowQuickNoteModal(false)}
+        onCreated={handleQuickNoteCreated}
+      />
+
+      <TemplateModal
+        isOpen={showTemplateModal}
+        onClose={() => setShowTemplateModal(false)}
+        onCreated={handleQuickNoteCreated}
       />
 
       <EditNotebookModal
@@ -1108,7 +1300,7 @@ export default function NotebooksPage() {
             onClick={() => setQuickContextMenu(null)}
           />
           <div
-            className="fixed z-50 flex w-48 flex-col rounded-md border border-gray-200 bg-white py-1 shadow-lg"
+            className="fixed z-50 flex w-48 flex-col rounded-xl border border-border bg-surface py-1 shadow-lg"
             style={{ left: quickContextMenu.x, top: quickContextMenu.y }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -1122,7 +1314,7 @@ export default function NotebooksPage() {
                 });
                 setQuickContextMenu(null);
               }}
-              className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+              className="px-4 py-2 text-left text-sm text-text-2 hover:bg-surface-2"
             >
               Agregar a notebook
             </button>
@@ -1132,7 +1324,7 @@ export default function NotebooksPage() {
                 handleDeleteQuickNote(quickContextMenu.noteId);
                 setQuickContextMenu(null);
               }}
-              className="px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+              className="px-4 py-2 text-left text-sm text-error-ink hover:bg-error-bg"
             >
               Eliminar nota
             </button>
@@ -1147,7 +1339,7 @@ export default function NotebooksPage() {
             onClick={() => setNoteContextMenu(null)}
           />
           <div
-            className="fixed z-50 flex w-48 flex-col rounded-md border border-gray-200 bg-white py-1 shadow-lg"
+            className="fixed z-50 flex w-48 flex-col rounded-xl border border-border bg-surface py-1 shadow-lg"
             style={{ left: noteContextMenu.x, top: noteContextMenu.y }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -1160,7 +1352,7 @@ export default function NotebooksPage() {
                 );
                 setNoteContextMenu(null);
               }}
-              className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+              className="px-4 py-2 text-left text-sm text-text-2 hover:bg-surface-2"
             >
               {notebooks
                 .find((n) => n.id === noteContextMenu.notebookId)
@@ -1177,7 +1369,7 @@ export default function NotebooksPage() {
                 );
                 setNoteContextMenu(null);
               }}
-              className="px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+              className="px-4 py-2 text-left text-sm text-error-ink hover:bg-error-bg"
             >
               Eliminar nota
             </button>
@@ -1192,11 +1384,11 @@ export default function NotebooksPage() {
             onClick={() => setShowNotebookPicker(null)}
           />
           <div
-            className="fixed z-50 flex w-52 flex-col rounded-md border border-gray-200 bg-white py-1 shadow-lg"
+            className="fixed z-50 flex w-52 flex-col rounded-xl border border-border bg-surface py-1 shadow-lg"
             style={{ left: showNotebookPicker.x, top: showNotebookPicker.y }}
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="px-4 py-1.5 text-xs font-medium text-gray-400">
+            <p className="px-4 py-1.5 text-xs font-medium text-text-3">
               Selecciona un notebook
             </p>
             {notebooks.map((n) => (
@@ -1210,7 +1402,7 @@ export default function NotebooksPage() {
                   );
                   setShowNotebookPicker(null);
                 }}
-                className="flex items-center gap-2 px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                className="flex items-center gap-2 px-4 py-2 text-left text-sm text-text-2 hover:bg-surface-2"
               >
                 <span
                   className="size-2.5 shrink-0 rounded-full"
@@ -1220,7 +1412,7 @@ export default function NotebooksPage() {
               </button>
             ))}
             {notebooks.length === 0 && (
-              <p className="px-4 py-2 text-sm text-gray-400">Sin notebooks</p>
+              <p className="px-4 py-2 text-sm text-text-3">Sin notebooks</p>
             )}
           </div>
         </>

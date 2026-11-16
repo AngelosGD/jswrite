@@ -61,7 +61,7 @@ export default function SearchModal({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-start justify-center bg-black/25 backdrop-blur-sm pt-24"
+          className="fixed inset-0 z-50 flex items-start justify-center bg-text/20 p-4 pt-24 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -69,21 +69,21 @@ export default function SearchModal({
           onClick={onClose}
         >
           <motion.div
-            className="w-[28rem] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl"
+            className="w-full max-w-lg overflow-hidden rounded-3xl border border-border bg-surface shadow-[0_24px_80px_rgba(28,25,23,0.18)]"
             initial={{ opacity: 0, scale: 0.97, y: -8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: -8 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center gap-2 border-b border-gray-100 px-4 py-3">
+            <div className="flex items-center gap-2 border-b border-border px-4 py-3">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="2"
                 stroke="currentColor"
-                className="size-4 shrink-0 text-gray-400"
+                className="size-4 shrink-0 text-text-3"
               >
                 <path
                   strokeLinecap="round"
@@ -102,14 +102,14 @@ export default function SearchModal({
                 }}
                 type="text"
                 placeholder="Buscar notas por título o #etiqueta..."
-                className="w-full bg-transparent text-sm text-gray-800 outline-none placeholder:text-gray-400"
+                className="w-full bg-transparent text-sm text-text outline-none placeholder:text-text-3"
               />
               {query && (
                 <button
                   type="button"
                   onClick={() => setQuery("")}
                   aria-label="Limpiar búsqueda"
-                  className="rounded-full p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+                  className="rounded-full p-1 text-text-3 transition hover:bg-surface-2 hover:text-text-2"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -131,11 +131,11 @@ export default function SearchModal({
 
             <div className="max-h-72 overflow-y-auto py-1">
               {query.trim() === "" ? (
-                <p className="px-4 py-6 text-center text-sm text-gray-400">
+                <p className="px-4 py-6 text-center text-sm text-text-3">
                   Escribe para buscar entre tus notas
                 </p>
               ) : results.length === 0 ? (
-                <p className="px-4 py-6 text-center text-sm text-gray-400">
+                <p className="px-4 py-6 text-center text-sm text-text-3">
                   Sin resultados para “{query.trim()}”
                 </p>
               ) : (
@@ -151,7 +151,7 @@ export default function SearchModal({
                       key={key}
                       type="button"
                       onClick={() => handleSelect(result)}
-                      className="flex w-full items-center gap-2.5 px-4 py-2 text-left transition hover:bg-gray-50"
+                      className="flex w-full items-center gap-2.5 px-4 py-2 text-left transition hover:bg-surface-2"
                     >
                       {result.kind === "note" ? (
                         <span
@@ -177,10 +177,10 @@ export default function SearchModal({
                         </svg>
                       )}
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm text-gray-800">
+                        <span className="block truncate text-sm text-text">
                           {note.title}
                         </span>
-                        <span className="block truncate text-xs text-gray-400">
+                        <span className="block truncate text-xs text-text-3">
                           {result.kind === "note"
                             ? result.notebook.name
                             : "Nota rápida"}

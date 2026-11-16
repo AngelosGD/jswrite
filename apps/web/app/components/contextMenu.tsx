@@ -38,7 +38,7 @@ export default function ContextMenu({
       {/* overlay invisible: un clic afuera cierra el menú */}
       <div className="fixed inset-0 z-40" onClick={onClose} />
       <div
-        className="fixed z-50 flex w-48 flex-col rounded-md border border-gray-200 bg-white py-1 shadow-lg"
+        className="fixed z-50 flex w-48 flex-col rounded-xl border border-border bg-surface py-1 shadow-lg"
         style={{ left: x, top: y }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -48,7 +48,7 @@ export default function ContextMenu({
             onAddNote();
             onClose();
           }}
-          className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+          className="px-4 py-2 text-left text-sm text-text-2 hover:bg-surface-2"
         >
           Añadir nota
         </button>
@@ -58,7 +58,7 @@ export default function ContextMenu({
             onTogglePin();
             onClose();
           }}
-          className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+          className="px-4 py-2 text-left text-sm text-text-2 hover:bg-surface-2"
         >
           {pinned ? "Desfijar notebook" : "Fijar notebook"}
         </button>
@@ -68,7 +68,7 @@ export default function ContextMenu({
             onEditNotebook();
             onClose();
           }}
-          className="px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+          className="px-4 py-2 text-left text-sm text-text-2 hover:bg-surface-2"
         >
           Editar notebook
         </button>
@@ -78,7 +78,7 @@ export default function ContextMenu({
             onDeleteNotebook();
             onClose();
           }}
-          className="px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+          className="px-4 py-2 text-left text-sm text-error-ink hover:bg-error-bg"
         >
           Eliminar notebook
         </button>

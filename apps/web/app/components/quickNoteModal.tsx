@@ -30,9 +30,11 @@ const textToHtml = (text: string) => {
 export default function QuickNoteModal({
   isOpen,
   onClose,
+  onCreated,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  onCreated?: (noteId: string) => void;
 }) {
   const router = useRouter();
   const quickNotes = useQuickNotes();
@@ -75,7 +77,11 @@ export default function QuickNoteModal({
     saveQuickNotes(result.quickNotes);
     reset();
     onClose();
-    router.push(`/notebooks?quick=${result.note.id}`);
+    if (onCreated) {
+      onCreated(result.note.id);
+    } else {
+      router.push(`/notebooks?quick=${result.note.id}`);
+    }
   };
 
   return (

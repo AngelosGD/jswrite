@@ -22,9 +22,11 @@ const TONES = [
 export default function TemplateModal({
   isOpen,
   onClose,
+  onCreated,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  onCreated?: (noteId: string) => void;
 }) {
   const router = useRouter();
 
@@ -36,7 +38,11 @@ export default function TemplateModal({
     );
     saveQuickNotes(result.quickNotes);
     onClose();
-    router.push(`/notebooks?quick=${result.note.id}`);
+    if (onCreated) {
+      onCreated(result.note.id);
+    } else {
+      router.push(`/notebooks?quick=${result.note.id}`);
+    }
   };
 
   return (

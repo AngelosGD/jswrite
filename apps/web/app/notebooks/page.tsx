@@ -22,6 +22,7 @@ import NewNotebookModal from "@/app/components/newNotebookModal";
 import QuickNoteModal from "@/app/components/quickNoteModal";
 import TemplateModal from "@/app/components/templateModal";
 import DashboardHome from "@/app/components/dashboardHome";
+import NotebookHome from "@/app/components/notebookHome";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
@@ -65,6 +66,7 @@ export default function NotebooksPage() {
   }, []);
 
   const [query, setQuery] = useState("");
+  const [noteQuery, setNoteQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
   const [expandedNotebooks, setExpandedNotebooks] = useState<Set<string>>(
@@ -323,6 +325,8 @@ export default function NotebooksPage() {
   function handleOpenNotebook(notebookId: string) {
     setSelectedNote(null);
     setSelectedQuickNote(null);
+    setNoteQuery("");
+    setActiveTag(null);
     setOpenNotebookId(notebookId);
   }
 
@@ -406,48 +410,265 @@ export default function NotebooksPage() {
             if (!openNb) return null;
             return (
               <>
-                <div className="flex items-center justify-between px-2">
+                <div className="flex items-center justify-between px-1">
+                  <Link
+                    href="/"
+                    className="group flex items-center gap-2.5"
+                    aria-label="Volver al inicio"
+                  >
+                    <Image
+                      src="/icon.svg"
+                      alt="Lyno"
+                      width={28}
+                      height={28}
+                      priority
+                      className="size-7 rounded-lg"
+                    />
+                    <span className="text-[17px] font-bold tracking-tight text-text">
+                      <span className="text-blue-ink">L</span>yno
+                      <span className="text-purple-ink">.</span>
+                    </span>
+                  </Link>
                   <button
-                    type="button"
-                    onClick={() => {
-                      setOpenNotebookId(null);
-                      setSelectedNote(null);
-                    }}
-                    className="flex items-center gap-1.5 text-sm font-semibold text-text-2 transition hover:text-text hover:scale-95"
+                    onClick={() => setShowNotebookModal(true)}
+                    className="grid size-8 place-items-center rounded-full border border-border text-text-3 transition hover:border-border-strong hover:bg-surface-2 hover:text-text active:scale-95"
+                    aria-label="Nuevo notebook"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
-                      strokeWidth="2"
+                      strokeWidth="1.8"
                       stroke="currentColor"
                       className="size-4"
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M15.75 19.5 8.25 12l7.5-7.5"
+                        d="M12 4.5v15m7.5-7.5h-15"
                       />
                     </svg>
-                    Volver
                   </button>
-                  <span
-                    className="rounded-sm px-2 py-0.5 font-serif text-xs font-semibold text-white"
-                    style={{ backgroundColor: openNb.color }}
-                  >
-                    {openNb.name}
-                  </span>
                 </div>
 
-                <nav className="mt-4 flex flex-1 flex-col gap-1 overflow-y-auto pr-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenNotebookId(null);
+                    setSelectedNote(null);
+                    setNoteQuery("");
+                    setActiveTag(null);
+                  }}
+                  className="mt-4 flex items-center gap-1.5 px-1 text-xs font-medium text-text-3 transition hover:text-text"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    className="size-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.75 19.5 8.25 12l7.5-7.5"
+                    />
+                  </svg>
+                  Volver a stacks
+                </button>
+
+                <div className="mt-2 rounded-2xl border border-border bg-surface p-3">
+                  <div className="flex items-center gap-2.5">
+                    <span
+                      className="grid size-9 shrink-0 place-items-center rounded-xl"
+                      style={{ backgroundColor: `${openNb.color}1a` }}
+                    >
+                      <span
+                        className="size-2.5 rounded-full"
+                        style={{ backgroundColor: openNb.color }}
+                      />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-text">
+                        {openNb.name}
+                      </p>
+                      <p className="text-[11px] text-text-3">
+                        {openNb.notes.length} nota
+                        {openNb.notes.length === 1 ? "" : "s"}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleTogglePin(openNb.id)}
+                      aria-label={
+                        openNb.pinned ? "Desfijar stack" : "Fijar stack"
+                      }
+                      title={openNb.pinned ? "Desfijar" : "Fijar"}
+                      className={`grid size-7 place-items-center rounded-lg transition hover:bg-surface-2 ${
+                        openNb.pinned
+                          ? "text-blue-ink"
+                          : "text-text-3/60 hover:text-text-2"
+                      }`}
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="size-3.5"
+                      >
+                        <path d="M9 3h6l-.75 5.25L18 12v2H6v-2l3.75-3.75L9 3Z" />
+                        <path d="M12 14v7" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleToggleStar(openNb.id)}
+                      aria-label={
+                        openNb.starred ? "Quitar favorito" : "Marcar favorito"
+                      }
+                      title={openNb.starred ? "Quitar favorito" : "Favorito"}
+                      className={`grid size-7 place-items-center rounded-lg transition hover:bg-surface-2 ${
+                        openNb.starred
+                          ? "text-gold-ink"
+                          : "text-text-3/60 hover:text-text-2"
+                      }`}
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill={openNb.starred ? "currentColor" : "none"}
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="size-3.5"
+                      >
+                        <path d="m12 3 2.7 5.6 6.2.9-4.5 4.4 1.1 6.1-5.5-2.9-5.5 2.9 1.1-6.1L3.1 9.5l6.2-.9L12 3Z" />
+                      </svg>
+                    </button>
+                  </div>
+                  {openNb.tags && openNb.tags.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {openNb.tags.slice(0, 3).map((tag) => (
+                        <span
+                          key={tag.label}
+                          className="rounded-full px-1.5 py-px text-[10px] font-medium"
+                          style={{
+                            backgroundColor: `${tag.color}1a`,
+                            color: tag.color,
+                          }}
+                        >
+                          #{tag.label}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-5 flex items-center justify-between px-1">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-3">
+                    Notas
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => handleAddNote(openNb.id)}
+                    aria-label="Añadir nota"
+                    title="Añadir nota"
+                    className="grid size-6 place-items-center rounded-lg text-text-3 transition hover:bg-surface-2 hover:text-text"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      className="size-3.5"
+                    >
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="relative mt-1.5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-text-3"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                    />
+                  </svg>
+                  <input
+                    value={noteQuery}
+                    onChange={(e) => setNoteQuery(e.target.value)}
+                    type="text"
+                    placeholder="Buscar nota..."
+                    className="w-full rounded-xl border border-transparent bg-surface-2 py-2 pr-3 pl-8 text-sm text-text placeholder:text-text-3 transition focus:border-border-strong focus:bg-surface focus:outline-none"
+                  />
+                </div>
+
+                {(() => {
+                  const tags = [
+                    ...new Map(
+                      openNb.notes
+                        .flatMap((note) => getNoteTags(note))
+                        .map((tag) => [tag.label.toLowerCase(), tag]),
+                    ).values(),
+                  ];
+                  if (tags.length === 0) return null;
+                  return (
+                    <div className="mt-2 flex flex-wrap gap-1 px-0.5">
+                      {tags.map((tag) => {
+                        const active =
+                          activeTag?.toLowerCase() === tag.label.toLowerCase();
+                        return (
+                          <button
+                            key={tag.label}
+                            type="button"
+                            onClick={() =>
+                              setActiveTag(active ? null : tag.label)
+                            }
+                            className="rounded-full px-2 py-0.5 text-[10px] font-medium transition active:scale-95"
+                            style={
+                              active
+                                ? { backgroundColor: tag.color, color: "#fff" }
+                                : {
+                                    backgroundColor: `${tag.color}1a`,
+                                    color: tag.color,
+                                  }
+                            }
+                          >
+                            #{tag.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
+
+                <nav className="mt-2 flex flex-1 flex-col gap-0.5 overflow-y-auto pr-1">
                   {(() => {
-                    const visible = openNb.notes.filter(matchesTag);
+                    const q = noteQuery.trim().toLowerCase();
+                    const visible = openNb.notes
+                      .filter(matchesTag)
+                      .filter((note) => !q || note.title.toLowerCase().includes(q));
                     if (visible.length === 0) {
                       return (
-                        <p className="px-2 py-1 text-sm text-text-3">
+                        <p className="px-2 py-2 text-sm text-text-3">
                           {openNb.notes.length === 0
                             ? "Sin notas"
-                            : `Sin notas con #${activeTag}`}
+                            : q
+                              ? `Sin resultados para “${noteQuery.trim()}”`
+                              : `Sin notas con #${activeTag}`}
                         </p>
                       );
                     }
@@ -456,17 +677,16 @@ export default function NotebooksPage() {
                       .map((note) => (
                         <div
                           key={note.id}
-                          className="group flex items-center gap-1 rounded-lg pr-1 transition duration-100 ease hover:bg-surface-2"
+                          className={`group flex items-center gap-1 rounded-xl pr-1 transition duration-100 ease ${
+                            selectedNote?.notebookId === openNb.id &&
+                            selectedNote.noteId === note.id
+                              ? "bg-blue-bg/60"
+                              : "hover:bg-surface-2"
+                          }`}
                         >
                           <button
-                            onClick={() => {
-                              setSelectedQuickNote(null);
-                              setSelectedNote({
-                                notebookId: openNb.id,
-                                noteId: note.id,
-                              });
-                            }}
-                            className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-text-2 transition duration-100 ease group-hover:text-text"
+                            onClick={() => handleOpenNote(openNb.id, note.id)}
+                            className="flex min-w-0 flex-1 items-center gap-2 rounded-xl px-2 py-1.5 text-left text-sm text-text-2 transition duration-100 ease group-hover:text-text"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -1204,30 +1424,25 @@ export default function NotebooksPage() {
             );
           })()
         ) : openNotebookId ? (
-          <div className="mx-auto flex h-full max-w-3xl flex-col items-center justify-center text-center">
-            <div className="flex size-14 items-center justify-center rounded-2xl bg-surface-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="size-7 text-text-3"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 12h6m-6 4h6M10 3.75H6.375A2.625 2.625 0 0 0 3.75 6.375v11.25A2.625 2.625 0 0 0 6.375 20.25h11.25A2.625 2.625 0 0 0 20.25 17.625V6.375A2.625 2.625 0 0 0 17.625 3.75H14M9 3.75a1.5 1.5 0 0 1 3 0h.25A1.5 1.5 0 0 0 15 3.15v.832A1.5 1.5 0 0 0 15 5.25V6a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-.75a1.5 1.5 0 0 0 0-.9V3.75Z"
-                />
-              </svg>
-            </div>
-            <p className="mt-4 text-xl font-semibold tracking-tight text-text">
-              Selecciona una nota
-            </p>
-            <p className="mt-1 text-sm text-text-3">
-              Elígela del panel izquierdo para empezar a escribir
-            </p>
-          </div>
+          (() => {
+            const openNb = notebooks.find((n) => n.id === openNotebookId);
+            if (!openNb) return null;
+            return (
+              <NotebookHome
+                notebook={openNb}
+                query={noteQuery}
+                activeTag={activeTag}
+                onAddNote={() => handleAddNote(openNb.id)}
+                onOpenNote={(noteId) => handleOpenNote(openNb.id, noteId)}
+                onToggleNotePin={(noteId) =>
+                  handleToggleNotePin(openNb.id, noteId)
+                }
+                onOpenSearch={() => setShowSearch(true)}
+                onTogglePin={() => handleTogglePin(openNb.id)}
+                onToggleStar={() => handleToggleStar(openNb.id)}
+              />
+            );
+          })()
         ) : (
           <DashboardHome
             notebooks={notebooks}

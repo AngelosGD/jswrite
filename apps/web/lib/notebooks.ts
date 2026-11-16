@@ -312,11 +312,15 @@ export function createQuickNoteTitle(quickNotes: Note[]): string{
   return `Untitled-${randomSuffix()}`  
 }
 
-export function addQuickNote(quickNotes: Note[]): {quickNotes: Note[]; note: Note}{
+export function addQuickNote(
+  quickNotes: Note[],
+  title?: string,
+  content = "",
+): {quickNotes: Note[]; note: Note}{
   const note: Note = {
     id: crypto.randomUUID(),
-    title: createQuickNoteTitle(quickNotes),
-    content:"",
+    title: title?.trim() || createQuickNoteTitle(quickNotes),
+    content,
     pinned: false,
     type: "quick",
     createdAt: new Date().toISOString(),

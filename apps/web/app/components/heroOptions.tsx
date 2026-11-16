@@ -4,12 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import NewNotebookModal from "./newNotebookModal";
+import QuickNoteModal from "./quickNoteModal";
 import TemplateModal from "./templateModal";
-import {
-  addQuickNote,
-  saveQuickNotes,
-  useQuickNotes,
-} from "@/lib/notebooks";
 
 function ArrowIcon() {
   return (
@@ -54,8 +50,8 @@ function ParallaxIcon({
 
 export default function HeroOptions() {
   const [showNotebookModal, setShowNotebookModal] = useState(false);
+  const [showQuickNoteModal, setShowQuickNoteModal] = useState(false);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
-  const quickNotes = useQuickNotes();
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -286,11 +282,7 @@ export default function HeroOptions() {
 
             <div className="mt-3 grid gap-3 sm:grid-cols-3">
               <button
-                onClick={() => {
-                  const result = addQuickNote(quickNotes);
-                  saveQuickNotes(result.quickNotes);
-                  window.location.href = `/notebooks?quick=${result.note.id}`;
-                }}
+                onClick={() => setShowQuickNoteModal(true)}
                 className="group flex flex-col items-start gap-3 rounded-2xl border border-border bg-surface p-4 text-left shadow-[0_1px_2px_rgba(28,25,23,0.04)] transition duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_10px_28px_rgba(28,25,23,0.07)] active:translate-y-0 active:scale-[0.99]"
               >
                 <span className="grid size-9 place-items-center rounded-xl bg-blue-bg text-blue-ink transition group-hover:scale-105">
@@ -378,6 +370,10 @@ export default function HeroOptions() {
       <NewNotebookModal
         isOpen={showNotebookModal}
         onClose={() => setShowNotebookModal(false)}
+      />
+      <QuickNoteModal
+        isOpen={showQuickNoteModal}
+        onClose={() => setShowQuickNoteModal(false)}
       />
       <TemplateModal
         isOpen={showTemplateModal}

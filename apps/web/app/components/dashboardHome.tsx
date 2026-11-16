@@ -68,51 +68,91 @@ export default function DashboardHome({
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-0.5 rounded-2xl border border-border bg-surface p-1 shadow-[0_1px_2px_rgba(28,25,23,0.04)]">
+            <button
+              type="button"
+              onClick={onOpenSearch}
+              aria-label="Buscar notas"
+              title="Buscar (/)"
+              className="grid size-9 place-items-center rounded-xl text-text-3 transition hover:bg-surface-2 hover:text-text"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                className="size-4"
+              >
+                <path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              </svg>
+            </button>
+
+            <span className="mx-0.5 h-5 w-px bg-border" />
+
+            <button
+              type="button"
+              onClick={onNewQuickNote}
+              className="flex h-9 items-center gap-1.5 rounded-xl px-2.5 text-sm font-medium text-text-2 transition hover:bg-surface-2 hover:text-text active:scale-[0.98]"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-3.5 text-text-3"
+              >
+                <path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z" />
+              </svg>
+              Nota rápida
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                if (notebooks.length === 0) {
+                  onNewNotebook();
+                  return;
+                }
+                const first = sorted[0];
+                onAddNote(first.id);
+              }}
+              className="flex h-9 items-center gap-1.5 rounded-xl px-2.5 text-sm font-medium text-text-2 transition hover:bg-surface-2 hover:text-text active:scale-[0.98]"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-3.5 text-text-3"
+              >
+                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" />
+                <path d="M14 3v5h5M9 13h6M12 10v6" />
+              </svg>
+              Añadir nota
+            </button>
+          </div>
+
           <button
             type="button"
-            onClick={onOpenSearch}
-            aria-label="Buscar notas"
-            title="Buscar (/)"
-            className="grid size-10 place-items-center rounded-full border border-border bg-surface text-text-3 transition hover:border-border-strong hover:text-text"
+            onClick={onNewNotebook}
+            className="flex h-11 items-center gap-2 rounded-2xl bg-text px-4 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(28,25,23,0.18)] transition hover:bg-text-2 active:scale-[0.98]"
           >
             <svg
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.7"
+              strokeWidth="2"
               strokeLinecap="round"
               className="size-4"
             >
-              <path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              <path d="M12 5v14M5 12h14" />
             </svg>
-          </button>
-          <button
-            type="button"
-            onClick={onNewQuickNote}
-            className="h-10 rounded-full border border-border bg-surface px-4 text-sm font-medium text-text-2 transition hover:border-border-strong hover:text-text active:scale-[0.98]"
-          >
-            Nota rápida
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              if (notebooks.length === 0) {
-                onNewNotebook();
-                return;
-              }
-              const first = sorted[0];
-              onAddNote(first.id);
-            }}
-            className="h-10 rounded-full border border-border bg-surface px-4 text-sm font-medium text-text-2 transition hover:border-border-strong hover:text-text active:scale-[0.98]"
-          >
-            Añadir nota
-          </button>
-          <button
-            type="button"
-            onClick={onNewNotebook}
-            className="h-10 rounded-full bg-brand px-4 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(59,91,219,0.24)] transition hover:bg-brand-hover active:scale-[0.98]"
-          >
             Nuevo stack
           </button>
         </div>

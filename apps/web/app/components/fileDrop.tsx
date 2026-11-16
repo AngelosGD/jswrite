@@ -59,29 +59,31 @@ export default function FileDrop({
       }}
       onDragLeave={() => setDragging(false)}
       onDrop={onDrop}
-      className={`flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed px-6 py-7 text-center transition duration-200 ${
+      className={`group flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed px-6 py-7 text-center transition duration-200 ${
         disabled
           ? "cursor-not-allowed border-border bg-surface-2/60"
           : "cursor-pointer border-border-strong bg-surface-2/40 hover:border-blue-border hover:bg-blue-bg/30"
       } ${dragging ? "border-brand bg-blue-bg" : ""}`}
     >
       <span
-        className={`grid size-10 place-items-center rounded-xl transition ${
-          disabled ? "bg-surface-2 text-text-3" : "bg-blue-bg text-blue-ink"
+        className={`transition ${
+          disabled
+            ? "text-text-3"
+            : "text-text-3 group-hover:text-blue-ink"
         }`}
       >
         <svg
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.6"
+          strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
-          className="size-5"
+          className="size-7"
         >
-          <path d="M12 16V4m0 0L8 8m4-4 4 4" />
-          <path d="M4 16v2.25A1.75 1.75 0 0 0 5.75 20h12.5A1.75 1.75 0 0 0 20 18.25V16" />
+          <path d="M12 16.5V9.75m0 0 3 3m-3-3-3 3" />
+          <path d="M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
         </svg>
       </span>
 

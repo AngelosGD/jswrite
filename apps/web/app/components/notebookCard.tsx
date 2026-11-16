@@ -28,11 +28,29 @@ export default function NotebookCard({
           {notebook.name}
         </p>
 
-        <span className="text-xs text-gray-400">
-          {notebook.notes.length === 0
-            ? "Sin notas"
-            : `${notebook.notes.length} nota${notebook.notes.length > 1 ? "s" : ""}`}
-        </span>
+        <div className="flex w-full flex-col items-start gap-1.5">
+          {notebook.tags && notebook.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {notebook.tags.slice(0, 3).map((tag) => (
+                <span
+                  key={tag.label}
+                  className="rounded-full px-1.5 py-0.5 text-[10px] font-medium"
+                  style={{
+                    backgroundColor: `${tag.color}1a`,
+                    color: tag.color,
+                  }}
+                >
+                  #{tag.label}
+                </span>
+              ))}
+            </div>
+          )}
+          <span className="text-xs text-gray-400">
+            {notebook.notes.length === 0
+              ? "Sin notas"
+              : `${notebook.notes.length} nota${notebook.notes.length > 1 ? "s" : ""}`}
+          </span>
+        </div>
       </div>
 
       {/* overlay "Abrir" al hacer hover */}

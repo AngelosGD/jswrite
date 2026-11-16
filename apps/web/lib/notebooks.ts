@@ -40,6 +40,7 @@ export type Notebook = {
   color: string;
   pinned: boolean;
   starred: boolean;
+  tags?: Tag[];
   createdAt: string;
   updatedAt: string;
   notes: Note[];
@@ -151,7 +152,11 @@ export function useQuickNotes(): Note[]{
 }
 
 
-export function createNotebook(name: string, color: string): Notebook {
+export function createNotebook(
+  name: string,
+  color: string,
+  tags: Tag[] = [],
+): Notebook {
   const now = new Date().toISOString();
   return {
     id: crypto.randomUUID(),
@@ -159,6 +164,7 @@ export function createNotebook(name: string, color: string): Notebook {
     color,
     pinned: false,
     starred: false,
+    tags,
     createdAt: now,
     updatedAt: now,
     notes: [],

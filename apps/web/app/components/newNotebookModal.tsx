@@ -1,7 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "motion/react";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   COLORS,
@@ -25,14 +25,18 @@ export default function NewNotebookModal({
   onClose: () => void;
 }) {
   const router = useRouter();
+  const colorInputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState("");
   const [color, setColor] = useState(COLORS[0]);
+  const [customColor, setCustomColor] = useState("#3B5BDB");
   const [tags, setTags] = useState<Tag[]>([]);
   const [draftTag, setDraftTag] = useState("");
+  const isCustom = !COLORS.includes(color);
 
   const reset = () => {
     setName("");
     setColor(COLORS[0]);
+    setCustomColor("#3B5BDB");
     setTags([]);
     setDraftTag("");
   };
@@ -128,23 +132,118 @@ export default function NewNotebookModal({
                 <p className="text-xs font-semibold uppercase tracking-wide text-text-3">
                   Categoría
                 </p>
-                <div className="mt-2 flex flex-wrap gap-2.5">
-                  {COLORS.map((c) => (
-                    <button
-                      key={c}
-                      type="button"
-                      onClick={() => setColor(c)}
-                      aria-label={`Color ${c}`}
-                      aria-pressed={color === c}
-                      style={{ backgroundColor: c }}
-                      className={`size-8 rounded-full transition ${
-                        color === c
-                          ? "ring-2 ring-brand ring-offset-2 ring-offset-surface"
-                          : "border border-border-strong hover:scale-105"
-                      }`}
-                    />
-                  ))}
+                <div className="mt-3 flex flex-wrap items-center gap-2.5">
+                  {COLORS.map((c) => {
+                    const selected = color === c;
+                    return (
+                      <button
+                        key={c}
+                        type="button"
+                        onClick={() => setColor(c)}
+                        aria-label={`Color ${c}`}
+                        aria-pressed={selected}
+                        style={{ backgroundColor: c }}
+                        className={`grid size-9 place-items-center rounded-xl transition duration-200 ${
+                          selected
+                            ? "scale-110 shadow-[0_4px_14px_rgba(28,25,23,0.20)]"
+                            : "hover:scale-105 hover:shadow-[0_2px_8px_rgba(28,25,23,0.10)]"
+                        }`}
+                      >
+                        {selected && (
+                          <span className="grid size-4 place-items-center rounded-full bg-white/90 shadow-sm">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="3"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              aria-hidden="true"
+                              className="size-3 text-text"
+                            >
+                              <path d="m5 12 4 4L19 6" />
+                            </svg>
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    type="button"
+                    onClick={() => colorInputRef.current?.click()}
+                    aria-label="Elegir color personalizado"
+                    aria-pressed={isCustom}
+                    title="Color personalizado"
+                    style={isCustom ? { backgroundColor: color } : undefined}
+                    className={`relative grid size-9 place-items-center overflow-hidden rounded-xl border border-border-strong transition duration-200 ${
+                      isCustom
+                        ? "scale-110 shadow-[0_4px_14px_rgba(28,25,23,0.20)]"
+                        : "hover:scale-105 hover:shadow-[0_2px_8px_rgba(28,25,23,0.10)]"
+                    }`}
+                  >
+                    {isCustom ? (
+                      <span className="grid size-4 place-items-center rounded-full bg-white/90 shadow-sm">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                          className="size-3 text-text"
+                        >
+                          <path d="m5 12 4 4L19 6" />
+                        </svg>
+                      </span>
+                    ) : (
+                      <>
+                        <span
+                          aria-hidden="true"
+                          className="absolute inset-0"
+                          style={{
+                            background:
+                              "conic-gradient(from 90deg, #ef4444, #f59e0b, #22c55e, #3b82f6, #8b5cf6, #ec4899, #ef4444)",
+                          }}
+                        />
+                        <span className="relative grid size-4 place-items-center rounded-full bg-white/90 shadow-sm">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            aria-hidden="true"
+                            className="size-3 text-text"
+                          >
+                            <path d="M12 5v14M5 12h14" />
+                          </svg>
+                        </span>
+                      </>
+                    )}
+                  </button>
+
+                  <input
+                    ref={colorInputRef}
+                    type="color"
+                    value={customColor}
+                    onChange={(e) => {
+                      setCustomColor(e.target.value);
+                      setColor(e.target.value);
+                    }}
+                    aria-label="Color personalizado"
+                    className="sr-only"
+                  />
                 </div>
+                {isCustom && (
+                  <p className="mt-2 flex items-center gap-1.5 text-xs text-text-3">
+                    Personalizado
+                    <span className="font-mono text-[11px] font-medium text-text-2">
+                      {color.toUpperCase()}
+                    </span>
+                  </p>
+                )}
               </div>
 
               <div>

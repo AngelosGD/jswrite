@@ -36,17 +36,14 @@ export default function SidebarFooter({
 
   return (
     <>
-      <div className="mt-2 border-t border-border pt-3">
-        <p className="px-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-text-3">
-          Ajustes
-        </p>
-
-        <div className="mt-1.5 flex flex-col gap-0.5">
+      <div className="mt-2 flex items-center justify-between border-t border-border pt-2">
+        <div className="flex items-center gap-1">
           <button
             type="button"
             disabled
             title="Modo oscuro (próximamente)"
-            className="flex cursor-not-allowed items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm text-text-3 opacity-70"
+            aria-label="Modo oscuro (próximamente)"
+            className="grid size-8 cursor-not-allowed place-items-center rounded-lg text-text-3/60"
           >
             <svg
               viewBox="0 0 24 24"
@@ -59,17 +56,14 @@ export default function SidebarFooter({
             >
               <path d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 12 21.75a9.753 9.753 0 0 0 9.752-6.748Z" />
             </svg>
-            Modo oscuro
-            <span className="ml-auto rounded-full border border-border px-1.5 py-px text-[10px]">
-              pronto
-            </span>
           </button>
 
           <button
             type="button"
             disabled
             title="Atajos de teclado (próximamente)"
-            className="flex cursor-not-allowed items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm text-text-3 opacity-70"
+            aria-label="Atajos de teclado (próximamente)"
+            className="grid size-8 cursor-not-allowed place-items-center rounded-lg text-text-3/60"
           >
             <svg
               viewBox="0 0 24 24"
@@ -83,16 +77,14 @@ export default function SidebarFooter({
               <rect x="2.5" y="6" width="19" height="12" rx="2" />
               <path d="M6 10h.01M9.5 10h.01M13 10h.01M16.5 10h.01M7 14h10" />
             </svg>
-            Atajos de teclado
-            <span className="ml-auto rounded-full border border-border px-1.5 py-px text-[10px]">
-              pronto
-            </span>
           </button>
 
           <button
             type="button"
             onClick={onOpenSearch}
-            className="group flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm text-text-2 transition hover:bg-surface-2 hover:text-text"
+            title="Buscar notas (/)"
+            aria-label="Buscar notas"
+            className="grid size-8 place-items-center rounded-lg text-text-3 transition hover:bg-surface-2 hover:text-text"
           >
             <svg
               viewBox="0 0 24 24"
@@ -100,38 +92,33 @@ export default function SidebarFooter({
               stroke="currentColor"
               strokeWidth="1.6"
               strokeLinecap="round"
-              className="size-4 text-text-3"
+              className="size-4"
             >
               <path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
-            Buscar notas
-            <kbd className="ml-auto rounded border border-border bg-surface-2 px-1 text-[10px] text-text-3">
-              /
-            </kbd>
           </button>
         </div>
 
         <button
           type="button"
           onClick={() => setShowNews(true)}
-          className="group mt-1 flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-left text-xs text-text-3 transition hover:bg-surface-2 hover:text-text-2"
+          title="¿Qué ha llegado?"
+          aria-label="¿Qué ha llegado?"
+          className="relative grid size-8 place-items-center rounded-lg text-text-3 transition hover:bg-surface-2 hover:text-text"
         >
-          <span className="relative flex size-2 shrink-0">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-60" />
-            <span className="relative inline-flex size-2 rounded-full bg-green-500" />
-          </span>
-          <span className="flex-1">¿Qué ha llegado?</span>
           <svg
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="1.6"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="size-3 transition-transform duration-200 group-hover:translate-x-0.5"
+            className="size-4"
           >
-            <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.7 21a2 2 0 0 1-3.4 0" />
           </svg>
+          <span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-green-500" />
         </button>
       </div>
 
